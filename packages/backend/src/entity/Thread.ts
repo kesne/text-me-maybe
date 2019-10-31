@@ -4,28 +4,23 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    ManyToOne
+    OneToMany
 } from 'typeorm';
-import { Thread } from './Thread';
-
-export enum Sender {
-    SELF,
-    OTHER
-}
+import { Message } from './Message';
 
 @Entity()
-export class Message {
+export class Thread {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column('text')
-    body!: string;
+    @Column()
+    phoneNumber!: string;
 
-    @Column('int')
-    sender!: Sender;
+    @Column()
+    recipient!: string;
 
-    @ManyToOne(() => Thread, thread => thread.messages)
-    thread!: Thread;
+    @OneToMany(() => Message, message => message.thread)
+    messages!: Promise<Message[]>;
 
     @CreateDateColumn()
     createdAt!: string;

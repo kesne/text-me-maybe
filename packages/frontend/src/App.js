@@ -1,14 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import Threads from './Threads';
 import Messages from './Messages';
 import SendMessage from './SendMessage';
 import client from './client';
@@ -65,23 +63,7 @@ export default function ClippedDrawer() {
                     }}
                 >
                     <div className={classes.toolbar} />
-                    <List>
-                        <ListItem button>
-                            <ListItemText
-                                primary="1 (800) CON-TACTS"
-                                secondary="Hey about those nudes..."
-                            />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemText
-                                primary="1 (877) CASH-NOW"
-                                secondary="Ey gurl whats up..."
-                            />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemText primary="1 (866) 436-5701" secondary="U up?" />
-                        </ListItem>
-                    </List>
+                    <Threads />
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
