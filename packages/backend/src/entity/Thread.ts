@@ -4,9 +4,11 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToMany
+    OneToMany,
+    ManyToOne
 } from 'typeorm';
 import { Message } from './Message';
+import { User } from './User';
 
 @Entity()
 export class Thread {
@@ -19,8 +21,11 @@ export class Thread {
     @Column()
     recipient!: string;
 
+    @ManyToOne(() => User, user => user.threads)
+    user!: User;
+
     @OneToMany(() => Message, message => message.thread)
-    messages!: Promise<Message[]>;
+    messages!: Message[];
 
     @CreateDateColumn()
     createdAt!: string;

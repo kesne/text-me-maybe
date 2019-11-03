@@ -5,9 +5,12 @@ import cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
 import { ApolloServer } from 'apollo-server-koa';
 import { createConnection } from 'typeorm';
+import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions';
 import schema from './graphql/schema';
 import resolvers from './graphql/resolvers';
 import config from '../ormconfig.json';
+import { User } from './entity/User';
+import AuthDirective from './graphql/AuthDirective';
 
 const app = new Koa();
 const router = new Router();
@@ -15,10 +18,22 @@ const router = new Router();
 const server = new ApolloServer({
     typeDefs: schema,
     resolvers,
+    schemaDirectives: {
+        auth: AuthDirective
+    },
     context: ({ ctx }) => {
-        return { connection: ctx.connection };
+        return { connection: ctx.connection, user: ctx.user };
     }
 });
+
+const auth: Koa.Middleware = async (ctx, next) => {
+    if (ctx.get('Authorization')) {
+        // Get the token from the header:
+        const token = ctx.get('Authorization').slice('Bearer '.length);
+        ctx.user = await User.fromToken(ctx.connection, token);
+    }
+    return next();
+};
 
 app.use(cors())
     .use(bodyParser())
@@ -40,12 +55,12 @@ app.use(cors())
 //     res.end(twiml.toString());
 // });
 
-createConnection(config)
+createConnection(config as SqliteConnectionOptions)
     .then(async connection => {
         app.use((ctx, next) => {
             ctx.connection = connection;
             return next();
-        });
+        }).use(auth);
 
         server.applyMiddleware({ app });
 

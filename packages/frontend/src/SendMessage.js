@@ -6,8 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SendIcon from '@material-ui/icons/Send';
-import { MESSAGES } from './Messages';
-import client from './client';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -18,25 +16,49 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SEND_MESSAGE = gql`
-    mutation SendMessage($message: String!) {
-        sendMessage(body: $message) {
+    mutation SendMessage($threadID: ID!, $message: String!) {
+        sendMessage(threadID: $threadID, body: $message) {
+            id
             body
         }
     }
 `;
 
-export default function SendMessage() {
+const KEY_ENTER = 'Enter';
+
+export default function SendMessage({ threadID, refetch }) {
     const classes = useStyles();
     const [message, setMessage] = useState('');
-    const [sendMessage, { loading, data }] = useMutation(SEND_MESSAGE, { variables: { message } });
+    const [sendMessage, { loading, data, error }] = useMutation(SEND_MESSAGE, {
+        variables: { message, threadID },
+        update(cache, { data }) {
+            cache.writeData({
+                data: {
+                    thread: {
+                        __typename: 'Thread',
+                        id: threadID,
+                        lastMessage: {
+                            __typename: 'Message',
+                            ...data.sendMessage
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    function checkSend(e) {
+        if (e.key === KEY_ENTER) {
+            sendMessage();
+        }
+    }
 
     useEffect(() => {
         if (data) {
-            // Force a refetch of messages from network
-            client.query({ query: MESSAGES, fetchPolicy: 'network-only' });
             setMessage('');
+            refetch();
         }
-    }, [data]);
+    }, [data, refetch]);
 
     return (
         <div className={classes.container}>
@@ -45,16 +67,19 @@ export default function SendMessage() {
                 value={message}
                 disabled={loading}
                 onChange={e => setMessage(e.target.value)}
-                fullWidth
+                onKeyUp={checkSend}
+                error={!!error}
+                helperText={error ? error.message : undefined}
                 InputProps={{
                     endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton color="primary" onClick={sendMessage}>
+                            <IconButton color="primary" onClick={sendMessage} disabled={loading}>
                                 <SendIcon />
                             </IconButton>
                         </InputAdornment>
                     )
                 }}
+                fullWidth
             />
         </div>
     );
