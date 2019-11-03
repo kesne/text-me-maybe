@@ -18,7 +18,14 @@ const useStyles = makeStyles(theme => ({
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1
-    }
+    },
+    content: {
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: 1
+    },
+    toolbar: theme.mixins.toolbar
 }));
 
 export default function App() {
@@ -36,17 +43,23 @@ export default function App() {
                             </Typography>
                         </Toolbar>
                     </AppBar>
-                    <Switch>
-                        <Route path="/login">
-                            <Login />
-                        </Route>
-                        <Route path="/signup">
-                            <SignUp />
-                        </Route>
-                        <Route path="/threads">
-                            <MessageView />
-                        </Route>
-                    </Switch>
+                    <div className={classes.content}>
+                        <div className={classes.toolbar} />
+                        <Switch>
+                            <Route path="/login">
+                                <Login />
+                            </Route>
+                            <Route path="/signup">
+                                <SignUp />
+                            </Route>
+                            <Route path="/threads">
+                                <MessageView />
+                            </Route>
+                            <Route>
+                                <div>Where are you?</div>
+                            </Route>
+                        </Switch>
+                    </div>
                 </div>
             </ApolloProvider>
         </Router>

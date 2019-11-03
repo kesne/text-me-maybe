@@ -50,11 +50,9 @@ export default function MessageView() {
                     paper: classes.drawerPaper
                 }}
             >
-                <div className={classes.toolbar} />
                 <Threads />
             </Drawer>
             <main className={classes.content}>
-                <div className={classes.toolbar} />
                 <div className={classes.contentWrapper}>
                     <Switch>
                         <Route path="/threads/create">
