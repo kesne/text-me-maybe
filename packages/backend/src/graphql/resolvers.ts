@@ -14,22 +14,28 @@ export default {
         me(_parent, _args, { user }: Context) {
             return user;
         },
-        async thread(_parent, { threadID }: { threadID: string }, { connection }: Context) {
+        async thread(_parent, { threadID }: { threadID: string }, { user, connection }: Context) {
             const threadRepo = connection.getRepository(Thread);
-            return threadRepo.findOne(threadID);
+            return threadRepo.findOne({
+                where: {
+                    id: threadID,
+                    userId: user.id
+                }
+            });
         },
-        async threads(_parent, _args, { connection }: Context) {
+        async threads(_parent, _args, { user, connection }: Context) {
             const threadRepo = connection.getRepository(Thread);
 
             return await threadRepo
                 .createQueryBuilder('thread')
+                .where('thread.userId = :userId', { userId: user.id })
                 .leftJoin('thread.messages', 'messages')
                 .addOrderBy('messages.createdAt', 'DESC')
                 .getMany();
         }
     },
     Mutation: {
-        async createUser(_parent, { name, email, password }, { connection }: Context) {
+        async signUp(_parent, { name, email, password }, { connection }: Context) {
             const userRepo = connection.getRepository(User);
 
             const user = new User();
@@ -43,9 +49,8 @@ export default {
                 token: user.token()
             };
         },
-        async login(_parent, { email, password }, { connection }: Context) {
+        async signIn(_parent, { email, password }, { connection }: Context) {
             const userRepo = connection.getRepository(User);
-
             const user = await userRepo.findOne({ where: { email } });
 
             if (!user) {
@@ -62,12 +67,13 @@ export default {
                 token: user.token()
             };
         },
-        async createThread(_parent, { to }, { connection }: Context) {
+        async createThread(_parent, { to }, { user, connection }: Context) {
             const threadRepo = connection.getRepository(Thread);
 
             const thread = new Thread();
             thread.phoneNumber = '+16264657420';
             thread.recipient = to;
+            thread.user = user;
             return threadRepo.save(thread);
         },
         async sendMessage(_parent, { threadID, body }, { connection }: Context) {
@@ -99,26 +105,20 @@ export default {
         lastMessage(parent: Thread, _args, { connection }: Context) {
             const messageRepo = connection.getRepository(Message);
 
-            return messageRepo.findOne({
-                where: {
-                    threadId: parent.id
-                },
-                order: {
-                    createdAt: 'DESC'
-                }
-            });
+            return messageRepo
+                .createQueryBuilder('message')
+                .where('message.threadId = :threadId', { threadId: parent.id })
+                .addOrderBy('message.createdAt', 'DESC')
+                .getOne();
         },
         messages(parent: Thread, _args, { connection }: Context) {
             const messageRepo = connection.getRepository(Message);
 
-            return messageRepo.find({
-                where: {
-                    threadId: parent.id
-                },
-                order: {
-                    createdAt: 'DESC'
-                }
-            });
+            return messageRepo
+                .createQueryBuilder('message')
+                .where('message.threadId = :threadId', { threadId: parent.id })
+                .addOrderBy('message.createdAt', 'DESC')
+                .getMany();
         }
     },
     Message: {

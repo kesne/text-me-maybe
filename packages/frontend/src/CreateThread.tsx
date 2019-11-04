@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import MuiPhoneNumber from 'material-ui-phone-number';
 import { THREADS } from './Threads';
@@ -21,14 +21,11 @@ const CREATE_THREAD = gql`
     }
 `;
 
-const useStyles = makeStyles(theme => ({
-    container: {
-        margin: theme.spacing(4)
-    }
-}));
+type Props = {
+    onClose: () => void;
+};
 
-export default function CreateThread() {
-    const classes = useStyles();
+export default function CreateThread({ onClose }: Props) {
     const history = useHistory();
     const [phoneNumber, setPhoneNumber] = useState('');
 
@@ -45,17 +42,16 @@ export default function CreateThread() {
             // Force a refetch of threads from network
             client.query({ query: THREADS, fetchPolicy: 'network-only' });
             history.push(`/threads/${data.createThread.id}`);
+            onClose();
         }
-    }, [data, history]);
+    }, [data, history, onClose]);
 
     return (
-        <div className={classes.container}>
-            <Card className={classes.card}>
-                <CardContent>
-                    <Typography variant="h4" component="h2">
-                        Create a new thread
-                    </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
+        <Dialog open onClose={onClose}>
+            <DialogTitle>Create a new message thread</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    <Typography color="textSecondary">
                         Message will arrive from a unique phone number, and will not be associated
                         with you.
                     </Typography>
@@ -66,19 +62,23 @@ export default function CreateThread() {
                         onChange={setPhoneNumber}
                         margin="normal"
                         disabled={loading}
+                        autoFocus
                     />
-                </CardContent>
-                <CardActions>
-                    <Button
-                        onClick={() => createThread()}
-                        disabled={loading}
-                        variant="contained"
-                        color="primary"
-                    >
-                        Create Thread
-                    </Button>
-                </CardActions>
-            </Card>
-        </div>
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onClose} color="primary">
+                    Cancel
+                </Button>
+                <Button
+                    onClick={() => createThread()}
+                    disabled={loading}
+                    variant="contained"
+                    color="primary"
+                >
+                    Create Thread
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 }

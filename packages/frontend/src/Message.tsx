@@ -33,12 +33,27 @@ const useStyles = makeStyles(theme => ({
 
 const SENDER_OTHER = 'OTHER';
 
-export default function Message({ message }) {
+type Props = {
+    message: {
+        sender: 'OTHER' | 'SELF';
+        body: string;
+    };
+};
+
+export default function Message({ message }: Props) {
     const classes = useStyles();
 
     return (
-        <div className={clsx(classes.wrapper, { [classes.wrapperOther]: message.sender === SENDER_OTHER })}>
-            <div className={clsx(classes.container, { [classes.other]: message.sender === SENDER_OTHER })}>
+        <div
+            className={clsx(classes.wrapper, {
+                [classes.wrapperOther]: message.sender === SENDER_OTHER
+            })}
+        >
+            <div
+                className={clsx(classes.container, {
+                    [classes.other]: message.sender === SENDER_OTHER
+                })}
+            >
                 <Typography>{message.body}</Typography>
             </div>
         </div>

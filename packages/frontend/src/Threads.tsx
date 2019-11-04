@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
@@ -7,7 +7,11 @@ import Fab from '@material-ui/core/Fab';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
 import AddIcon from '@material-ui/icons/Add';
+import FolderIcon from '@material-ui/icons/Folder';
+import CreateThread from './CreateThread';
 
 export const THREADS = gql`
     query Threads {
@@ -34,14 +38,14 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(),
         bottom: 0,
         display: 'flex',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-end'
     }
 }));
 
 export default function Threads() {
     const classes = useStyles();
+    const [creating, setCreating] = useState(false);
     const { data, error, loading } = useQuery(THREADS);
-    console.log(error);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -50,8 +54,24 @@ export default function Threads() {
     return (
         <div className={classes.container}>
             <List>
-                {data.threads.map(thread => (
+                <ListItem onClick={() => setCreating(true)} button>
+                    <ListItemAvatar>
+                        <Avatar>
+                            <Fab color="primary">
+                                <AddIcon />
+                            </Fab>
+                        </Avatar>
+                    </ListItemAvatar>
+
+                    <ListItemText primary="New conversation" />
+                </ListItem>
+                {data.threads.map((thread: any) => (
                     <ListItem key={thread.id} component={Link} to={`/threads/${thread.id}`} button>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <FolderIcon />
+                            </Avatar>
+                        </ListItemAvatar>
                         <ListItemText
                             // TODO: Phone number format.
                             primary={thread.recipient}
@@ -60,11 +80,7 @@ export default function Threads() {
                     </ListItem>
                 ))}
             </List>
-            <div className={classes.buttonContainer}>
-                <Fab component={Link} to="/threads/create" color="primary" aria-label="add">
-                    <AddIcon />
-                </Fab>
-            </div>
+            {creating && <CreateThread onClose={() => setCreating(false)} />}
         </div>
     );
 }

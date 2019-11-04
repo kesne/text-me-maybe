@@ -20,6 +20,18 @@ export const MESSAGES = gql`
     }
 `;
 
+type MessagesResponse = {
+    thread: {
+        id: string;
+        messages: {
+            id: string;
+            body: string;
+            sender: 'SELF' | 'OTHER';
+            createdAt: string;
+        }[]
+    }
+};
+
 const useStyles = makeStyles(() => ({
     wrapper: {
         flex: 1,
@@ -37,8 +49,9 @@ const useStyles = makeStyles(() => ({
 
 export default function Messages() {
     const classes = useStyles();
-    let { id } = useParams();
-    const { loading, data, refetch } = useQuery(MESSAGES, {
+    const { id } = useParams() as Record<string, string>;
+
+    const { loading, data, error, refetch } = useQuery<MessagesResponse>(MESSAGES, {
         variables: {
             threadID: id
         }
@@ -46,6 +59,10 @@ export default function Messages() {
 
     if (loading) {
         return <div>Loading...</div>;
+    }
+
+    if (!data) {
+        return <div>Un oh! {error}</div>
     }
 
     return (

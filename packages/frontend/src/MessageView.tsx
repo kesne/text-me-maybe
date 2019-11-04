@@ -3,19 +3,11 @@ import { Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Threads from './Threads';
 import Messages from './Messages';
-import CreateThread from './CreateThread';
 import Drawer from '@material-ui/core/Drawer';
 
 const drawerWidth = 320;
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        minHeight: '100vh'
-    },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1
-    },
     drawer: {
         width: drawerWidth,
         flexShrink: 0
@@ -24,7 +16,6 @@ const useStyles = makeStyles(theme => ({
         width: drawerWidth
     },
     content: {
-        height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         flexGrow: 1
@@ -50,14 +41,12 @@ export default function MessageView() {
                     paper: classes.drawerPaper
                 }}
             >
+                <div className={classes.toolbar} />
                 <Threads />
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.contentWrapper}>
                     <Switch>
-                        <Route path="/threads/create">
-                            <CreateThread />
-                        </Route>
                         <Route path="/threads/:id">
                             <Messages />
                         </Route>

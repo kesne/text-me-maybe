@@ -29,6 +29,7 @@
     "@types/jsonwebtoken": "^8.3.5",
     "@types/koa__router": "^8.0.0",
     "@types/node": "^12.12.0",
+    "@types/react-router-dom": "^5.1.2",
     "node-dev": "^4.0.0",
     "sqlite3": "^4.1.0",
     "ts-node-dev": "^1.0.0-pre.43",

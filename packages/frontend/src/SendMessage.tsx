@@ -26,7 +26,12 @@ const SEND_MESSAGE = gql`
 
 const KEY_ENTER = 'Enter';
 
-export default function SendMessage({ threadID, refetch }) {
+type Props = {
+    threadID: string;
+    refetch: () => void;
+};
+
+export default function SendMessage({ threadID, refetch }: Props) {
     const classes = useStyles();
     const [message, setMessage] = useState('');
     const [sendMessage, { loading, data, error }] = useMutation(SEND_MESSAGE, {
@@ -47,7 +52,7 @@ export default function SendMessage({ threadID, refetch }) {
         }
     });
 
-    function checkSend(e) {
+    function checkSend(e: React.KeyboardEvent) {
         if (e.key === KEY_ENTER) {
             sendMessage();
         }
@@ -73,7 +78,11 @@ export default function SendMessage({ threadID, refetch }) {
                 InputProps={{
                     endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton color="primary" onClick={sendMessage} disabled={loading}>
+                            <IconButton
+                                color="primary"
+                                onClick={() => sendMessage()}
+                                disabled={loading}
+                            >
                                 <SendIcon />
                             </IconButton>
                         </InputAdornment>
