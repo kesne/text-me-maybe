@@ -4,9 +4,11 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    ManyToOne
+    ManyToOne,
+    BeforeInsert
 } from 'typeorm';
 import { Thread } from './Thread';
+import twilio from '../twilio';
 
 export enum Sender {
     SELF,
@@ -32,4 +34,16 @@ export class Message {
 
     @UpdateDateColumn()
     updatedAt!: number;
+
+    @BeforeInsert()
+    async sendMessage() {
+        const twilioReponse = await twilio.messages.create({
+            body: this.body,
+            from: this.thread.phoneNumber,
+            to: this.thread.recipient
+        });
+
+        // Re-set the body to whatever twilio accepted, not the raw body:
+        this.body = twilioReponse.body;
+    }
 }

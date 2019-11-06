@@ -11,7 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import auth from '../auth';
+import auth from '../utils/auth';
 
 const SIGN_UP = gql`
     mutation SignUp($name: String!, $email: String!, $password: String!) {
@@ -47,7 +47,7 @@ export default function SignUp() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [signUp, { data, error, loading }] = useMutation(SIGN_UP, {
+    const [signUp, { data, loading }] = useMutation(SIGN_UP, {
         variables: {
             name,
             email,

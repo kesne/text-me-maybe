@@ -1,4 +1,3 @@
-import twilio from '../twilio';
 import { Message, Sender } from '../entity/Message';
 import { Thread } from '../entity/Thread';
 import { Connection } from 'typeorm';
@@ -67,14 +66,28 @@ export default {
                 token: user.token()
             };
         },
-        async createThread(_parent, { to }, { user, connection }: Context) {
+        async createThread(_parent, { to, message }, { user, connection }: Context) {
             const threadRepo = connection.getRepository(Thread);
+            const messageRepo = connection.getRepository(Message);
 
             const thread = new Thread();
             thread.phoneNumber = '+16264657420';
             thread.recipient = to;
             thread.user = user;
-            return threadRepo.save(thread);
+
+            // TODO: We actually to actually send this via twilio.
+            // TODO: At some point probably refactor message saving
+            // so that there is a before initial save hook that will
+            // send the message via twilio.
+            const initialMessage = new Message();
+            initialMessage.sender = Sender.SELF;
+            initialMessage.body = message;
+            initialMessage.thread = thread;
+
+            await threadRepo.save(thread);
+            await messageRepo.save(initialMessage);
+
+            return thread;
         },
         async sendMessage(_parent, { threadID, body }, { connection }: Context) {
             const threadRepo = connection.getRepository(Thread);
@@ -86,16 +99,9 @@ export default {
                 throw new Error('No thread found for ID.');
             }
 
-            const twilioMessage = await twilio.messages.create({
-                body,
-                from: '+16264657420',
-                to: '+15108170536'
-            });
-
             // TODO: Eventually track the twilio ID:
             const message = new Message();
             message.thread = thread;
-            message.body = twilioMessage.body;
             message.sender = Sender.SELF;
 
             return await messageRepo.save(message);

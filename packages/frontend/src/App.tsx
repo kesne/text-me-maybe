@@ -3,11 +3,12 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import client from './client';
+import client from './utils/client';
 import Header from './Header';
 import SignUp from './Auth/SignUp';
 import SignIn from './Auth/SignIn';
-import MessageView from './MessageView';
+import MessageView from './Inbox';
+import PrivateRoute from './PrivateRoute';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -50,9 +51,9 @@ export default function App() {
                                 <Route path="/signup">
                                     <SignUp />
                                 </Route>
-                                <Route path="/threads">
+                                <PrivateRoute path="/threads">
                                     <MessageView />
-                                </Route>
+                                </PrivateRoute>
                                 <Route>
                                     <div>Where are you?</div>
                                 </Route>

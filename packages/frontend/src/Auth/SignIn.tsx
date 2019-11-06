@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -11,7 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import auth from '../auth';
+import auth from '../utils/auth';
 
 const SIGN_IN = gql`
     mutation SignIn($email: String!, $password: String!) {
@@ -44,9 +44,10 @@ const useStyles = makeStyles(theme => ({
 export default function SignUp() {
     const classes = useStyles();
     const history = useHistory();
+    const location = useLocation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [signIn, { data, loading, error }] = useMutation(SIGN_IN, {
+    const [signIn, { data, loading }] = useMutation(SIGN_IN, {
         variables: {
             email,
             password
@@ -56,9 +57,9 @@ export default function SignUp() {
     useEffect(() => {
         if (data) {
             auth.set(data.signIn.token);
-            history.push('/threads');
+            history.push((location.state && location.state.from) || '/threads');
         }
-    }, [data, history]);
+    }, [data, history, location]);
 
     return (
         <Container component="main" maxWidth="xs">

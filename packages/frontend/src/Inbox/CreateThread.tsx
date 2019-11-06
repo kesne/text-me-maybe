@@ -9,13 +9,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import MuiPhoneNumber from 'material-ui-phone-number';
 import { THREADS } from './Threads';
-import client from './client';
+import client from '../utils/client';
 
 const CREATE_THREAD = gql`
-    mutation CreateThread($phoneNumber: String!) {
-        createThread(to: $phoneNumber) {
+    mutation CreateThread($phoneNumber: String!, $message: String!) {
+        createThread(to: $phoneNumber, message: $message) {
             id
         }
     }
@@ -28,12 +29,14 @@ type Props = {
 export default function CreateThread({ onClose }: Props) {
     const history = useHistory();
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [message, setMessage] = useState('');
 
     // TODO: Eventually this should probably just write into the cache directly,
     // but for now I'll just re-fetch all of the threads after creating one.
     const [createThread, { loading, data }] = useMutation(CREATE_THREAD, {
         variables: {
-            phoneNumber
+            phoneNumber,
+            message
         }
     });
 
@@ -58,11 +61,20 @@ export default function CreateThread({ onClose }: Props) {
                     <MuiPhoneNumber
                         label="Phone Number"
                         value={phoneNumber}
-                        defaultCountry={'us'}
+                        defaultCountry="us"
                         onChange={setPhoneNumber}
                         margin="normal"
                         disabled={loading}
+                        fullWidth
                         autoFocus
+                    />
+                    <TextField
+                        label="Message"
+                        value={message}
+                        onChange={e => setMessage(e.target.value)}
+                        margin="normal"
+                        disabled={loading}
+                        fullWidth
                     />
                 </DialogContentText>
             </DialogContent>

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import auth from './auth';
+import UserButton from './UserButton';
+import auth from '../utils/auth';
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -18,7 +19,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Header() {
     const classes = useStyles();
-    const history = useHistory();
     const [token, setToken] = useState(() => auth.get());
 
     useEffect(() => {
@@ -27,11 +27,6 @@ export default function Header() {
         });
     }, []);
 
-    function signOut() {
-        auth.clear();
-        history.push('/');
-    }
-
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
@@ -39,9 +34,7 @@ export default function Header() {
                     Text Me Maybe
                 </Typography>
                 {token ? (
-                    <Button color="inherit" onClick={signOut}>
-                        Sign out
-                    </Button>
+                    <UserButton />
                 ) : (
                     <Button component={Link} to="/signin" color="inherit">
                         Sign in

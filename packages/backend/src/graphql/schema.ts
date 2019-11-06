@@ -43,7 +43,7 @@ export default gql`
     }
 
     type Mutation {
-        createThread(to: String!): Thread @auth
+        createThread(to: String!, message: String!): Thread @auth
         sendMessage(threadID: ID!, body: String!): Message @auth
         signUp(name: String!, email: String!, password: String!): JWT!
         signIn(email: String!, password: String!): JWT!

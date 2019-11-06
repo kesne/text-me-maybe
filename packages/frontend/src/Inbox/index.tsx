@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Threads from './Threads';
-import Messages from './Messages';
+import Messages from '../Messages';
 import Drawer from '@material-ui/core/Drawer';
 
 const drawerWidth = 320;

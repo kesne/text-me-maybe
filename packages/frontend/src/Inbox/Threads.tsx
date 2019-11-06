@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 export default function Threads() {
     const classes = useStyles();
     const [creating, setCreating] = useState(false);
-    const { data, error, loading } = useQuery(THREADS);
+    const { data, loading } = useQuery(THREADS);
 
     if (loading) {
         return <div>Loading...</div>;
