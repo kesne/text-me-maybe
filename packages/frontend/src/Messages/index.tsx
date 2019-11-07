@@ -1,59 +1,33 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
 import { makeStyles } from '@material-ui/core/styles';
-import { gql } from 'apollo-boost';
 import Message from './Message';
 import SendMessage from './SendMessage';
-
-export const MESSAGES = gql`
-    query Thread($threadID: ID!) {
-        thread(threadID: $threadID) {
-            id
-            messages {
-                id
-                body
-                sender
-                createdAt
-            }
-        }
-    }
-`;
-
-type MessagesResponse = {
-    thread: {
-        id: string;
-        messages: {
-            id: string;
-            body: string;
-            sender: 'SELF' | 'OTHER';
-            createdAt: string;
-        }[]
-    }
-};
+import { useMessagesQuery } from '../queries';
 
 const useStyles = makeStyles(() => ({
     wrapper: {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
+        overflow: 'hidden'
     },
     container: {
         flex: 1,
         display: 'flex',
         flexDirection: 'column-reverse',
-        overflowY: 'auto',
+        overflowY: 'auto'
     }
 }));
 
 export default function Messages() {
     const classes = useStyles();
     const { id } = useParams() as Record<string, string>;
+    const threadID = Number(id);
 
-    const { loading, data, error, refetch } = useQuery<MessagesResponse>(MESSAGES, {
+    const { loading, data, error, refetch } = useMessagesQuery({
         variables: {
-            threadID: id
+            threadID
         }
     });
 
@@ -62,7 +36,11 @@ export default function Messages() {
     }
 
     if (!data) {
-        return <div>Un oh! {error}</div>
+        return <div>Un oh! {error}</div>;
+    }
+
+    if (!data.thread) {
+        return <div>Un oh, no thread!</div>;
     }
 
     return (
@@ -72,7 +50,7 @@ export default function Messages() {
                     <Message key={message.id} message={message} />
                 ))}
             </div>
-            <SendMessage threadID={id} refetch={refetch} />
+            <SendMessage threadID={threadID} refetch={refetch} />
         </div>
     );
 }

@@ -31,5 +31,5 @@ export class Thread {
     createdAt!: string;
 
     @UpdateDateColumn()
-    updatedAt!: number;
+    updatedAt!: string;
 }

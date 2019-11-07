@@ -1,0 +1,12 @@
+query Threads {
+    threads {
+        id
+        recipient
+        phoneNumber
+        updatedAt
+        lastMessage {
+            id
+            body
+        }
+    }
+}

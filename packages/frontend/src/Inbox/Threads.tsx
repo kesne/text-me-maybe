@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import List from '@material-ui/core/List';
@@ -12,21 +10,7 @@ import Avatar from '@material-ui/core/Avatar';
 import AddIcon from '@material-ui/icons/Add';
 import FolderIcon from '@material-ui/icons/Folder';
 import CreateThread from './CreateThread';
-
-export const THREADS = gql`
-    query Threads {
-        threads {
-            id
-            recipient
-            phoneNumber
-            updatedAt
-            lastMessage {
-                id
-                body
-            }
-        }
-    }
-`;
+import { useThreadsQuery } from '../queries';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -45,10 +29,14 @@ const useStyles = makeStyles(theme => ({
 export default function Threads() {
     const classes = useStyles();
     const [creating, setCreating] = useState(false);
-    const { data, loading } = useQuery(THREADS);
+    const { data, error, loading } = useThreadsQuery();
 
     if (loading) {
         return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return <div>Uh oh... {error}</div>
     }
 
     return (

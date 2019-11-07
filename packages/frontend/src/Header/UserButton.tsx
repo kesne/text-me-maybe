@@ -1,24 +1,14 @@
 import React, { useState } from 'react';
-import { gql } from 'apollo-boost';
-import { useQuery } from '@apollo/react-hooks';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
 import auth from '../utils/auth';
-
-const ME = gql`
-    query Me {
-        me {
-            id
-            name
-        }
-    }
-`;
+import { useMeQuery } from '../queries';
 
 export default function UserButton() {
     const history = useHistory();
-    const { data, loading } = useQuery(ME);
+    const { data, loading } = useMeQuery();
 
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -35,7 +25,7 @@ export default function UserButton() {
         setAnchorEl(null);
     };
 
-    if (loading) {
+    if (loading || !data || !data.me) {
         return null;
     }
 

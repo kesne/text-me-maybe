@@ -1,0 +1,19 @@
+schema: ./schema.graphql
+documents: ./packages/frontend/src/queries/*.graphql
+generates:
+    ./packages/backend/src/generated-graphql.ts:
+        plugins:
+            - typescript
+            - typescript-resolvers
+        config:
+            maybeValue: T | null | undefined
+    ./packages/frontend/src/queries.tsx:
+        plugins:
+            - typescript
+            - typescript-operations
+            - typescript-react-apollo
+        config:
+            gqlImport: apollo-boost#gql
+            withHooks: true
+            withComponent: false
+            withHOC: false

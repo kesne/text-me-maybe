@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -12,14 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import auth from '../utils/auth';
-
-const SIGN_IN = gql`
-    mutation SignIn($email: String!, $password: String!) {
-        signIn(email: $email, password: $password) {
-            token
-        }
-    }
-`;
+import { useSignInMutation } from '../queries';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -47,7 +38,7 @@ export default function SignUp() {
     const location = useLocation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [signIn, { data, loading }] = useMutation(SIGN_IN, {
+    const [signIn, { data, loading }] = useSignInMutation({
         variables: {
             email,
             password

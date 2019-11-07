@@ -1,0 +1,47 @@
+directive @auth on FIELD_DEFINITION
+
+enum Sender {
+    SELF
+    OTHER
+}
+
+type User {
+    id: Int!
+    name: String!
+    email: String!
+}
+
+type JWT {
+    token: String!
+}
+
+type Message {
+    id: Int!
+    body: String!
+    sender: Sender!
+    createdAt: String
+    updatedAt: String
+}
+
+type Thread {
+    id: Int!
+    phoneNumber: String!
+    recipient: String!
+    messages: [Message!]!
+    lastMessage: Message
+    createdAt: String
+    updatedAt: String
+}
+
+type Query {
+    threads: [Thread!]! @auth
+    thread(threadID: Int!): Thread @auth
+    me: User @auth
+}
+
+type Mutation {
+    createThread(to: String!, message: String!): Thread! @auth
+    sendMessage(threadID: Int!, body: String!): Message! @auth
+    signUp(name: String!, email: String!, password: String!): JWT!
+    signIn(email: String!, password: String!): JWT!
+}

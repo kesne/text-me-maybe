@@ -1,0 +1,5 @@
+mutation CreateThread($phoneNumber: String!, $message: String!) {
+    createThread(to: $phoneNumber, message: $message) {
+        id
+    }
+}

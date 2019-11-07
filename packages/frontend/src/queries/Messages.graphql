@@ -1,0 +1,11 @@
+query Messages($threadID: Int!) {
+    thread(threadID: $threadID) {
+        id
+        messages {
+            id
+            body
+            sender
+            createdAt
+        }
+    }
+}

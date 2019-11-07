@@ -11,8 +11,8 @@ import { Thread } from './Thread';
 import twilio from '../twilio';
 
 export enum Sender {
-    SELF,
-    OTHER
+    Self = 'SELF',
+    Other = 'OTHER'
 }
 
 @Entity()
@@ -23,7 +23,7 @@ export class Message {
     @Column('text')
     body!: string;
 
-    @Column('int')
+    @Column('varchar')
     sender!: Sender;
 
     @ManyToOne(() => Thread, thread => thread.messages)
@@ -33,7 +33,7 @@ export class Message {
     createdAt!: string;
 
     @UpdateDateColumn()
-    updatedAt!: number;
+    updatedAt!: string;
 
     @BeforeInsert()
     async sendMessage() {

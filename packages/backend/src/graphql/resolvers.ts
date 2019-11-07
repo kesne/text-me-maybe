@@ -1,3 +1,4 @@
+import { Resolvers } from '../generated-graphql';
 import { Message, Sender } from '../entity/Message';
 import { Thread } from '../entity/Thread';
 import { Connection } from 'typeorm';
@@ -8,12 +9,12 @@ type Context = {
     connection: Connection;
 };
 
-export default {
+const resolvers: Resolvers<Context> = {
     Query: {
         me(_parent, _args, { user }: Context) {
             return user;
         },
-        async thread(_parent, { threadID }: { threadID: string }, { user, connection }: Context) {
+        async thread(_parent, { threadID }, { user, connection }) {
             const threadRepo = connection.getRepository(Thread);
             return threadRepo.findOne({
                 where: {
@@ -22,7 +23,7 @@ export default {
                 }
             });
         },
-        async threads(_parent, _args, { user, connection }: Context) {
+        async threads(_parent, _args, { user, connection }) {
             const threadRepo = connection.getRepository(Thread);
 
             return await threadRepo
@@ -75,12 +76,8 @@ export default {
             thread.recipient = to;
             thread.user = user;
 
-            // TODO: We actually to actually send this via twilio.
-            // TODO: At some point probably refactor message saving
-            // so that there is a before initial save hook that will
-            // send the message via twilio.
             const initialMessage = new Message();
-            initialMessage.sender = Sender.SELF;
+            initialMessage.sender = Sender.Self;
             initialMessage.body = message;
             initialMessage.thread = thread;
 
@@ -89,7 +86,7 @@ export default {
 
             return thread;
         },
-        async sendMessage(_parent, { threadID, body }, { connection }: Context) {
+        async sendMessage(_parent, { threadID, body }, { connection }) {
             const threadRepo = connection.getRepository(Thread);
             const messageRepo = connection.getRepository(Message);
 
@@ -99,16 +96,16 @@ export default {
                 throw new Error('No thread found for ID.');
             }
 
-            // TODO: Eventually track the twilio ID:
             const message = new Message();
             message.thread = thread;
-            message.sender = Sender.SELF;
+            message.sender = Sender.Self;
+            message.body = body;
 
             return await messageRepo.save(message);
         }
     },
     Thread: {
-        lastMessage(parent: Thread, _args, { connection }: Context) {
+        lastMessage(parent, _args, { connection }) {
             const messageRepo = connection.getRepository(Message);
 
             return messageRepo
@@ -117,7 +114,7 @@ export default {
                 .addOrderBy('message.createdAt', 'DESC')
                 .getOne();
         },
-        messages(parent: Thread, _args, { connection }: Context) {
+        messages(parent, _args, { connection }) {
             const messageRepo = connection.getRepository(Message);
 
             return messageRepo
@@ -126,10 +123,7 @@ export default {
                 .addOrderBy('message.createdAt', 'DESC')
                 .getMany();
         }
-    },
-    Message: {
-        sender(parent: Message) {
-            return Sender[parent.sender];
-        }
     }
 };
+
+export default resolvers;
