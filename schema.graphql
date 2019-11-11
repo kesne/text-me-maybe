@@ -21,6 +21,7 @@ type Message {
     sender: Sender!
     createdAt: String
     updatedAt: String
+    seen: Boolean!
 }
 
 type Thread {
@@ -44,4 +45,5 @@ type Mutation {
     sendMessage(threadID: Int!, body: String!): Message! @auth
     signUp(name: String!, email: String!, password: String!): JWT!
     signIn(email: String!, password: String!): JWT!
+    markMessageAsSeen(id: Int!): Message! @auth
 }

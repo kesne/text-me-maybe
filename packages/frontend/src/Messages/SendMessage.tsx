@@ -38,6 +38,7 @@ export default function SendMessage({ threadID, refetch }: Props) {
                         id: threadID,
                         lastMessage: {
                             __typename: 'Message',
+                            seen: true,
                             ...data.sendMessage
                         }
                     }

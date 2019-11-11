@@ -1,12 +1,15 @@
 import { Resolvers } from '../generated-graphql';
 import { Message, Sender } from '../entity/Message';
 import { Thread } from '../entity/Thread';
-import { Connection } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { User } from '../entity/User';
 
 type Context = {
     user: User;
     connection: Connection;
+    threadRepo: Repository<Thread>,
+    messageRepo: Repository<Message>,
+    userRepo: Repository<User>
 };
 
 const resolvers: Resolvers<Context> = {
@@ -14,8 +17,7 @@ const resolvers: Resolvers<Context> = {
         me(_parent, _args, { user }: Context) {
             return user;
         },
-        async thread(_parent, { threadID }, { user, connection }) {
-            const threadRepo = connection.getRepository(Thread);
+        async thread(_parent, { threadID }, { user, threadRepo }) {
             return threadRepo.findOne({
                 where: {
                     id: threadID,
@@ -23,9 +25,7 @@ const resolvers: Resolvers<Context> = {
                 }
             });
         },
-        async threads(_parent, _args, { user, connection }) {
-            const threadRepo = connection.getRepository(Thread);
-
+        async threads(_parent, _args, { user, threadRepo }) {
             return await threadRepo
                 .createQueryBuilder('thread')
                 .where('thread.userId = :userId', { userId: user.id })
@@ -35,9 +35,7 @@ const resolvers: Resolvers<Context> = {
         }
     },
     Mutation: {
-        async signUp(_parent, { name, email, password }, { connection }: Context) {
-            const userRepo = connection.getRepository(User);
-
+        async signUp(_parent, { name, email, password }, { userRepo }) {
             const user = new User();
             user.name = name;
             user.email = email;
@@ -49,8 +47,7 @@ const resolvers: Resolvers<Context> = {
                 token: user.token()
             };
         },
-        async signIn(_parent, { email, password }, { connection }: Context) {
-            const userRepo = connection.getRepository(User);
+        async signIn(_parent, { email, password }, { userRepo }) {
             const user = await userRepo.findOne({ where: { email } });
 
             if (!user) {
@@ -67,10 +64,7 @@ const resolvers: Resolvers<Context> = {
                 token: user.token()
             };
         },
-        async createThread(_parent, { to, message }, { user, connection }: Context) {
-            const threadRepo = connection.getRepository(Thread);
-            const messageRepo = connection.getRepository(Message);
-
+        async createThread(_parent, { to, message }, { user, threadRepo, messageRepo }) {
             const thread = new Thread();
             thread.phoneNumber = '+16264657420';
             thread.recipient = to;
@@ -86,10 +80,7 @@ const resolvers: Resolvers<Context> = {
 
             return thread;
         },
-        async sendMessage(_parent, { threadID, body }, { connection }) {
-            const threadRepo = connection.getRepository(Thread);
-            const messageRepo = connection.getRepository(Message);
-
+        async sendMessage(_parent, { threadID, body }, { threadRepo, messageRepo }) {
             const thread = await threadRepo.findOne(threadID);
 
             if (!thread) {
@@ -102,21 +93,28 @@ const resolvers: Resolvers<Context> = {
             message.body = body;
 
             return await messageRepo.save(message);
+        },
+        async markMessageAsSeen(_parent, { id }, { messageRepo }) {
+            const message = await messageRepo.findOne(id);
+            if (!message) {
+                throw new Error('No message found');
+            }
+            message.seen = true;
+
+            await messageRepo.save(message);
+
+            return message;
         }
     },
     Thread: {
-        lastMessage(parent, _args, { connection }) {
-            const messageRepo = connection.getRepository(Message);
-
+        lastMessage(parent, _args, { messageRepo }) {
             return messageRepo
                 .createQueryBuilder('message')
                 .where('message.threadId = :threadId', { threadId: parent.id })
                 .addOrderBy('message.createdAt', 'DESC')
                 .getOne();
         },
-        messages(parent, _args, { connection }) {
-            const messageRepo = connection.getRepository(Message);
-
+        messages(parent, _args, { messageRepo }) {
             return messageRepo
                 .createQueryBuilder('message')
                 .where('message.threadId = :threadId', { threadId: parent.id })

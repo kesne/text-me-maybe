@@ -35,6 +35,11 @@ export class Message {
     @UpdateDateColumn()
     updatedAt!: string;
 
+    @Column({
+        default: true
+    })
+    seen!: boolean;
+
     @BeforeInsert()
     async sendMessage() {
         const twilioReponse = await twilio.messages.create({

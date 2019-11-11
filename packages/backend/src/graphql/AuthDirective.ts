@@ -1,3 +1,4 @@
+import { AuthenticationError } from 'apollo-server-koa';
 import { SchemaDirectiveVisitor } from 'graphql-tools';
 import { GraphQLField, defaultFieldResolver } from 'graphql';
 
@@ -7,7 +8,7 @@ export default class AuthDirective extends SchemaDirectiveVisitor {
         field.resolve = async function(...args) {
             const [,, context] = args;
             if (!context.user) {
-                throw new Error('NO AUTH FOUND');
+                throw new AuthenticationError('NO AUTH FOUND');
             }
             return await resolve.apply(this, args);
         };

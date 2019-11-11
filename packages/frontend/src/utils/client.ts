@@ -11,5 +11,14 @@ export default new ApolloClient({
                 }
             });
         }
+    },
+    onError(error) {
+        if (error.graphQLErrors) {
+            error.graphQLErrors.forEach(graphQLError => {
+                if (graphQLError.extensions && graphQLError.extensions.code === 'UNAUTHENTICATED') {
+                    auth.clear();
+                }
+            });
+        }
     }
 });

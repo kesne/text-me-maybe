@@ -21,8 +21,9 @@ export type Message = {
   id: Scalars['Int'],
   body: Scalars['String'],
   sender: Sender,
-  createdAt?: Maybe<Scalars['Int']>,
-  updatedAt?: Maybe<Scalars['Int']>,
+  createdAt?: Maybe<Scalars['String']>,
+  updatedAt?: Maybe<Scalars['String']>,
+  seen: Scalars['Boolean'],
 };
 
 export type Mutation = {
@@ -31,6 +32,7 @@ export type Mutation = {
   sendMessage: Message,
   signUp: Jwt,
   signIn: Jwt,
+  markMessageAsSeen: Message,
 };
 
 
@@ -58,6 +60,11 @@ export type MutationSignInArgs = {
   password: Scalars['String']
 };
 
+
+export type MutationMarkMessageAsSeenArgs = {
+  id: Scalars['Int']
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
@@ -82,8 +89,8 @@ export type Thread = {
   recipient: Scalars['String'],
   messages: Array<Message>,
   lastMessage?: Maybe<Message>,
-  createdAt?: Maybe<Scalars['Int']>,
-  updatedAt?: Maybe<Scalars['Int']>,
+  createdAt?: Maybe<Scalars['String']>,
+  updatedAt?: Maybe<Scalars['String']>,
 };
 
 export type User = {
@@ -170,10 +177,10 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>,
   Message: ResolverTypeWrapper<Message>,
   Sender: Sender,
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   User: ResolverTypeWrapper<User>,
   Mutation: ResolverTypeWrapper<{}>,
   JWT: ResolverTypeWrapper<Jwt>,
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -184,10 +191,10 @@ export type ResolversParentTypes = {
   String: Scalars['String'],
   Message: Message,
   Sender: Sender,
+  Boolean: Scalars['Boolean'],
   User: User,
   Mutation: {},
   JWT: Jwt,
-  Boolean: Scalars['Boolean'],
 };
 
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = {  }> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
@@ -200,8 +207,9 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   sender?: Resolver<ResolversTypes['Sender'], ParentType, ContextType>,
-  createdAt?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
-  updatedAt?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
+  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  seen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -209,6 +217,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   sendMessage?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'threadID' | 'body'>>,
   signUp?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'name' | 'email' | 'password'>>,
   signIn?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'email' | 'password'>>,
+  markMessageAsSeen?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationMarkMessageAsSeenArgs, 'id'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -223,8 +232,8 @@ export type ThreadResolvers<ContextType = any, ParentType extends ResolversParen
   recipient?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>,
   lastMessage?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>,
-  createdAt?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
-  updatedAt?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
+  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

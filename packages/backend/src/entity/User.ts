@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, Connection, OneToMany } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    BeforeInsert,
+    Connection,
+    OneToMany
+} from 'typeorm';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Thread } from './Thread';
@@ -34,7 +41,7 @@ export class User {
     }
 
     token() {
-        return jwt.sign({ userID: this.id }, JWT_SECRET, { expiresIn: '10 days'});
+        return jwt.sign({ userID: this.id }, JWT_SECRET, { expiresIn: '10 days' });
     }
 
     @OneToMany(() => Thread, thread => thread.user)

@@ -7,7 +7,7 @@ generates:
             - typescript-resolvers
         config:
             maybeValue: T | null | undefined
-    ./packages/frontend/src/queries.tsx:
+    ./packages/frontend/src/queries/index.tsx:
         plugins:
             - typescript
             - typescript-operations

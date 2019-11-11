@@ -22,8 +22,9 @@ export type Message = {
   id: Scalars['Int'],
   body: Scalars['String'],
   sender: Sender,
-  createdAt?: Maybe<Scalars['Int']>,
-  updatedAt?: Maybe<Scalars['Int']>,
+  createdAt?: Maybe<Scalars['String']>,
+  updatedAt?: Maybe<Scalars['String']>,
+  seen: Scalars['Boolean'],
 };
 
 export type Mutation = {
@@ -32,6 +33,7 @@ export type Mutation = {
   sendMessage: Message,
   signUp: Jwt,
   signIn: Jwt,
+  markMessageAsSeen: Message,
 };
 
 
@@ -59,6 +61,11 @@ export type MutationSignInArgs = {
   password: Scalars['String']
 };
 
+
+export type MutationMarkMessageAsSeenArgs = {
+  id: Scalars['Int']
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
@@ -83,8 +90,8 @@ export type Thread = {
   recipient: Scalars['String'],
   messages: Array<Message>,
   lastMessage?: Maybe<Message>,
-  createdAt?: Maybe<Scalars['Int']>,
-  updatedAt?: Maybe<Scalars['Int']>,
+  createdAt?: Maybe<Scalars['String']>,
+  updatedAt?: Maybe<Scalars['String']>,
 };
 
 export type User = {
@@ -189,7 +196,7 @@ export type ThreadsQuery = (
     & Pick<Thread, 'id' | 'recipient' | 'phoneNumber' | 'updatedAt'>
     & { lastMessage: Maybe<(
       { __typename?: 'Message' }
-      & Pick<Message, 'id' | 'body'>
+      & Pick<Message, 'id' | 'body' | 'seen'>
     )> }
   )> }
 );
@@ -411,6 +418,7 @@ export const ThreadsDocument = gql`
     lastMessage {
       id
       body
+      seen
     }
   }
 }
