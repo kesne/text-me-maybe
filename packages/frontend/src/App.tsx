@@ -27,7 +27,8 @@ const useStyles = makeStyles(theme => ({
     content: {
         display: 'flex',
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        overflow: 'hidden',
     },
     toolbar: theme.mixins.toolbar
 }));

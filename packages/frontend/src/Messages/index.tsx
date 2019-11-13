@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Message from './Message';
 import SendMessage from './SendMessage';
 import { useMessagesQuery } from '../queries';
+import FetchMore from './FetchMore';
 
 const useStyles = makeStyles(() => ({
     wrapper: {
@@ -49,6 +50,7 @@ export default function Messages() {
                 {data.thread.messages.map(message => (
                     <Message key={message.id} message={message} />
                 ))}
+                <FetchMore onMore={() => {}} />
             </div>
             <SendMessage threadID={threadID} refetch={refetch} />
         </div>

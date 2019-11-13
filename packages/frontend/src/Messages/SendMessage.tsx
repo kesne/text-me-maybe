@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,6 +23,7 @@ type Props = {
 
 export default function SendMessage({ threadID, refetch }: Props) {
     const classes = useStyles();
+    const inputRef = useRef<HTMLInputElement>();
     const [message, setMessage] = useState('');
     const [sendMessage, { loading, data, error }] = useSendMessageMutation({
         variables: { message, threadID },
@@ -57,12 +58,16 @@ export default function SendMessage({ threadID, refetch }: Props) {
         if (data) {
             setMessage('');
             refetch();
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
         }
     }, [data, refetch]);
 
     return (
         <div className={classes.container}>
             <TextField
+                inputRef={inputRef}
                 label="Message..."
                 value={message}
                 disabled={loading}
