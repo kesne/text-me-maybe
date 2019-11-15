@@ -21,7 +21,7 @@ export type Message = {
   id: Scalars['Int'],
   body: Scalars['String'],
   sender: Sender,
-  createdAt?: Maybe<Scalars['String']>,
+  createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
   seen: Scalars['Boolean'],
 };
@@ -37,6 +37,7 @@ export type Mutation = {
 
 
 export type MutationCreateThreadArgs = {
+  name: Scalars['String'],
   to: Scalars['String'],
   message: Scalars['String']
 };
@@ -85,11 +86,12 @@ export enum Sender {
 export type Thread = {
    __typename?: 'Thread',
   id: Scalars['Int'],
+  name: Scalars['String'],
   phoneNumber: Scalars['String'],
   recipient: Scalars['String'],
   messages: Array<Message>,
   lastMessage?: Maybe<Message>,
-  createdAt?: Maybe<Scalars['String']>,
+  createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
 };
 
@@ -207,13 +209,13 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   sender?: Resolver<ResolversTypes['Sender'], ParentType, ContextType>,
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   seen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationCreateThreadArgs, 'to' | 'message'>>,
+  createThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationCreateThreadArgs, 'name' | 'to' | 'message'>>,
   sendMessage?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'threadID' | 'body'>>,
   signUp?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'name' | 'email' | 'password'>>,
   signIn?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'email' | 'password'>>,
@@ -228,11 +230,12 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type ThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   phoneNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   recipient?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>,
   lastMessage?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>,
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 };
 

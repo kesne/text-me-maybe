@@ -19,18 +19,19 @@ type Message {
     id: Int!
     body: String!
     sender: Sender!
-    createdAt: String
+    createdAt: String!
     updatedAt: String
     seen: Boolean!
 }
 
 type Thread {
     id: Int!
+    name: String!
     phoneNumber: String!
     recipient: String!
     messages: [Message!]!
     lastMessage: Message
-    createdAt: String
+    createdAt: String!
     updatedAt: String
 }
 
@@ -41,7 +42,7 @@ type Query {
 }
 
 type Mutation {
-    createThread(to: String!, message: String!): Thread! @auth
+    createThread(name: String!, to: String!, message: String!): Thread! @auth
     sendMessage(threadID: Int!, body: String!): Message! @auth
     signUp(name: String!, email: String!, password: String!): JWT!
     signIn(email: String!, password: String!): JWT!

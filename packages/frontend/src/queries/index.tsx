@@ -22,7 +22,7 @@ export type Message = {
   id: Scalars['Int'],
   body: Scalars['String'],
   sender: Sender,
-  createdAt?: Maybe<Scalars['String']>,
+  createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
   seen: Scalars['Boolean'],
 };
@@ -38,6 +38,7 @@ export type Mutation = {
 
 
 export type MutationCreateThreadArgs = {
+  name: Scalars['String'],
   to: Scalars['String'],
   message: Scalars['String']
 };
@@ -86,11 +87,12 @@ export enum Sender {
 export type Thread = {
    __typename?: 'Thread',
   id: Scalars['Int'],
+  name: Scalars['String'],
   phoneNumber: Scalars['String'],
   recipient: Scalars['String'],
   messages: Array<Message>,
   lastMessage?: Maybe<Message>,
-  createdAt?: Maybe<Scalars['String']>,
+  createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
 };
 
@@ -102,6 +104,7 @@ export type User = {
 };
 
 export type CreateThreadMutationVariables = {
+  name: Scalars['String'],
   phoneNumber: Scalars['String'],
   message: Scalars['String']
 };
@@ -135,7 +138,7 @@ export type MessagesQuery = (
   { __typename?: 'Query' }
   & { thread: Maybe<(
     { __typename?: 'Thread' }
-    & Pick<Thread, 'id'>
+    & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'createdAt'>
     & { messages: Array<(
       { __typename?: 'Message' }
       & Pick<Message, 'id' | 'body' | 'sender' | 'createdAt'>
@@ -193,7 +196,7 @@ export type ThreadsQuery = (
   { __typename?: 'Query' }
   & { threads: Array<(
     { __typename?: 'Thread' }
-    & Pick<Thread, 'id' | 'recipient' | 'phoneNumber' | 'updatedAt'>
+    & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'updatedAt'>
     & { lastMessage: Maybe<(
       { __typename?: 'Message' }
       & Pick<Message, 'id' | 'body' | 'seen'>
@@ -203,8 +206,8 @@ export type ThreadsQuery = (
 
 
 export const CreateThreadDocument = gql`
-    mutation CreateThread($phoneNumber: String!, $message: String!) {
-  createThread(to: $phoneNumber, message: $message) {
+    mutation CreateThread($name: String!, $phoneNumber: String!, $message: String!) {
+  createThread(name: $name, to: $phoneNumber, message: $message) {
     id
   }
 }
@@ -224,6 +227,7 @@ export type CreateThreadMutationFn = ApolloReactCommon.MutationFunction<CreateTh
  * @example
  * const [createThreadMutation, { data, loading, error }] = useCreateThreadMutation({
  *   variables: {
+ *      name: // value for 'name'
  *      phoneNumber: // value for 'phoneNumber'
  *      message: // value for 'message'
  *   },
@@ -272,6 +276,10 @@ export const MessagesDocument = gql`
     query Messages($threadID: Int!) {
   thread(threadID: $threadID) {
     id
+    name
+    recipient
+    phoneNumber
+    createdAt
     messages {
       id
       body
@@ -412,6 +420,7 @@ export const ThreadsDocument = gql`
     query Threads {
   threads {
     id
+    name
     recipient
     phoneNumber
     updatedAt

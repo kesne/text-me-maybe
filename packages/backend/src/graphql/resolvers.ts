@@ -64,11 +64,12 @@ const resolvers: Resolvers<Context> = {
                 token: user.token()
             };
         },
-        async createThread(_parent, { to, message }, { user, threadRepo, messageRepo }) {
+        async createThread(_parent, { name, to, message }, { user, threadRepo, messageRepo }) {
             const thread = new Thread();
             thread.phoneNumber = '+16264657420';
             thread.recipient = to;
             thread.user = user;
+            thread.name = name;
 
             const initialMessage = new Message();
             initialMessage.sender = Sender.Self;

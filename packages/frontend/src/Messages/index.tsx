@@ -5,6 +5,8 @@ import Message from './Message';
 import SendMessage from './SendMessage';
 import { useMessagesQuery } from '../queries';
 import FetchMore from './FetchMore';
+import Header from './Header';
+import YouAre from './YouAre';
 
 const useStyles = makeStyles(() => ({
     wrapper: {
@@ -46,11 +48,13 @@ export default function Messages() {
 
     return (
         <div className={classes.wrapper}>
+            <Header thread={data.thread} />
             <div className={classes.container}>
                 {data.thread.messages.map(message => (
                     <Message key={message.id} message={message} />
                 ))}
                 <FetchMore onMore={() => {}} />
+                <YouAre phoneNumber={data.thread.phoneNumber} createdAt={data.thread.createdAt} />
             </div>
             <SendMessage threadID={threadID} refetch={refetch} />
         </div>

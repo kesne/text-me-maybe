@@ -50,7 +50,9 @@ export default function MessageView() {
                         <Route path="/threads/:id">
                             <Messages />
                         </Route>
-                        <Route>Where are you??</Route>
+                        <Route>
+                            <div>Emoty</div>
+                        </Route>
                     </Switch>
                 </div>
             </main>

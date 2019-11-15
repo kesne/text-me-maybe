@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useRouteMatch, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import List from '@material-ui/core/List';
@@ -30,13 +30,23 @@ export default function Threads() {
     const classes = useStyles();
     const [creating, setCreating] = useState(false);
     const { data, error, loading } = useThreadsQuery();
+    const history = useHistory();
+    const match = useRouteMatch('/threads/:id');
+
+    useEffect(() => {
+        if (data && data.threads.length && !match) {
+            history.replace(`/threads/${data.threads[0].id}`);
+        }
+    }, [data, match, history]);
+
+    const params: Record<string, string> = match ? match.params : {};
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
     if (error || !data) {
-        return <div>Uh oh... {error}</div>
+        return <div>Uh oh... {error}</div>;
     }
 
     return (
@@ -53,8 +63,14 @@ export default function Threads() {
 
                     <ListItemText primary="New conversation" />
                 </ListItem>
-                {data.threads.map((thread: any) => (
-                    <ListItem key={thread.id} component={Link} to={`/threads/${thread.id}`} button>
+                {data.threads.map(thread => (
+                    <ListItem
+                        key={thread.id}
+                        selected={Number(params.id) === thread.id}
+                        component={Link}
+                        to={`/threads/${thread.id}`}
+                        button
+                    >
                         <ListItemAvatar>
                             <Avatar>
                                 <FolderIcon />
@@ -62,7 +78,7 @@ export default function Threads() {
                         </ListItemAvatar>
                         <ListItemText
                             // TODO: Phone number format.
-                            primary={thread.recipient}
+                            primary={thread.name}
                             secondary={thread.lastMessage ? thread.lastMessage.body : null}
                         />
                     </ListItem>

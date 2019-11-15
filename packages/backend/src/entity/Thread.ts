@@ -16,6 +16,9 @@ export class Thread {
     id!: number;
 
     @Column()
+    name!: string;
+
+    @Column()
     phoneNumber!: string;
 
     @Column()

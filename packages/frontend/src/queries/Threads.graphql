@@ -1,6 +1,7 @@
 query Threads {
     threads {
         id
+        name
         recipient
         phoneNumber
         updatedAt

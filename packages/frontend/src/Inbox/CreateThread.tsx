@@ -20,11 +20,13 @@ export default function CreateThread({ onClose }: Props) {
     const history = useHistory();
     const [phoneNumber, setPhoneNumber] = useState('');
     const [message, setMessage] = useState('');
+    const [name, setName] = useState('');
 
     // TODO: Eventually this should probably just write into the cache directly,
     // but for now I'll just re-fetch all of the threads after creating one.
     const [createThread, { loading, data }] = useCreateThreadMutation({
         variables: {
+            name,
             phoneNumber,
             message
         }
@@ -48,6 +50,15 @@ export default function CreateThread({ onClose }: Props) {
                         Message will arrive from a unique phone number, and will not be associated
                         with you.
                     </Typography>
+                    <TextField
+                        label="Name"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        margin="normal"
+                        disabled={loading}
+                        fullWidth
+                        autoFocus
+                    />
                     <MuiPhoneNumber
                         label="Phone Number"
                         value={phoneNumber}
@@ -56,7 +67,6 @@ export default function CreateThread({ onClose }: Props) {
                         margin="normal"
                         disabled={loading}
                         fullWidth
-                        autoFocus
                     />
                     <TextField
                         label="Message"
