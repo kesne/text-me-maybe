@@ -95,17 +95,38 @@ const resolvers: Resolvers<Context> = {
 
             return await messageRepo.save(message);
         },
-        async markMessageAsSeen(_parent, { id }, { messageRepo }) {
-            const message = await messageRepo.findOne(id);
+        async markMessageAsSeen(_parent, { id }, { user, messageRepo }) {
+            const message = await messageRepo.findOne({
+                where: {
+                    id,
+                    user,
+                }
+            });
+
             if (!message) {
                 throw new Error('No message found');
             }
+
             message.seen = true;
 
-            await messageRepo.save(message);
+            return await messageRepo.save(message);
+        },
+        async endThread(_parent, { id }, { user, threadRepo }) {
+            const thread = await threadRepo.findOne({
+                where: {
+                    id,
+                    user,
+                }
+            });
 
-            return message;
-        }
+            if (!thread) {
+                throw new Error('Unknown thread ID');
+            }
+
+            thread.ended = true;
+
+            return await threadRepo.save(thread);
+        },
     },
     Thread: {
         lastMessage(parent, _args, { messageRepo }) {

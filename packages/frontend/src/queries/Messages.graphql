@@ -5,6 +5,7 @@ query Messages($threadID: Int!) {
         recipient
         phoneNumber
         createdAt
+        ended
         messages {
             id
             body

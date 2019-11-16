@@ -5,6 +5,7 @@ query Threads {
         recipient
         phoneNumber
         updatedAt
+        ended
         lastMessage {
             id
             body

@@ -7,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import AddIcon from '@material-ui/icons/Add';
 import FolderIcon from '@material-ui/icons/Folder';
 import CreateThread from './CreateThread';
@@ -23,6 +24,13 @@ const useStyles = makeStyles(theme => ({
         bottom: 0,
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    badge: {
+        height: theme.spacing(),
+        width: theme.spacing(),
+        borderRadius: theme.spacing(),
+        color: 'white',
+        backgroundColor: theme.palette.primary.main
     }
 }));
 
@@ -77,10 +85,14 @@ export default function Threads() {
                             </Avatar>
                         </ListItemAvatar>
                         <ListItemText
-                            // TODO: Phone number format.
                             primary={thread.name}
                             secondary={thread.lastMessage ? thread.lastMessage.body : null}
                         />
+                        {thread.lastMessage && !thread.lastMessage.seen && (
+                            <ListItemSecondaryAction>
+                                <div className={classes.badge}></div>
+                            </ListItemSecondaryAction>
+                        )}
                     </ListItem>
                 ))}
             </List>

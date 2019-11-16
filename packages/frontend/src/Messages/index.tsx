@@ -7,6 +7,7 @@ import { useMessagesQuery } from '../queries';
 import FetchMore from './FetchMore';
 import Header from './Header';
 import YouAre from './YouAre';
+import ThreadEnded from './ThreadEnded';
 
 const useStyles = makeStyles(() => ({
     wrapper: {
@@ -56,7 +57,12 @@ export default function Messages() {
                 <FetchMore onMore={() => {}} />
                 <YouAre phoneNumber={data.thread.phoneNumber} createdAt={data.thread.createdAt} />
             </div>
-            <SendMessage threadID={threadID} refetch={refetch} />
+
+            {data.thread.ended ? (
+                <ThreadEnded />
+            ) : (
+                <SendMessage threadID={threadID} refetch={refetch} />
+            )}
         </div>
     );
 }

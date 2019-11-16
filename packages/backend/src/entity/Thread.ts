@@ -24,10 +24,19 @@ export class Thread {
     @Column()
     recipient!: string;
 
-    @ManyToOne(() => User, user => user.threads)
+    @Column({ default: false })
+    ended!: boolean;
+
+    @ManyToOne(
+        () => User,
+        user => user.threads
+    )
     user!: User;
 
-    @OneToMany(() => Message, message => message.thread)
+    @OneToMany(
+        () => Message,
+        message => message.thread
+    )
     messages!: Message[];
 
     @CreateDateColumn()

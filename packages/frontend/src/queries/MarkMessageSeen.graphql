@@ -1,0 +1,6 @@
+mutation MarkMessageSeen($id: Int!) {
+    markMessageAsSeen(id: $id) {
+        id
+        seen
+    }
+}

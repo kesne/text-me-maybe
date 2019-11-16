@@ -33,6 +33,7 @@ type Thread {
     lastMessage: Message
     createdAt: String!
     updatedAt: String
+    ended: Boolean!
 }
 
 type Query {
@@ -47,4 +48,5 @@ type Mutation {
     signUp(name: String!, email: String!, password: String!): JWT!
     signIn(email: String!, password: String!): JWT!
     markMessageAsSeen(id: Int!): Message! @auth
+    endThread(id: Int!): Thread! @auth
 }

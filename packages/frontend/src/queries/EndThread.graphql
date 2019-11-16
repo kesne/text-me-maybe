@@ -1,0 +1,6 @@
+mutation EndThread($id: Int!) {
+    endThread(id: $id) {
+        id
+        ended
+    }
+}

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import moment from 'moment';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import grey from '@material-ui/core/colors/grey';
 import green from '@material-ui/core/colors/green';
+import { Message as MessageData, Sender, useMarkMessageSeenMutation } from '../queries';
 
 const useStyles = makeStyles(theme => ({
     wrapper: {
@@ -19,43 +21,57 @@ const useStyles = makeStyles(theme => ({
         border: `1px solid ${grey['300']}`,
         padding: theme.spacing(),
         margin: theme.spacing(),
-        borderRadius: theme.spacing(),
-        borderBottomRightRadius: 0
+        borderRadius: theme.spacing(2),
+        textAlign: 'right'
     },
     other: {
+        textAlign: 'left',
         color: 'white',
         backgroundColor: green['500'],
-        border: `1px solid ${green['600']}`,
-        borderBottomRightRadius: theme.spacing(),
-        borderBottomLeftRadius: 0
+        border: `1px solid ${green['600']}`
+    },
+    text: {
+        fontSize: '1.25rem'
+    },
+    sentAt: {
+        margin: theme.spacing(0, 1, 2, 0)
     }
 }));
 
-const SENDER_OTHER = 'OTHER';
-
 type Props = {
-    message: {
-        sender: 'OTHER' | 'SELF';
-        body: string;
-    };
+    message: Partial<MessageData>;
 };
 
 export default function Message({ message }: Props) {
     const classes = useStyles();
+    const [markMessageSeen] = useMarkMessageSeenMutation();
+
+    useEffect(() => {
+        if (message.sender !== Sender.Self && !message.seen) {
+            markMessageSeen({
+                variables: {
+                    id: message.id as number
+                }
+            });
+        }
+    }, [message, markMessageSeen]);
 
     return (
         <div
             className={clsx(classes.wrapper, {
-                [classes.wrapperOther]: message.sender === SENDER_OTHER
+                [classes.wrapperOther]: message.sender === Sender.Other
             })}
         >
             <div
                 className={clsx(classes.container, {
-                    [classes.other]: message.sender === SENDER_OTHER
+                    [classes.other]: message.sender === Sender.Other
                 })}
             >
-                <Typography>{message.body}</Typography>
+                <Typography className={classes.text}>{message.body}</Typography>
             </div>
+            <Typography variant="body2" className={classes.sentAt}>
+                {moment(Number(message.createdAt)).format('dddd, MMM D, h:mm')}
+            </Typography>
         </div>
     );
 }

@@ -33,6 +33,7 @@ export type Mutation = {
   signUp: Jwt,
   signIn: Jwt,
   markMessageAsSeen: Message,
+  endThread: Thread,
 };
 
 
@@ -66,6 +67,11 @@ export type MutationMarkMessageAsSeenArgs = {
   id: Scalars['Int']
 };
 
+
+export type MutationEndThreadArgs = {
+  id: Scalars['Int']
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
@@ -93,6 +99,7 @@ export type Thread = {
   lastMessage?: Maybe<Message>,
   createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
+  ended: Scalars['Boolean'],
 };
 
 export type User = {
@@ -220,6 +227,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   signUp?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'name' | 'email' | 'password'>>,
   signIn?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'email' | 'password'>>,
   markMessageAsSeen?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationMarkMessageAsSeenArgs, 'id'>>,
+  endThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationEndThreadArgs, 'id'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -237,6 +245,7 @@ export type ThreadResolvers<ContextType = any, ParentType extends ResolversParen
   lastMessage?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>,
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  ended?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

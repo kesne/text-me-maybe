@@ -34,6 +34,7 @@ export type Mutation = {
   signUp: Jwt,
   signIn: Jwt,
   markMessageAsSeen: Message,
+  endThread: Thread,
 };
 
 
@@ -67,6 +68,11 @@ export type MutationMarkMessageAsSeenArgs = {
   id: Scalars['Int']
 };
 
+
+export type MutationEndThreadArgs = {
+  id: Scalars['Int']
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
@@ -94,6 +100,7 @@ export type Thread = {
   lastMessage?: Maybe<Message>,
   createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
+  ended: Scalars['Boolean'],
 };
 
 export type User = {
@@ -118,6 +125,32 @@ export type CreateThreadMutation = (
   ) }
 );
 
+export type EndThreadMutationVariables = {
+  id: Scalars['Int']
+};
+
+
+export type EndThreadMutation = (
+  { __typename?: 'Mutation' }
+  & { endThread: (
+    { __typename?: 'Thread' }
+    & Pick<Thread, 'id' | 'ended'>
+  ) }
+);
+
+export type MarkMessageSeenMutationVariables = {
+  id: Scalars['Int']
+};
+
+
+export type MarkMessageSeenMutation = (
+  { __typename?: 'Mutation' }
+  & { markMessageAsSeen: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'id' | 'seen'>
+  ) }
+);
+
 export type MeQueryVariables = {};
 
 
@@ -138,7 +171,7 @@ export type MessagesQuery = (
   { __typename?: 'Query' }
   & { thread: Maybe<(
     { __typename?: 'Thread' }
-    & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'createdAt'>
+    & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'createdAt' | 'ended'>
     & { messages: Array<(
       { __typename?: 'Message' }
       & Pick<Message, 'id' | 'body' | 'sender' | 'createdAt'>
@@ -196,7 +229,7 @@ export type ThreadsQuery = (
   { __typename?: 'Query' }
   & { threads: Array<(
     { __typename?: 'Thread' }
-    & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'updatedAt'>
+    & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'updatedAt' | 'ended'>
     & { lastMessage: Maybe<(
       { __typename?: 'Message' }
       & Pick<Message, 'id' | 'body' | 'seen'>
@@ -239,6 +272,72 @@ export function useCreateThreadMutation(baseOptions?: ApolloReactHooks.MutationH
 export type CreateThreadMutationHookResult = ReturnType<typeof useCreateThreadMutation>;
 export type CreateThreadMutationResult = ApolloReactCommon.MutationResult<CreateThreadMutation>;
 export type CreateThreadMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateThreadMutation, CreateThreadMutationVariables>;
+export const EndThreadDocument = gql`
+    mutation EndThread($id: Int!) {
+  endThread(id: $id) {
+    id
+    ended
+  }
+}
+    `;
+export type EndThreadMutationFn = ApolloReactCommon.MutationFunction<EndThreadMutation, EndThreadMutationVariables>;
+
+/**
+ * __useEndThreadMutation__
+ *
+ * To run a mutation, you first call `useEndThreadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEndThreadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [endThreadMutation, { data, loading, error }] = useEndThreadMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEndThreadMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<EndThreadMutation, EndThreadMutationVariables>) {
+        return ApolloReactHooks.useMutation<EndThreadMutation, EndThreadMutationVariables>(EndThreadDocument, baseOptions);
+      }
+export type EndThreadMutationHookResult = ReturnType<typeof useEndThreadMutation>;
+export type EndThreadMutationResult = ApolloReactCommon.MutationResult<EndThreadMutation>;
+export type EndThreadMutationOptions = ApolloReactCommon.BaseMutationOptions<EndThreadMutation, EndThreadMutationVariables>;
+export const MarkMessageSeenDocument = gql`
+    mutation MarkMessageSeen($id: Int!) {
+  markMessageAsSeen(id: $id) {
+    id
+    seen
+  }
+}
+    `;
+export type MarkMessageSeenMutationFn = ApolloReactCommon.MutationFunction<MarkMessageSeenMutation, MarkMessageSeenMutationVariables>;
+
+/**
+ * __useMarkMessageSeenMutation__
+ *
+ * To run a mutation, you first call `useMarkMessageSeenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMarkMessageSeenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [markMessageSeenMutation, { data, loading, error }] = useMarkMessageSeenMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMarkMessageSeenMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<MarkMessageSeenMutation, MarkMessageSeenMutationVariables>) {
+        return ApolloReactHooks.useMutation<MarkMessageSeenMutation, MarkMessageSeenMutationVariables>(MarkMessageSeenDocument, baseOptions);
+      }
+export type MarkMessageSeenMutationHookResult = ReturnType<typeof useMarkMessageSeenMutation>;
+export type MarkMessageSeenMutationResult = ApolloReactCommon.MutationResult<MarkMessageSeenMutation>;
+export type MarkMessageSeenMutationOptions = ApolloReactCommon.BaseMutationOptions<MarkMessageSeenMutation, MarkMessageSeenMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -280,6 +379,7 @@ export const MessagesDocument = gql`
     recipient
     phoneNumber
     createdAt
+    ended
     messages {
       id
       body
@@ -424,6 +524,7 @@ export const ThreadsDocument = gql`
     recipient
     phoneNumber
     updatedAt
+    ended
     lastMessage {
       id
       body
