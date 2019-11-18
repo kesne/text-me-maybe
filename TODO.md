@@ -1,6 +1,12 @@
 # TODO
 
-- Delete Thread
 - TOTP (two factor auth)
-- Unread Message UI
+- Actually Look Into Phone Numbers?
+- Improve thread message timestamp
+    - Group them into daily buckets
+    - Display a day header between days
+    - Just display timestamp more muted on the messages
+    - Click to see the time?
+- Basic Homepage?
+- Basic Profile Page?
 - Other stuff?

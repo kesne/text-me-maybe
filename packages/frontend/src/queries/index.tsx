@@ -35,6 +35,8 @@ export type Mutation = {
   signIn: Jwt,
   markMessageAsSeen: Message,
   endThread: Thread,
+  deleteThread: Result,
+  enableTotp: Result,
 };
 
 
@@ -73,16 +75,33 @@ export type MutationEndThreadArgs = {
   id: Scalars['Int']
 };
 
+
+export type MutationDeleteThreadArgs = {
+  id: Scalars['Int']
+};
+
+
+export type MutationEnableTotpArgs = {
+  secret: Scalars['String'],
+  token: Scalars['String']
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
-  thread?: Maybe<Thread>,
-  me?: Maybe<User>,
+  thread: Thread,
+  me: User,
+  onboardTotp: TotpOnboarding,
 };
 
 
 export type QueryThreadArgs = {
   threadID: Scalars['Int']
+};
+
+export type Result = {
+   __typename?: 'Result',
+  ok: Scalars['Boolean'],
 };
 
 export enum Sender {
@@ -101,6 +120,12 @@ export type Thread = {
   createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
   ended: Scalars['Boolean'],
+};
+
+export type TotpOnboarding = {
+   __typename?: 'TotpOnboarding',
+  name: Scalars['String'],
+  secret: Scalars['String'],
 };
 
 export type User = {
@@ -122,6 +147,33 @@ export type CreateThreadMutation = (
   & { createThread: (
     { __typename?: 'Thread' }
     & Pick<Thread, 'id'>
+  ) }
+);
+
+export type DeleteThreadMutationVariables = {
+  id: Scalars['Int']
+};
+
+
+export type DeleteThreadMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteThread: (
+    { __typename?: 'Result' }
+    & Pick<Result, 'ok'>
+  ) }
+);
+
+export type EnableTotpMutationVariables = {
+  secret: Scalars['String'],
+  token: Scalars['String']
+};
+
+
+export type EnableTotpMutation = (
+  { __typename?: 'Mutation' }
+  & { enableTotp: (
+    { __typename?: 'Result' }
+    & Pick<Result, 'ok'>
   ) }
 );
 
@@ -156,10 +208,10 @@ export type MeQueryVariables = {};
 
 export type MeQuery = (
   { __typename?: 'Query' }
-  & { me: Maybe<(
+  & { me: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'name'>
-  )> }
+  ) }
 );
 
 export type MessagesQueryVariables = {
@@ -169,14 +221,25 @@ export type MessagesQueryVariables = {
 
 export type MessagesQuery = (
   { __typename?: 'Query' }
-  & { thread: Maybe<(
+  & { thread: (
     { __typename?: 'Thread' }
     & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'createdAt' | 'ended'>
     & { messages: Array<(
       { __typename?: 'Message' }
       & Pick<Message, 'id' | 'body' | 'sender' | 'createdAt'>
     )> }
-  )> }
+  ) }
+);
+
+export type OnboardTotpQueryVariables = {};
+
+
+export type OnboardTotpQuery = (
+  { __typename?: 'Query' }
+  & { onboardTotp: (
+    { __typename?: 'TotpOnboarding' }
+    & Pick<TotpOnboarding, 'name' | 'secret'>
+  ) }
 );
 
 export type SendMessageMutationVariables = {
@@ -272,6 +335,71 @@ export function useCreateThreadMutation(baseOptions?: ApolloReactHooks.MutationH
 export type CreateThreadMutationHookResult = ReturnType<typeof useCreateThreadMutation>;
 export type CreateThreadMutationResult = ApolloReactCommon.MutationResult<CreateThreadMutation>;
 export type CreateThreadMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateThreadMutation, CreateThreadMutationVariables>;
+export const DeleteThreadDocument = gql`
+    mutation DeleteThread($id: Int!) {
+  deleteThread(id: $id) {
+    ok
+  }
+}
+    `;
+export type DeleteThreadMutationFn = ApolloReactCommon.MutationFunction<DeleteThreadMutation, DeleteThreadMutationVariables>;
+
+/**
+ * __useDeleteThreadMutation__
+ *
+ * To run a mutation, you first call `useDeleteThreadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteThreadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteThreadMutation, { data, loading, error }] = useDeleteThreadMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteThreadMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteThreadMutation, DeleteThreadMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteThreadMutation, DeleteThreadMutationVariables>(DeleteThreadDocument, baseOptions);
+      }
+export type DeleteThreadMutationHookResult = ReturnType<typeof useDeleteThreadMutation>;
+export type DeleteThreadMutationResult = ApolloReactCommon.MutationResult<DeleteThreadMutation>;
+export type DeleteThreadMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteThreadMutation, DeleteThreadMutationVariables>;
+export const EnableTotpDocument = gql`
+    mutation EnableTotp($secret: String!, $token: String!) {
+  enableTotp(secret: $secret, token: $token) {
+    ok
+  }
+}
+    `;
+export type EnableTotpMutationFn = ApolloReactCommon.MutationFunction<EnableTotpMutation, EnableTotpMutationVariables>;
+
+/**
+ * __useEnableTotpMutation__
+ *
+ * To run a mutation, you first call `useEnableTotpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEnableTotpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [enableTotpMutation, { data, loading, error }] = useEnableTotpMutation({
+ *   variables: {
+ *      secret: // value for 'secret'
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useEnableTotpMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<EnableTotpMutation, EnableTotpMutationVariables>) {
+        return ApolloReactHooks.useMutation<EnableTotpMutation, EnableTotpMutationVariables>(EnableTotpDocument, baseOptions);
+      }
+export type EnableTotpMutationHookResult = ReturnType<typeof useEnableTotpMutation>;
+export type EnableTotpMutationResult = ApolloReactCommon.MutationResult<EnableTotpMutation>;
+export type EnableTotpMutationOptions = ApolloReactCommon.BaseMutationOptions<EnableTotpMutation, EnableTotpMutationVariables>;
 export const EndThreadDocument = gql`
     mutation EndThread($id: Int!) {
   endThread(id: $id) {
@@ -415,6 +543,39 @@ export function useMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHoo
 export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
 export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
 export type MessagesQueryResult = ApolloReactCommon.QueryResult<MessagesQuery, MessagesQueryVariables>;
+export const OnboardTotpDocument = gql`
+    query OnboardTotp {
+  onboardTotp {
+    name
+    secret
+  }
+}
+    `;
+
+/**
+ * __useOnboardTotpQuery__
+ *
+ * To run a query within a React component, call `useOnboardTotpQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOnboardTotpQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnboardTotpQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnboardTotpQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<OnboardTotpQuery, OnboardTotpQueryVariables>) {
+        return ApolloReactHooks.useQuery<OnboardTotpQuery, OnboardTotpQueryVariables>(OnboardTotpDocument, baseOptions);
+      }
+export function useOnboardTotpLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<OnboardTotpQuery, OnboardTotpQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<OnboardTotpQuery, OnboardTotpQueryVariables>(OnboardTotpDocument, baseOptions);
+        }
+export type OnboardTotpQueryHookResult = ReturnType<typeof useOnboardTotpQuery>;
+export type OnboardTotpLazyQueryHookResult = ReturnType<typeof useOnboardTotpLazyQuery>;
+export type OnboardTotpQueryResult = ApolloReactCommon.QueryResult<OnboardTotpQuery, OnboardTotpQueryVariables>;
 export const SendMessageDocument = gql`
     mutation SendMessage($threadID: Int!, $message: String!) {
   sendMessage(threadID: $threadID, body: $message) {

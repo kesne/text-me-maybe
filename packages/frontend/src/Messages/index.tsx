@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Message from './Message';
 import SendMessage from './SendMessage';
@@ -44,7 +44,7 @@ export default function Messages() {
     }
 
     if (!data.thread) {
-        return <div>Un oh, no thread!</div>;
+        return <Redirect to="/threads" />
     }
 
     return (

@@ -5,7 +5,8 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     ManyToOne,
-    BeforeInsert
+    BeforeInsert,
+    BaseEntity
 } from 'typeorm';
 import { Thread } from './Thread';
 import twilio from '../twilio';
@@ -16,7 +17,7 @@ export enum Sender {
 }
 
 @Entity()
-export class Message {
+export class Message extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -26,7 +27,11 @@ export class Message {
     @Column('varchar')
     sender!: Sender;
 
-    @ManyToOne(() => Thread, thread => thread.messages)
+    @ManyToOne(
+        () => Thread,
+        thread => thread.messages,
+        { onDelete: 'CASCADE' }
+    )
     thread!: Thread;
 
     @CreateDateColumn()

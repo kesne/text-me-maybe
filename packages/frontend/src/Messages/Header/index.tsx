@@ -8,7 +8,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import InfoIcon from '@material-ui/icons/Info';
 import EndThreadModal from './EndThreadModal';
-import { Thread } from '../queries';
+import { Thread } from '../../queries';
+import DeleteThreadModal from './DeleteThreadModal';
 
 const useStyles = makeStyles(theme => ({
     title: {
@@ -25,6 +26,7 @@ export default function Header({ thread }: Props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [endThreadOpen, setEndThreadOpen] = useState(false);
+    const [deleteThreadOpen, setDeleteThreadOpen] = useState(false);
 
     const handleClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -36,6 +38,16 @@ export default function Header({ thread }: Props) {
 
     const copyRecipient = () => {
         navigator.clipboard.writeText(thread.recipient as string);
+        handleClose();
+    };
+
+    const handleOpenEndModal = () => {
+        setEndThreadOpen(true);
+        handleClose();
+    };
+
+    const handleOpenDeleteModal = () => {
+        setDeleteThreadOpen(true);
         handleClose();
     };
 
@@ -58,14 +70,17 @@ export default function Header({ thread }: Props) {
                     >
                         <MenuItem onClick={copyRecipient}>To: {thread.recipient}</MenuItem>
                         {!thread.ended && (
-                            <MenuItem onClick={() => setEndThreadOpen(true)}>End Thread</MenuItem>
+                            <MenuItem onClick={handleOpenEndModal}>End Thread</MenuItem>
                         )}
-                        <MenuItem onClick={handleClose}>Delete Thread</MenuItem>
+                        <MenuItem onClick={handleOpenDeleteModal}>Delete Thread</MenuItem>
                     </Menu>
                 </Toolbar>
             </AppBar>
             {endThreadOpen && (
                 <EndThreadModal thread={thread} onClose={() => setEndThreadOpen(false)} />
+            )}
+            {deleteThreadOpen && (
+                <DeleteThreadModal thread={thread} onClose={() => setDeleteThreadOpen(false)} />
             )}
         </>
     );

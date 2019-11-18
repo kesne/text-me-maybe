@@ -6,7 +6,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Thread, useEndThreadMutation } from '../queries';
+import { Thread, useEndThreadMutation } from '../../queries';
 
 type Props = {
     thread: Partial<Thread>;

@@ -30,6 +30,7 @@ This stuff I'm not particularly interested implementing _personally_, but I woul
 - Billing
 - Code Splitting
 - List virtualization
+- React Native App
 
 #### Things That Will Make This Pitchable To VCs
 

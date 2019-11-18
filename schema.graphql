@@ -36,10 +36,20 @@ type Thread {
     ended: Boolean!
 }
 
+type Result {
+    ok: Boolean!
+}
+
+type TotpOnboarding {
+    name: String!
+    secret: String!
+}
+
 type Query {
     threads: [Thread!]! @auth
-    thread(threadID: Int!): Thread @auth
-    me: User @auth
+    thread(threadID: Int!): Thread! @auth
+    me: User! @auth
+    onboardTotp: TotpOnboarding! @auth
 }
 
 type Mutation {
@@ -49,4 +59,6 @@ type Mutation {
     signIn(email: String!, password: String!): JWT!
     markMessageAsSeen(id: Int!): Message! @auth
     endThread(id: Int!): Thread! @auth
+    deleteThread(id: Int!): Result! @auth
+    enableTotp(secret: String!, token: String!): Result! @auth
 }

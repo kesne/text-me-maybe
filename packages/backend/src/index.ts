@@ -11,8 +11,6 @@ import resolvers from './graphql/resolvers';
 import config from '../ormconfig.json';
 import { User } from './entity/User';
 import AuthDirective from './graphql/AuthDirective';
-import { Message } from './entity/Message';
-import { Thread } from './entity/Thread';
 
 const app = new Koa();
 const router = new Router();
@@ -25,11 +23,7 @@ const server = new ApolloServer({
     },
     context: ({ ctx }) => {
         return {
-            connection: ctx.connection,
-            user: ctx.user,
-            messageRepo: ctx.connection.getRepository(Message),
-            threadRepo: ctx.connection.getRepository(Thread),
-            userRepo: ctx.connection.getRepository(User)
+            user: ctx.user
         };
     }
 });
@@ -38,7 +32,7 @@ const auth: Koa.Middleware = async (ctx, next) => {
     if (ctx.get('Authorization')) {
         // Get the token from the header:
         const token = ctx.get('Authorization').slice('Bearer '.length);
-        ctx.user = await User.fromToken(ctx.connection, token);
+        ctx.user = await User.fromToken(token);
     }
     return next();
 };

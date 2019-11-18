@@ -5,13 +5,14 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToMany,
-    ManyToOne
+    ManyToOne,
+    BaseEntity
 } from 'typeorm';
 import { Message } from './Message';
 import { User } from './User';
 
 @Entity()
-export class Thread {
+export class Thread extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 

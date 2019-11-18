@@ -1,11 +1,14 @@
+import crypto from 'crypto';
+import * as otplib from 'otplib';
 import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
     BeforeInsert,
-    Connection,
-    OneToMany
+    OneToMany,
+    BaseEntity
 } from 'typeorm';
+import base32Encode from 'base32-encode';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Thread } from './Thread';
@@ -16,11 +19,10 @@ const SALT_ROUNDS = 10;
 const JWT_SECRET = 'pls_use_a_real_secret';
 
 @Entity()
-export class User {
-    static async fromToken(connection: Connection, token: string): Promise<User | undefined> {
+export class User extends BaseEntity {
+    static async fromToken(token: string): Promise<User | undefined> {
         const data = jwt.verify(token, JWT_SECRET) as Record<string, any>;
-        const userRepo = connection.getRepository(User);
-        return await userRepo.findOne(data.userID);
+        return await this.findOne(data.userID);
     }
 
     @PrimaryGeneratedColumn()
@@ -36,6 +38,14 @@ export class User {
     passwordHash!: string;
     password?: string;
 
+    // TODO: Encrypt this somehow.
+    @Column({ nullable: true })
+    totpSecret?: string;
+
+    generateTotpSecret() {
+        return otplib.authenticator.generateSecret();
+    }
+
     async checkPassword(password: string) {
         return await bcrypt.compare(password, this.passwordHash);
     }
@@ -44,7 +54,10 @@ export class User {
         return jwt.sign({ userID: this.id }, JWT_SECRET, { expiresIn: '10 days' });
     }
 
-    @OneToMany(() => Thread, thread => thread.user)
+    @OneToMany(
+        () => Thread,
+        thread => thread.user
+    )
     threads!: Thread[];
 
     @BeforeInsert()

@@ -1,0 +1,6 @@
+query OnboardTotp {
+    onboardTotp {
+        name
+        secret
+    }
+}

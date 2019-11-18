@@ -34,6 +34,8 @@ export type Mutation = {
   signIn: Jwt,
   markMessageAsSeen: Message,
   endThread: Thread,
+  deleteThread: Result,
+  enableTotp: Result,
 };
 
 
@@ -72,16 +74,33 @@ export type MutationEndThreadArgs = {
   id: Scalars['Int']
 };
 
+
+export type MutationDeleteThreadArgs = {
+  id: Scalars['Int']
+};
+
+
+export type MutationEnableTotpArgs = {
+  secret: Scalars['String'],
+  token: Scalars['String']
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
-  thread?: Maybe<Thread>,
-  me?: Maybe<User>,
+  thread: Thread,
+  me: User,
+  onboardTotp: TotpOnboarding,
 };
 
 
 export type QueryThreadArgs = {
   threadID: Scalars['Int']
+};
+
+export type Result = {
+   __typename?: 'Result',
+  ok: Scalars['Boolean'],
 };
 
 export enum Sender {
@@ -100,6 +119,12 @@ export type Thread = {
   createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
   ended: Scalars['Boolean'],
+};
+
+export type TotpOnboarding = {
+   __typename?: 'TotpOnboarding',
+  name: Scalars['String'],
+  secret: Scalars['String'],
 };
 
 export type User = {
@@ -188,8 +213,10 @@ export type ResolversTypes = {
   Sender: Sender,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   User: ResolverTypeWrapper<User>,
+  TotpOnboarding: ResolverTypeWrapper<TotpOnboarding>,
   Mutation: ResolverTypeWrapper<{}>,
   JWT: ResolverTypeWrapper<Jwt>,
+  Result: ResolverTypeWrapper<Result>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -202,8 +229,10 @@ export type ResolversParentTypes = {
   Sender: Sender,
   Boolean: Scalars['Boolean'],
   User: User,
+  TotpOnboarding: TotpOnboarding,
   Mutation: {},
   JWT: Jwt,
+  Result: Result,
 };
 
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = {  }> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
@@ -228,12 +257,19 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   signIn?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'email' | 'password'>>,
   markMessageAsSeen?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationMarkMessageAsSeenArgs, 'id'>>,
   endThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationEndThreadArgs, 'id'>>,
+  deleteThread?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationDeleteThreadArgs, 'id'>>,
+  enableTotp?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationEnableTotpArgs, 'secret' | 'token'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   threads?: Resolver<Array<ResolversTypes['Thread']>, ParentType, ContextType>,
-  thread?: Resolver<Maybe<ResolversTypes['Thread']>, ParentType, ContextType, RequireFields<QueryThreadArgs, 'threadID'>>,
-  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+  thread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<QueryThreadArgs, 'threadID'>>,
+  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  onboardTotp?: Resolver<ResolversTypes['TotpOnboarding'], ParentType, ContextType>,
+};
+
+export type ResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = {
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type ThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = {
@@ -248,6 +284,11 @@ export type ThreadResolvers<ContextType = any, ParentType extends ResolversParen
   ended?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
+export type TotpOnboardingResolvers<ContextType = any, ParentType extends ResolversParentTypes['TotpOnboarding'] = ResolversParentTypes['TotpOnboarding']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  secret?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+};
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
@@ -259,7 +300,9 @@ export type Resolvers<ContextType = any> = {
   Message?: MessageResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
+  Result?: ResultResolvers<ContextType>,
   Thread?: ThreadResolvers<ContextType>,
+  TotpOnboarding?: TotpOnboardingResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
 };
 
