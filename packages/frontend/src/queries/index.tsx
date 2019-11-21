@@ -32,7 +32,8 @@ export type Mutation = {
   createThread: Thread,
   sendMessage: Message,
   signUp: Jwt,
-  signIn: Jwt,
+  signIn: SignInResult,
+  exchangeTOTP: Jwt,
   markMessageAsSeen: Message,
   endThread: Thread,
   deleteThread: Result,
@@ -63,6 +64,12 @@ export type MutationSignUpArgs = {
 export type MutationSignInArgs = {
   email: Scalars['String'],
   password: Scalars['String']
+};
+
+
+export type MutationExchangeTotpArgs = {
+  totpToken: Scalars['String'],
+  token: Scalars['String']
 };
 
 
@@ -109,6 +116,8 @@ export enum Sender {
   Other = 'OTHER'
 }
 
+export type SignInResult = Jwt | TotpVerify;
+
 export type Thread = {
    __typename?: 'Thread',
   id: Scalars['Int'],
@@ -126,6 +135,11 @@ export type TotpOnboarding = {
    __typename?: 'TotpOnboarding',
   name: Scalars['String'],
   secret: Scalars['String'],
+};
+
+export type TotpVerify = {
+   __typename?: 'TOTPVerify',
+  totpToken: Scalars['String'],
 };
 
 export type User = {
@@ -187,6 +201,20 @@ export type EndThreadMutation = (
   & { endThread: (
     { __typename?: 'Thread' }
     & Pick<Thread, 'id' | 'ended'>
+  ) }
+);
+
+export type ExchangeTotpMutationVariables = {
+  totpToken: Scalars['String'],
+  token: Scalars['String']
+};
+
+
+export type ExchangeTotpMutation = (
+  { __typename?: 'Mutation' }
+  & { exchangeTOTP: (
+    { __typename?: 'JWT' }
+    & Pick<Jwt, 'token'>
   ) }
 );
 
@@ -267,6 +295,9 @@ export type SignInMutation = (
   & { signIn: (
     { __typename?: 'JWT' }
     & Pick<Jwt, 'token'>
+  ) | (
+    { __typename?: 'TOTPVerify' }
+    & Pick<TotpVerify, 'totpToken'>
   ) }
 );
 
@@ -433,6 +464,39 @@ export function useEndThreadMutation(baseOptions?: ApolloReactHooks.MutationHook
 export type EndThreadMutationHookResult = ReturnType<typeof useEndThreadMutation>;
 export type EndThreadMutationResult = ApolloReactCommon.MutationResult<EndThreadMutation>;
 export type EndThreadMutationOptions = ApolloReactCommon.BaseMutationOptions<EndThreadMutation, EndThreadMutationVariables>;
+export const ExchangeTotpDocument = gql`
+    mutation ExchangeTOTP($totpToken: String!, $token: String!) {
+  exchangeTOTP(totpToken: $totpToken, token: $token) {
+    token
+  }
+}
+    `;
+export type ExchangeTotpMutationFn = ApolloReactCommon.MutationFunction<ExchangeTotpMutation, ExchangeTotpMutationVariables>;
+
+/**
+ * __useExchangeTotpMutation__
+ *
+ * To run a mutation, you first call `useExchangeTotpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useExchangeTotpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [exchangeTotpMutation, { data, loading, error }] = useExchangeTotpMutation({
+ *   variables: {
+ *      totpToken: // value for 'totpToken'
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useExchangeTotpMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ExchangeTotpMutation, ExchangeTotpMutationVariables>) {
+        return ApolloReactHooks.useMutation<ExchangeTotpMutation, ExchangeTotpMutationVariables>(ExchangeTotpDocument, baseOptions);
+      }
+export type ExchangeTotpMutationHookResult = ReturnType<typeof useExchangeTotpMutation>;
+export type ExchangeTotpMutationResult = ApolloReactCommon.MutationResult<ExchangeTotpMutation>;
+export type ExchangeTotpMutationOptions = ApolloReactCommon.BaseMutationOptions<ExchangeTotpMutation, ExchangeTotpMutationVariables>;
 export const MarkMessageSeenDocument = gql`
     mutation MarkMessageSeen($id: Int!) {
   markMessageAsSeen(id: $id) {
@@ -613,7 +677,12 @@ export type SendMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<S
 export const SignInDocument = gql`
     mutation SignIn($email: String!, $password: String!) {
   signIn(email: $email, password: $password) {
-    token
+    ... on JWT {
+      token
+    }
+    ... on TOTPVerify {
+      totpToken
+    }
   }
 }
     `;

@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function Onboard2FA() {
+export default function OnboardTOTP() {
     const classes = useStyles();
     const history = useHistory();
     const [token, setToken] = useState('');
@@ -70,7 +70,7 @@ export default function Onboard2FA() {
                     Two Factor Auth Setup
                 </Typography>
                 <img
-                    alt="Onboard 2FA"
+                    alt="Enable Two Factor Authentication"
                     src={`https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=${OTP_DATA}`}
                 />
                 <Typography>Or enter it manually: {data.onboardTotp.secret}</Typography>
@@ -100,7 +100,7 @@ export default function Onboard2FA() {
                         disabled={totpEnableState.loading}
                         onClick={() => enableTotp()}
                     >
-                        Verify 2FA
+                        Enable
                     </Button>
                 </form>
             </div>

@@ -18,11 +18,42 @@ import { Thread } from './Thread';
 const SALT_ROUNDS = 10;
 const JWT_SECRET = 'pls_use_a_real_secret';
 
+enum JWTType {
+    Full = 'FULL',
+    TOTP = 'TOTP'
+}
+
+type JWT = {
+    userID: number;
+    type: JWTType;
+};
+
 @Entity()
 export class User extends BaseEntity {
     static async fromToken(token: string): Promise<User | undefined> {
-        const data = jwt.verify(token, JWT_SECRET) as Record<string, any>;
+        const data = jwt.verify(token, JWT_SECRET) as JWT;
+        if (data.type !== JWTType.Full) {
+            return;
+        }
         return await this.findOne(data.userID);
+    }
+
+    static async fromTOTPToken(totpToken: string, token: string): Promise<User | undefined> {
+        const data = jwt.verify(totpToken, JWT_SECRET) as JWT;
+        if (data.type !== JWTType.TOTP) {
+            return;
+        }
+        const user = await this.findOne(data.userID);
+        if (!user || !user.totpSecret) {
+            return;
+        }
+
+        const isValid = otplib.authenticator.verify({ secret: user.totpSecret, token });
+        if (!isValid) {
+            return;
+        }
+
+        return user;
     }
 
     @PrimaryGeneratedColumn()
@@ -51,7 +82,13 @@ export class User extends BaseEntity {
     }
 
     token() {
-        return jwt.sign({ userID: this.id }, JWT_SECRET, { expiresIn: '10 days' });
+        const payload: JWT = { userID: this.id, type: JWTType.Full };
+        return jwt.sign(payload, JWT_SECRET, { expiresIn: '10 days' });
+    }
+
+    totpToken() {
+        const payload: JWT = { userID: this.id, type: JWTType.TOTP };
+        return jwt.sign(payload, JWT_SECRET, { expiresIn: '5 minutes' });
     }
 
     @OneToMany(

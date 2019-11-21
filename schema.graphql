@@ -15,6 +15,12 @@ type JWT {
     token: String!
 }
 
+type TOTPVerify {
+    totpToken: String!
+}
+
+union SignInResult = JWT | TOTPVerify
+
 type Message {
     id: Int!
     body: String!
@@ -56,7 +62,8 @@ type Mutation {
     createThread(name: String!, to: String!, message: String!): Thread! @auth
     sendMessage(threadID: Int!, body: String!): Message! @auth
     signUp(name: String!, email: String!, password: String!): JWT!
-    signIn(email: String!, password: String!): JWT!
+    signIn(email: String!, password: String!): SignInResult!
+    exchangeTOTP(totpToken: String!, token: String!): JWT!
     markMessageAsSeen(id: Int!): Message! @auth
     endThread(id: Int!): Thread! @auth
     deleteThread(id: Int!): Result! @auth

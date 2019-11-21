@@ -3,7 +3,7 @@ import { MutationResolvers } from '../../generated-graphql';
 import { Context } from './types';
 import { User } from '../../entity/User';
 import { Thread } from '../../entity/Thread';
-import { Message } from '../../entity/Message';
+import { Message, Sender } from '../../entity/Message';
 
 const MutationResolvers: MutationResolvers<Context> = {
     async signUp(_parent, { name, email, password }) {
@@ -31,7 +31,15 @@ const MutationResolvers: MutationResolvers<Context> = {
             throw new Error('Invalid password.');
         }
 
+        if (user.totpSecret) {
+            return {
+                __typename: 'TOTPVerify',
+                totpToken: user.totpToken()
+            };
+        }
+
         return {
+            __typename: 'JWT',
             token: user.token()
         };
     },
@@ -116,7 +124,11 @@ const MutationResolvers: MutationResolvers<Context> = {
     },
 
     async enableTotp(_parent, { secret, token }, { user }) {
-        console.log(secret, token);
+        if (user.totpSecret) {
+            throw new Error('User already has TOTP enabled.');
+        }
+
+        // TODO: Move to user?
         const isValid = otplib.authenticator.verify({ secret, token });
         if (!isValid) {
             throw new Error('Invalid TOTP');
@@ -124,6 +136,19 @@ const MutationResolvers: MutationResolvers<Context> = {
         user.totpSecret = secret;
         await user.save();
         return { ok: true };
+    },
+
+    async exchangeTOTP(_parent, { totpToken, token }) {
+        // TODO:
+        const user = await User.fromTOTPToken(totpToken, token);
+
+        if (!user) {
+            throw new Error('Failed to get user.');
+        }
+
+        return {
+            token: user.token()
+        };
     }
 };
 

@@ -23,6 +23,10 @@ const QueryResolvers: QueryResolvers<Context> = {
             .getMany();
     },
     async onboardTotp(_parent, _args, { user }) {
+        if (user.totpSecret) {
+            throw new Error('TOTP Already Enabled');
+        }
+
         return {
             name: user.name,
             secret: user.generateTotpSecret()

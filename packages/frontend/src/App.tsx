@@ -9,7 +9,7 @@ import SignUp from './Auth/SignUp';
 import SignIn from './Auth/SignIn';
 import MessageView from './Inbox';
 import PrivateRoute from './PrivateRoute';
-import Onboard2FA from './Auth/Onboard2FA';
+import OnboardTOTP from './Auth/OnboardTOTP';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -53,8 +53,8 @@ export default function App() {
                                 <Route path="/signup">
                                     <SignUp />
                                 </Route>
-                                <PrivateRoute path="/onboard-2fa">
-                                    <Onboard2FA />
+                                <PrivateRoute path="/onboard-totp">
+                                    <OnboardTOTP />
                                 </PrivateRoute>
                                 <PrivateRoute path="/threads">
                                     <MessageView />
