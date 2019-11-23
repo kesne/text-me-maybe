@@ -141,6 +141,7 @@ export type User = {
   id: Scalars['Int'],
   name: Scalars['String'],
   email: Scalars['String'],
+  hasTOTP: Scalars['Boolean'],
 };
 
 export type CreateThreadMutationVariables = {
@@ -231,7 +232,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name'>
+    & Pick<User, 'id' | 'name' | 'email' | 'hasTOTP'>
   ) }
 );
 
@@ -527,6 +528,8 @@ export const MeDocument = gql`
   me {
     id
     name
+    email
+    hasTOTP
   }
 }
     `;

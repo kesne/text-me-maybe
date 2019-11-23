@@ -140,6 +140,7 @@ export type User = {
   id: Scalars['Int'],
   name: Scalars['String'],
   email: Scalars['String'],
+  hasTOTP: Scalars['Boolean'],
 };
 
 
@@ -308,6 +309,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  hasTOTP?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type Resolvers<ContextType = any> = {

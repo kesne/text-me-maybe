@@ -9,6 +9,7 @@ type User {
     id: Int!
     name: String!
     email: String!
+    hasTOTP: Boolean!
 }
 
 type TOTPChallenge {

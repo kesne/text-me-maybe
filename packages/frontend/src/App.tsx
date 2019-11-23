@@ -10,6 +10,7 @@ import SignUp from './Auth/SignUp';
 import SignIn from './Auth/SignIn';
 import MessageView from './Inbox';
 import PrivateRoute from './PrivateRoute';
+import Account from './Account';
 import OnboardTOTP from './Auth/OnboardTOTP';
 import HasUserContext from './HasUserContext';
 
@@ -78,6 +79,9 @@ export default function App() {
                                     </PrivateRoute>
                                     <PrivateRoute path="/threads">
                                         <MessageView />
+                                    </PrivateRoute>
+                                    <PrivateRoute path="/account">
+                                        <Account />
                                     </PrivateRoute>
                                     <Route>
                                         <div>Where are you?</div>

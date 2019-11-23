@@ -7,7 +7,6 @@ import {
     OneToMany,
     BaseEntity
 } from 'typeorm';
-import base32Encode from 'base32-encode';
 import bcrypt from 'bcrypt';
 import { Thread } from './Thread';
 
@@ -68,6 +67,10 @@ export class User extends BaseEntity {
     // TODO: Encrypt this somehow.
     @Column({ nullable: true })
     totpSecret?: string;
+
+    hasTOTP() {
+        return !!this.totpSecret;
+    }
 
     generateTotpSecret() {
         return otplib.authenticator.generateSecret();
