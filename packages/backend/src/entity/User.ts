@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import * as otplib from 'otplib';
 import {
     Entity,
@@ -10,40 +9,37 @@ import {
 } from 'typeorm';
 import base32Encode from 'base32-encode';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { Thread } from './Thread';
 
 // NOTE: This was chosed based on a stack overflow post. Probably should do more
 // research if you ever deploy this for real.
 const SALT_ROUNDS = 10;
-const JWT_SECRET = 'pls_use_a_real_secret';
 
-enum JWTType {
-    Full = 'FULL',
+export enum AuthType {
+    FULL = 'FULL',
     TOTP = 'TOTP'
 }
 
-type JWT = {
+type Session = {
     userID: number;
-    type: JWTType;
+    type: AuthType;
 };
 
 @Entity()
 export class User extends BaseEntity {
-    static async fromToken(token: string): Promise<User | undefined> {
-        const data = jwt.verify(token, JWT_SECRET) as JWT;
-        if (data.type !== JWTType.Full) {
-            return;
+    static async fromSession(session: Session): Promise<User | undefined> {
+        if (session.userID && session.type === AuthType.FULL) {
+            return await this.findOne(session.userID);
         }
-        return await this.findOne(data.userID);
+        return;
     }
 
-    static async fromTOTPToken(totpToken: string, token: string): Promise<User | undefined> {
-        const data = jwt.verify(totpToken, JWT_SECRET) as JWT;
-        if (data.type !== JWTType.TOTP) {
+    static async fromTOTPSession(session: Session, token: string): Promise<User | undefined> {
+        if (!session.userID || session.type !== AuthType.TOTP) {
             return;
         }
-        const user = await this.findOne(data.userID);
+
+        const user = await this.findOne(session.userID);
         if (!user || !user.totpSecret) {
             return;
         }
@@ -79,16 +75,6 @@ export class User extends BaseEntity {
 
     async checkPassword(password: string) {
         return await bcrypt.compare(password, this.passwordHash);
-    }
-
-    token() {
-        const payload: JWT = { userID: this.id, type: JWTType.Full };
-        return jwt.sign(payload, JWT_SECRET, { expiresIn: '10 days' });
-    }
-
-    totpToken() {
-        const payload: JWT = { userID: this.id, type: JWTType.TOTP };
-        return jwt.sign(payload, JWT_SECRET, { expiresIn: '5 minutes' });
     }
 
     @OneToMany(

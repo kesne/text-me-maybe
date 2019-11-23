@@ -11,11 +11,6 @@ export type Scalars = {
 };
 
 
-export type Jwt = {
-   __typename?: 'JWT',
-  token: Scalars['String'],
-};
-
 export type Message = {
    __typename?: 'Message',
   id: Scalars['Int'],
@@ -30,9 +25,9 @@ export type Mutation = {
    __typename?: 'Mutation',
   createThread: Thread,
   sendMessage: Message,
-  signUp: Jwt,
+  signUp: Result,
   signIn: SignInResult,
-  exchangeTOTP: Jwt,
+  exchangeTOTP: Result,
   markMessageAsSeen: Message,
   endThread: Thread,
   deleteThread: Result,
@@ -67,7 +62,6 @@ export type MutationSignInArgs = {
 
 
 export type MutationExchangeTotpArgs = {
-  totpToken: Scalars['String'],
   token: Scalars['String']
 };
 
@@ -115,7 +109,7 @@ export enum Sender {
   Other = 'OTHER'
 }
 
-export type SignInResult = Jwt | TotpVerify;
+export type SignInResult = Result | TotpChallenge;
 
 export type Thread = {
    __typename?: 'Thread',
@@ -130,15 +124,15 @@ export type Thread = {
   ended: Scalars['Boolean'],
 };
 
+export type TotpChallenge = {
+   __typename?: 'TOTPChallenge',
+  totpChallenge: Scalars['Boolean'],
+};
+
 export type TotpOnboarding = {
    __typename?: 'TotpOnboarding',
   name: Scalars['String'],
   secret: Scalars['String'],
-};
-
-export type TotpVerify = {
-   __typename?: 'TOTPVerify',
-  totpToken: Scalars['String'],
 };
 
 export type User = {
@@ -229,10 +223,9 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>,
   TotpOnboarding: ResolverTypeWrapper<TotpOnboarding>,
   Mutation: ResolverTypeWrapper<{}>,
-  JWT: ResolverTypeWrapper<Jwt>,
-  SignInResult: ResolversTypes['JWT'] | ResolversTypes['TOTPVerify'],
-  TOTPVerify: ResolverTypeWrapper<TotpVerify>,
   Result: ResolverTypeWrapper<Result>,
+  SignInResult: ResolversTypes['Result'] | ResolversTypes['TOTPChallenge'],
+  TOTPChallenge: ResolverTypeWrapper<TotpChallenge>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -247,17 +240,12 @@ export type ResolversParentTypes = {
   User: User,
   TotpOnboarding: TotpOnboarding,
   Mutation: {},
-  JWT: Jwt,
-  SignInResult: ResolversParentTypes['JWT'] | ResolversParentTypes['TOTPVerify'],
-  TOTPVerify: TotpVerify,
   Result: Result,
+  SignInResult: ResolversParentTypes['Result'] | ResolversParentTypes['TOTPChallenge'],
+  TOTPChallenge: TotpChallenge,
 };
 
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = {  }> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type JwtResolvers<ContextType = any, ParentType extends ResolversParentTypes['JWT'] = ResolversParentTypes['JWT']> = {
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-};
 
 export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
@@ -271,9 +259,9 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationCreateThreadArgs, 'name' | 'to' | 'message'>>,
   sendMessage?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'threadID' | 'body'>>,
-  signUp?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'name' | 'email' | 'password'>>,
+  signUp?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'name' | 'email' | 'password'>>,
   signIn?: Resolver<ResolversTypes['SignInResult'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'email' | 'password'>>,
-  exchangeTOTP?: Resolver<ResolversTypes['JWT'], ParentType, ContextType, RequireFields<MutationExchangeTotpArgs, 'totpToken' | 'token'>>,
+  exchangeTOTP?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationExchangeTotpArgs, 'token'>>,
   markMessageAsSeen?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationMarkMessageAsSeenArgs, 'id'>>,
   endThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationEndThreadArgs, 'id'>>,
   deleteThread?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationDeleteThreadArgs, 'id'>>,
@@ -292,7 +280,7 @@ export type ResultResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type SignInResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['SignInResult'] = ResolversParentTypes['SignInResult']> = {
-  __resolveType: TypeResolveFn<'JWT' | 'TOTPVerify', ParentType, ContextType>
+  __resolveType: TypeResolveFn<'Result' | 'TOTPChallenge', ParentType, ContextType>
 };
 
 export type ThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = {
@@ -307,13 +295,13 @@ export type ThreadResolvers<ContextType = any, ParentType extends ResolversParen
   ended?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
+export type TotpChallengeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TOTPChallenge'] = ResolversParentTypes['TOTPChallenge']> = {
+  totpChallenge?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+};
+
 export type TotpOnboardingResolvers<ContextType = any, ParentType extends ResolversParentTypes['TotpOnboarding'] = ResolversParentTypes['TotpOnboarding']> = {
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   secret?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-};
-
-export type TotpVerifyResolvers<ContextType = any, ParentType extends ResolversParentTypes['TOTPVerify'] = ResolversParentTypes['TOTPVerify']> = {
-  totpToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -323,15 +311,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
-  JWT?: JwtResolvers<ContextType>,
   Message?: MessageResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Result?: ResultResolvers<ContextType>,
   SignInResult?: SignInResultResolvers,
   Thread?: ThreadResolvers<ContextType>,
+  TOTPChallenge?: TotpChallengeResolvers<ContextType>,
   TotpOnboarding?: TotpOnboardingResolvers<ContextType>,
-  TOTPVerify?: TotpVerifyResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
 };
 

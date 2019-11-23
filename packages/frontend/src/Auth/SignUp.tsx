@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -9,8 +9,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import auth from '../utils/auth';
 import { useSignUpMutation } from '../queries';
+import HasUserContext from '../HasUserContext';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -35,6 +35,7 @@ const useStyles = makeStyles(theme => ({
 export default function SignUp() {
     const classes = useStyles();
     const history = useHistory();
+    const { setHasUser } = useContext(HasUserContext);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -48,10 +49,10 @@ export default function SignUp() {
 
     useEffect(() => {
         if (data) {
-            auth.set(data.signUp.token);
+            setHasUser(true);
             history.push('/threads');
         }
-    }, [data, history]);
+    }, [data, history, setHasUser]);
 
     return (
         <Container component="main" maxWidth="xs">

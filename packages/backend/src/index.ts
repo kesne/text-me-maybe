@@ -3,6 +3,7 @@ import Koa from 'koa';
 import Router from '@koa/router';
 import cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
+import session from 'koa-session';
 import { ApolloServer } from 'apollo-server-koa';
 import { createConnection } from 'typeorm';
 import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions';
@@ -23,24 +24,41 @@ const server = new ApolloServer({
     },
     context: ({ ctx }) => {
         return {
-            user: ctx.user
+            user: ctx.user,
+            session: ctx.session,
+            cookies: ctx.cookies
         };
     }
 });
 
 const auth: Koa.Middleware = async (ctx, next) => {
-    if (ctx.get('Authorization')) {
-        // Get the token from the header:
-        const token = ctx.get('Authorization').slice('Bearer '.length);
-        ctx.user = await User.fromToken(token);
-    }
+    ctx.user = await User.fromSession(ctx.session);
+
     return next();
 };
 
-app.use(cors())
-    .use(bodyParser())
-    .use(router.routes())
-    .use(router.allowedMethods());
+app.keys = ['Some key here ignore'];
+
+const SESSION_CONFIG = {
+    key: 'tmm:session',
+    maxAge: 86400000 * 14,
+    autoCommit: true,
+    overwrite: true,
+    httpOnly: true,
+    signed: true,
+    rolling: true,
+    renew: false
+};
+
+app.use(
+    cors({
+        credentials: true
+    })
+);
+app.use(session(SESSION_CONFIG, app));
+app.use(bodyParser());
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 // TODO: Convert:
 // app.post('/sms', (req, res) => {

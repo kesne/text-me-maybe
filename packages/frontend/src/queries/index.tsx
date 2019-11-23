@@ -12,11 +12,6 @@ export type Scalars = {
 };
 
 
-export type Jwt = {
-   __typename?: 'JWT',
-  token: Scalars['String'],
-};
-
 export type Message = {
    __typename?: 'Message',
   id: Scalars['Int'],
@@ -31,9 +26,9 @@ export type Mutation = {
    __typename?: 'Mutation',
   createThread: Thread,
   sendMessage: Message,
-  signUp: Jwt,
+  signUp: Result,
   signIn: SignInResult,
-  exchangeTOTP: Jwt,
+  exchangeTOTP: Result,
   markMessageAsSeen: Message,
   endThread: Thread,
   deleteThread: Result,
@@ -68,7 +63,6 @@ export type MutationSignInArgs = {
 
 
 export type MutationExchangeTotpArgs = {
-  totpToken: Scalars['String'],
   token: Scalars['String']
 };
 
@@ -116,7 +110,7 @@ export enum Sender {
   Other = 'OTHER'
 }
 
-export type SignInResult = Jwt | TotpVerify;
+export type SignInResult = Result | TotpChallenge;
 
 export type Thread = {
    __typename?: 'Thread',
@@ -131,15 +125,15 @@ export type Thread = {
   ended: Scalars['Boolean'],
 };
 
+export type TotpChallenge = {
+   __typename?: 'TOTPChallenge',
+  totpChallenge: Scalars['Boolean'],
+};
+
 export type TotpOnboarding = {
    __typename?: 'TotpOnboarding',
   name: Scalars['String'],
   secret: Scalars['String'],
-};
-
-export type TotpVerify = {
-   __typename?: 'TOTPVerify',
-  totpToken: Scalars['String'],
 };
 
 export type User = {
@@ -205,7 +199,6 @@ export type EndThreadMutation = (
 );
 
 export type ExchangeTotpMutationVariables = {
-  totpToken: Scalars['String'],
   token: Scalars['String']
 };
 
@@ -213,8 +206,8 @@ export type ExchangeTotpMutationVariables = {
 export type ExchangeTotpMutation = (
   { __typename?: 'Mutation' }
   & { exchangeTOTP: (
-    { __typename?: 'JWT' }
-    & Pick<Jwt, 'token'>
+    { __typename?: 'Result' }
+    & Pick<Result, 'ok'>
   ) }
 );
 
@@ -293,11 +286,11 @@ export type SignInMutationVariables = {
 export type SignInMutation = (
   { __typename?: 'Mutation' }
   & { signIn: (
-    { __typename?: 'JWT' }
-    & Pick<Jwt, 'token'>
+    { __typename?: 'Result' }
+    & Pick<Result, 'ok'>
   ) | (
-    { __typename?: 'TOTPVerify' }
-    & Pick<TotpVerify, 'totpToken'>
+    { __typename?: 'TOTPChallenge' }
+    & Pick<TotpChallenge, 'totpChallenge'>
   ) }
 );
 
@@ -311,8 +304,8 @@ export type SignUpMutationVariables = {
 export type SignUpMutation = (
   { __typename?: 'Mutation' }
   & { signUp: (
-    { __typename?: 'JWT' }
-    & Pick<Jwt, 'token'>
+    { __typename?: 'Result' }
+    & Pick<Result, 'ok'>
   ) }
 );
 
@@ -465,9 +458,9 @@ export type EndThreadMutationHookResult = ReturnType<typeof useEndThreadMutation
 export type EndThreadMutationResult = ApolloReactCommon.MutationResult<EndThreadMutation>;
 export type EndThreadMutationOptions = ApolloReactCommon.BaseMutationOptions<EndThreadMutation, EndThreadMutationVariables>;
 export const ExchangeTotpDocument = gql`
-    mutation ExchangeTOTP($totpToken: String!, $token: String!) {
-  exchangeTOTP(totpToken: $totpToken, token: $token) {
-    token
+    mutation ExchangeTOTP($token: String!) {
+  exchangeTOTP(token: $token) {
+    ok
   }
 }
     `;
@@ -486,7 +479,6 @@ export type ExchangeTotpMutationFn = ApolloReactCommon.MutationFunction<Exchange
  * @example
  * const [exchangeTotpMutation, { data, loading, error }] = useExchangeTotpMutation({
  *   variables: {
- *      totpToken: // value for 'totpToken'
  *      token: // value for 'token'
  *   },
  * });
@@ -677,11 +669,11 @@ export type SendMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<S
 export const SignInDocument = gql`
     mutation SignIn($email: String!, $password: String!) {
   signIn(email: $email, password: $password) {
-    ... on JWT {
-      token
+    ... on Result {
+      ok
     }
-    ... on TOTPVerify {
-      totpToken
+    ... on TOTPChallenge {
+      totpChallenge
     }
   }
 }
@@ -715,7 +707,7 @@ export type SignInMutationOptions = ApolloReactCommon.BaseMutationOptions<SignIn
 export const SignUpDocument = gql`
     mutation SignUp($name: String!, $email: String!, $password: String!) {
   signUp(name: $name, email: $email, password: $password) {
-    token
+    ok
   }
 }
     `;

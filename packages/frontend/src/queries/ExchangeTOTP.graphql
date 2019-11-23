@@ -1,5 +1,5 @@
-mutation ExchangeTOTP($totpToken: String!, $token: String!) {
-    exchangeTOTP(totpToken: $totpToken, token: $token) {
-        token
+mutation ExchangeTOTP($token: String!) {
+    exchangeTOTP(token: $token) {
+        ok
     }
 }

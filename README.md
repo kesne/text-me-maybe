@@ -21,6 +21,8 @@ A match in one of your dating apps wants to text you to schedule a date. You're 
 - Improve the UX
 - Error Handling
 - Thread Pagination w/ infinite scrolls
+- Improved Session Managed
+- Docker
 
 #### Things Eventually Want To Do But Might Be Low Priority
 

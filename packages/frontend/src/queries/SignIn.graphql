@@ -1,10 +1,10 @@
 mutation SignIn($email: String!, $password: String!) {
     signIn(email: $email, password: $password) {
-        ... on JWT {
-            token
+        ... on Result {
+            ok
         }
-        ... on TOTPVerify {
-            totpToken
+        ... on TOTPChallenge {
+            totpChallenge
         }
     }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import VerifyTOTP from './VerifyTOTP';
 import EmailPassword from './EmailPassword';
-import auth from '../utils/auth';
+import HasUserContext from '../HasUserContext';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -30,16 +30,17 @@ export default function SignUp() {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
-    const [totpToken, setTotpToken] = useState('');
+    const { setHasUser } = useContext(HasUserContext);
+    const [totpChallenge, setTOTPChallenge] = useState(false);
 
-    const onToken = useCallback((token: string) => {
-        auth.set(token);
+    const onSignIn = useCallback(() => {
+        setHasUser(true);
         history.push((location.state && location.state.from) || '/threads');
-    }, [history, location]);
+    }, [history, location, setHasUser]);
 
-    const onTotpToken = useCallback((token: string) => {
-        setTotpToken(token);
-    }, [setTotpToken]);
+    const onTOTPChallenge = useCallback(() => {
+        setTOTPChallenge(true);
+    }, [setTOTPChallenge]);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -51,10 +52,10 @@ export default function SignUp() {
                     Sign in
                 </Typography>
                 <form className={classes.form} noValidate>
-                    {totpToken ? (
-                        <VerifyTOTP totpToken={totpToken} onToken={onToken} />
+                    {totpChallenge ? (
+                        <VerifyTOTP onSignIn={onSignIn} />
                     ) : (
-                        <EmailPassword onToken={onToken} onTotpToken={onTotpToken} />
+                        <EmailPassword onSignIn={onSignIn} onTOTPChallenge={onTOTPChallenge} />
                     )}
                 </form>
             </div>

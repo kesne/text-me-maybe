@@ -5,32 +5,30 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { useExchangeTotpMutation } from '../queries';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     submit: {
         margin: theme.spacing(3, 0, 2)
     }
 }));
 
 type Props = {
-    totpToken: string;
-    onToken(token: string): void;
+    onSignIn(): void;
 };
 
-export default function VerifyTOTP({ totpToken, onToken }: Props) {
+export default function VerifyTOTP({ onSignIn }: Props) {
     const classes = useStyles();
     const [token, setToken] = useState('');
     const [exchangeTotp, { data, loading }] = useExchangeTotpMutation({
         variables: {
-            totpToken,
             token
         }
     });
 
     useEffect(() => {
         if (data) {
-            onToken(data.exchangeTOTP.token);
+            onSignIn();
         }
-    }, [data, onToken]);
+    }, [data, onSignIn]);
 
     return (
         <>

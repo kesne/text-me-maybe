@@ -11,15 +11,15 @@ type User {
     email: String!
 }
 
-type JWT {
-    token: String!
+type TOTPChallenge {
+    totpChallenge: Boolean!
 }
 
-type TOTPVerify {
-    totpToken: String!
+type Result {
+    ok: Boolean!
 }
 
-union SignInResult = JWT | TOTPVerify
+union SignInResult = Result | TOTPChallenge
 
 type Message {
     id: Int!
@@ -42,10 +42,6 @@ type Thread {
     ended: Boolean!
 }
 
-type Result {
-    ok: Boolean!
-}
-
 type TotpOnboarding {
     name: String!
     secret: String!
@@ -61,9 +57,9 @@ type Query {
 type Mutation {
     createThread(name: String!, to: String!, message: String!): Thread! @auth
     sendMessage(threadID: Int!, body: String!): Message! @auth
-    signUp(name: String!, email: String!, password: String!): JWT!
+    signUp(name: String!, email: String!, password: String!): Result!
     signIn(email: String!, password: String!): SignInResult!
-    exchangeTOTP(totpToken: String!, token: String!): JWT!
+    exchangeTOTP(token: String!): Result!
     markMessageAsSeen(id: Int!): Message! @auth
     endThread(id: Int!): Thread! @auth
     deleteThread(id: Int!): Result! @auth

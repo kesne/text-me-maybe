@@ -1,12 +1,12 @@
 import * as otplib from 'otplib';
 import { MutationResolvers } from '../../generated-graphql';
 import { Context } from './types';
-import { User } from '../../entity/User';
+import { User, AuthType } from '../../entity/User';
 import { Thread } from '../../entity/Thread';
 import { Message, Sender } from '../../entity/Message';
 
 const MutationResolvers: MutationResolvers<Context> = {
-    async signUp(_parent, { name, email, password }) {
+    async signUp(_parent, { name, email, password }, { session, cookies }) {
         const user = new User();
         user.name = name;
         user.email = email;
@@ -14,11 +14,14 @@ const MutationResolvers: MutationResolvers<Context> = {
 
         await user.save();
 
-        return {
-            token: user.token()
-        };
+        cookies.set('hasAccount', '1', { httpOnly: false, signed: false });
+        session.userID = user.id;
+        session.type = AuthType.FULL;
+
+        return { ok: true };
     },
-    async signIn(_parent, { email, password }) {
+
+    async signIn(_parent, { email, password }, { session, cookies }) {
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
@@ -32,17 +35,50 @@ const MutationResolvers: MutationResolvers<Context> = {
         }
 
         if (user.totpSecret) {
+            session.userID = user.id;
+            session.type = AuthType.TOTP;
+
             return {
-                __typename: 'TOTPVerify',
-                totpToken: user.totpToken()
+                totpChallenge: true
             };
         }
 
-        return {
-            __typename: 'JWT',
-            token: user.token()
-        };
+        cookies.set('hasUser', '1', { httpOnly: false, signed: false });
+        session.userID = user.id;
+        session.type = AuthType.FULL;
+
+        return { ok: true };
     },
+
+    async enableTotp(_parent, { secret, token }, { user }) {
+        if (user.totpSecret) {
+            throw new Error('User already has TOTP enabled.');
+        }
+
+        // TODO: Move to user?
+        const isValid = otplib.authenticator.verify({ secret, token });
+        if (!isValid) {
+            throw new Error('Invalid TOTP');
+        }
+        user.totpSecret = secret;
+        await user.save();
+        return { ok: true };
+    },
+
+    async exchangeTOTP(_parent, { token }, { session, cookies }) {
+        const user = await User.fromTOTPSession(session as any, token);
+
+        if (!user) {
+            throw new Error('Failed to get user.');
+        }
+
+        cookies.set('hasUser', '1', { httpOnly: false, signed: false });
+        session.userID = user.id;
+        session.type = AuthType.FULL;
+
+        return { ok: true };
+    },
+
     async createThread(_parent, { name, to, message: messageText }, { user }) {
         const thread = new Thread();
         thread.phoneNumber = '+16264657420';
@@ -60,6 +96,7 @@ const MutationResolvers: MutationResolvers<Context> = {
 
         return thread;
     },
+
     async sendMessage(_parent, { threadID, body }) {
         const thread = await Thread.findOne(threadID);
 
@@ -122,34 +159,6 @@ const MutationResolvers: MutationResolvers<Context> = {
 
         return { ok: true };
     },
-
-    async enableTotp(_parent, { secret, token }, { user }) {
-        if (user.totpSecret) {
-            throw new Error('User already has TOTP enabled.');
-        }
-
-        // TODO: Move to user?
-        const isValid = otplib.authenticator.verify({ secret, token });
-        if (!isValid) {
-            throw new Error('Invalid TOTP');
-        }
-        user.totpSecret = secret;
-        await user.save();
-        return { ok: true };
-    },
-
-    async exchangeTOTP(_parent, { totpToken, token }) {
-        // TODO:
-        const user = await User.fromTOTPToken(totpToken, token);
-
-        if (!user) {
-            throw new Error('Failed to get user.');
-        }
-
-        return {
-            token: user.token()
-        };
-    }
 };
 
 export default MutationResolvers;

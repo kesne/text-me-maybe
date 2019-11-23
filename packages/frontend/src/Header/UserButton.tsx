@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
-import auth from '../utils/auth';
 import { useMeQuery } from '../queries';
+import HasUserContext from '../HasUserContext';
 
 export default function UserButton() {
     const history = useHistory();
     const { data, loading } = useMeQuery();
+    const { setHasUser } = useContext(HasUserContext);
 
     const [anchorEl, setAnchorEl] = useState(null);
 
     function signOut() {
-        auth.clear();
+        setHasUser(false);
         history.push('/');
     }
 

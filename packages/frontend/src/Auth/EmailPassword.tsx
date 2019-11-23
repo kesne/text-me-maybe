@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
-    onToken(token: string): void;
-    onTotpToken(totpToken: string): void;
+    onSignIn(): void;
+    onTOTPChallenge(): void;
 };
 
-export default function EmailPassword({ onToken, onTotpToken }: Props) {
+export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -31,13 +31,13 @@ export default function EmailPassword({ onToken, onTotpToken }: Props) {
 
     useEffect(() => {
         if (data) {
-            if ('token' in data.signIn) {
-                onToken(data.signIn.token);
+            if ('totpChallenge' in data.signIn) {
+                onTOTPChallenge();
             } else {
-                onTotpToken(data.signIn.totpToken);
+                onSignIn();
             }
         }
-    }, [data, onToken, onTotpToken]);
+    }, [data, onSignIn, onTOTPChallenge]);
 
     return (
         <>

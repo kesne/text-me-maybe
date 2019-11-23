@@ -11,6 +11,7 @@
     "classnames": "^2.2.6",
     "clsx": "^1.0.4",
     "graphql": "^14.5.8",
+    "js-cookie": "^2.2.1",
     "lodash": "^4.17.15",
     "material-ui-phone-number": "^2.2.2",
     "moment": "^2.24.0",
@@ -41,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "@types/js-cookie": "^2.2.4",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
     "typescript": "^3.7.2"
