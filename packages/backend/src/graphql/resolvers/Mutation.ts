@@ -65,6 +65,11 @@ const MutationResolvers: MutationResolvers<Context> = {
         return { ok: true };
     },
 
+    async disableTotp(_parent, { password }, { user }) {
+        await user.disableTOTP(password);
+        return { ok: true };
+    },
+
     async exchangeTOTP(_parent, { token }, { session, cookies }) {
         const user = await User.fromTOTPSession(session as any, token);
 

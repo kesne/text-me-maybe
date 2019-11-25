@@ -65,4 +65,5 @@ type Mutation {
     endThread(id: Int!): Thread! @auth
     deleteThread(id: Int!): Result! @auth
     enableTotp(secret: String!, token: String!): Result! @auth
+    disableTotp(password: String!): Result! @auth
 }

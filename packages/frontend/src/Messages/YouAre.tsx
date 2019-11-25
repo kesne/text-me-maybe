@@ -20,8 +20,6 @@ type Props = {
 export default function YouAre({ phoneNumber, createdAt }: Props) {
     const classes = useStyles();
 
-    console.log(createdAt);
-
     return (
         <div className={classes.container}>
             <Typography variant="overline">You are {formatPhone(phoneNumber)}</Typography>

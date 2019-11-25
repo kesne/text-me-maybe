@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink, Switch, Route, Redirect } from 'react-router-dom';
+import { Link as RouterLink, Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,7 +11,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Basics from './Basics';
 import Security from './Security';
-import { useMeQuery } from '../queries';
+import Billing from './Billing';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -21,15 +21,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function Account() {
     const classes = useStyles();
-    const { data, loading } = useMeQuery();
+    const match = useRouteMatch('/account/:page');
 
-    if (loading) {
-        return <div>Loading....</div>;
-    }
-
-    if (!data) {
-        return <div>No data!</div>;
-    }
+    const matchParams: Record<string, string> = match ? match.params : {};
 
     return (
         <Container className={classes.container} maxWidth="md">
@@ -37,13 +31,28 @@ export default function Account() {
                 <Grid item xs={4}>
                     <Paper>
                         <List>
-                            <ListItem component={RouterLink} to="/account" button selected>
+                            <ListItem
+                                component={RouterLink}
+                                to="/account"
+                                selected={!matchParams.page}
+                                button
+                            >
                                 <ListItemText primary="Basics" />
                             </ListItem>
-                            <ListItem component={RouterLink} to="/account/security" button>
+                            <ListItem
+                                component={RouterLink}
+                                to="/account/security"
+                                selected={matchParams.page === 'security'}
+                                button
+                            >
                                 <ListItemText primary="Security" />
                             </ListItem>
-                            <ListItem component={RouterLink} to="/account/billing" button>
+                            <ListItem
+                                component={RouterLink}
+                                to="/account/billing"
+                                selected={matchParams.page === 'billing'}
+                                button
+                            >
                                 <ListItemText primary="Billing" />
                             </ListItem>
                         </List>
@@ -58,6 +67,9 @@ export default function Account() {
                                 </Route>
                                 <Route path="/account/security">
                                     <Security />
+                                </Route>
+                                <Route path="/account/billing">
+                                    <Billing />
                                 </Route>
                                 <Route>
                                     <Redirect to="/account" />

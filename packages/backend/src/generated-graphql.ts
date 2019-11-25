@@ -32,6 +32,7 @@ export type Mutation = {
   endThread: Thread,
   deleteThread: Result,
   enableTotp: Result,
+  disableTotp: Result,
 };
 
 
@@ -84,6 +85,11 @@ export type MutationDeleteThreadArgs = {
 export type MutationEnableTotpArgs = {
   secret: Scalars['String'],
   token: Scalars['String']
+};
+
+
+export type MutationDisableTotpArgs = {
+  password: Scalars['String']
 };
 
 export type Query = {
@@ -267,6 +273,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   endThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationEndThreadArgs, 'id'>>,
   deleteThread?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationDeleteThreadArgs, 'id'>>,
   enableTotp?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationEnableTotpArgs, 'secret' | 'token'>>,
+  disableTotp?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationDisableTotpArgs, 'password'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

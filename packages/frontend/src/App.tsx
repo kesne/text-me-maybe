@@ -11,7 +11,6 @@ import SignIn from './Auth/SignIn';
 import MessageView from './Inbox';
 import PrivateRoute from './PrivateRoute';
 import Account from './Account';
-import OnboardTOTP from './Auth/OnboardTOTP';
 import HasUserContext from './HasUserContext';
 
 const useStyles = makeStyles(theme => ({
@@ -74,9 +73,6 @@ export default function App() {
                                     <Route path="/signup">
                                         <SignUp />
                                     </Route>
-                                    <PrivateRoute path="/onboard-totp">
-                                        <OnboardTOTP />
-                                    </PrivateRoute>
                                     <PrivateRoute path="/threads">
                                         <MessageView />
                                     </PrivateRoute>

@@ -65,11 +65,27 @@ export class User extends BaseEntity {
     password?: string;
 
     // TODO: Encrypt this somehow.
-    @Column({ nullable: true })
-    totpSecret?: string;
+    @Column('varchar', { nullable: true })
+    totpSecret?: string | null;
 
     hasTOTP() {
         return !!this.totpSecret;
+    }
+
+    async disableTOTP(password: string) {
+        if (!this.totpSecret) {
+            return;
+        }
+
+        const passwordValid = await bcrypt.compare(password, this.passwordHash);
+
+        if (!passwordValid) {
+            throw new Error('Password is not valid!');
+        }
+
+        this.totpSecret = null;
+
+        await this.save();
     }
 
     generateTotpSecret() {

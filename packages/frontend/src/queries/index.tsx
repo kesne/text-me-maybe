@@ -33,6 +33,7 @@ export type Mutation = {
   endThread: Thread,
   deleteThread: Result,
   enableTotp: Result,
+  disableTotp: Result,
 };
 
 
@@ -85,6 +86,11 @@ export type MutationDeleteThreadArgs = {
 export type MutationEnableTotpArgs = {
   secret: Scalars['String'],
   token: Scalars['String']
+};
+
+
+export type MutationDisableTotpArgs = {
+  password: Scalars['String']
 };
 
 export type Query = {
@@ -167,6 +173,19 @@ export type DeleteThreadMutationVariables = {
 export type DeleteThreadMutation = (
   { __typename?: 'Mutation' }
   & { deleteThread: (
+    { __typename?: 'Result' }
+    & Pick<Result, 'ok'>
+  ) }
+);
+
+export type DisableTotpMutationVariables = {
+  password: Scalars['String']
+};
+
+
+export type DisableTotpMutation = (
+  { __typename?: 'Mutation' }
+  & { disableTotp: (
     { __typename?: 'Result' }
     & Pick<Result, 'ok'>
   ) }
@@ -392,6 +411,38 @@ export function useDeleteThreadMutation(baseOptions?: ApolloReactHooks.MutationH
 export type DeleteThreadMutationHookResult = ReturnType<typeof useDeleteThreadMutation>;
 export type DeleteThreadMutationResult = ApolloReactCommon.MutationResult<DeleteThreadMutation>;
 export type DeleteThreadMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteThreadMutation, DeleteThreadMutationVariables>;
+export const DisableTotpDocument = gql`
+    mutation DisableTOTP($password: String!) {
+  disableTotp(password: $password) {
+    ok
+  }
+}
+    `;
+export type DisableTotpMutationFn = ApolloReactCommon.MutationFunction<DisableTotpMutation, DisableTotpMutationVariables>;
+
+/**
+ * __useDisableTotpMutation__
+ *
+ * To run a mutation, you first call `useDisableTotpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDisableTotpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [disableTotpMutation, { data, loading, error }] = useDisableTotpMutation({
+ *   variables: {
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useDisableTotpMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DisableTotpMutation, DisableTotpMutationVariables>) {
+        return ApolloReactHooks.useMutation<DisableTotpMutation, DisableTotpMutationVariables>(DisableTotpDocument, baseOptions);
+      }
+export type DisableTotpMutationHookResult = ReturnType<typeof useDisableTotpMutation>;
+export type DisableTotpMutationResult = ApolloReactCommon.MutationResult<DisableTotpMutation>;
+export type DisableTotpMutationOptions = ApolloReactCommon.BaseMutationOptions<DisableTotpMutation, DisableTotpMutationVariables>;
 export const EnableTotpDocument = gql`
     mutation EnableTotp($secret: String!, $token: String!) {
   enableTotp(secret: $secret, token: $token) {
