@@ -39,7 +39,7 @@ export default function DeleteThreadModal({ thread, onClose }: Props) {
 
     useEffect(() => {
         if (data) {
-            history.replace('/threads');
+            history.replace('/inbox');
             onClose();
         }
     }, [data, onClose, history]);

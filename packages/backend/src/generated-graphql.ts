@@ -33,6 +33,8 @@ export type Mutation = {
   deleteThread: Result,
   enableTotp: Result,
   disableTotp: Result,
+  updateAccount: User,
+  forgotPassword: Result,
 };
 
 
@@ -90,6 +92,17 @@ export type MutationEnableTotpArgs = {
 
 export type MutationDisableTotpArgs = {
   password: Scalars['String']
+};
+
+
+export type MutationUpdateAccountArgs = {
+  name?: Maybe<Scalars['String']>,
+  email?: Maybe<Scalars['String']>
+};
+
+
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String']
 };
 
 export type Query = {
@@ -274,6 +287,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteThread?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationDeleteThreadArgs, 'id'>>,
   enableTotp?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationEnableTotpArgs, 'secret' | 'token'>>,
   disableTotp?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationDisableTotpArgs, 'password'>>,
+  updateAccount?: Resolver<ResolversTypes['User'], ParentType, ContextType, MutationUpdateAccountArgs>,
+  forgotPassword?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationForgotPasswordArgs, 'email'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

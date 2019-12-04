@@ -80,7 +80,7 @@ export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
             </Button>
             <Grid container>
                 <Grid item xs>
-                    <Link href="#" variant="body2">
+                    <Link component={RouterLink} to="/forgot" variant="body2">
                         Forgot password?
                     </Link>
                 </Grid>

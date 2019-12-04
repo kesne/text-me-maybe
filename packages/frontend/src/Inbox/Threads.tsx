@@ -39,11 +39,11 @@ export default function Threads() {
     const [creating, setCreating] = useState(false);
     const { data, error, loading } = useThreadsQuery();
     const history = useHistory();
-    const match = useRouteMatch('/threads/:id');
+    const match = useRouteMatch('/inbox/:id');
 
     useEffect(() => {
         if (data && data.threads.length && !match) {
-            history.replace(`/threads/${data.threads[0].id}`);
+            history.replace(`/inbox/${data.threads[0].id}`);
         }
     }, [data, match, history]);
 
@@ -76,7 +76,7 @@ export default function Threads() {
                         key={thread.id}
                         selected={Number(params.id) === thread.id}
                         component={Link}
-                        to={`/threads/${thread.id}`}
+                        to={`/inbox/${thread.id}`}
                         button
                     >
                         <ListItemAvatar>

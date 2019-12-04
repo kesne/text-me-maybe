@@ -28,6 +28,7 @@ A match in one of your dating apps wants to text you to schedule a date. You're 
 
 This stuff I'm not particularly interested implementing _personally_, but I would be more than happy to if **you** are interested! :)
 
+- Auto-ending conversations
 - Landing Screen
 - Billing
 - Code Splitting

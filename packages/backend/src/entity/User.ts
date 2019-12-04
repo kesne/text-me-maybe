@@ -68,7 +68,7 @@ export class User extends BaseEntity {
     @Column('varchar', { nullable: true })
     totpSecret?: string | null;
 
-    hasTOTP() {
+    get hasTOTP() {
         return !!this.totpSecret;
     }
 
@@ -94,6 +94,10 @@ export class User extends BaseEntity {
 
     async checkPassword(password: string) {
         return await bcrypt.compare(password, this.passwordHash);
+    }
+
+    async forgotPassword() {
+
     }
 
     @OneToMany(

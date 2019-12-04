@@ -37,7 +37,7 @@ export default function Account() {
                                 selected={!matchParams.page}
                                 button
                             >
-                                <ListItemText primary="Basics" />
+                                <ListItemText primary="Account" />
                             </ListItem>
                             <ListItem
                                 component={RouterLink}

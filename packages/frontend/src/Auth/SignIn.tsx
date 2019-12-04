@@ -35,7 +35,7 @@ export default function SignUp() {
 
     const onSignIn = useCallback(() => {
         setHasUser(true);
-        history.push((location.state && location.state.from) || '/threads');
+        history.push((location.state && location.state.from) || '/inbox');
     }, [history, location, setHasUser]);
 
     const onTOTPChallenge = useCallback(() => {

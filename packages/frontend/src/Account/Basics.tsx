@@ -1,23 +1,20 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
+import React, { useState } from 'react';
+import EditAccount from './EditAccount';
 import { useMeQuery } from '../queries';
 
 export default function Basics() {
     const { data, loading } = useMeQuery();
+    const [editing, setEditing] = useState(false);
 
     if (loading) {
-        return <div>'Loading...'</div>;
+        return <div>Loading...</div>;
     }
 
     if (!data) {
-        return <div>'No dataz?'</div>;
+        return <div>No dataz?</div>;
     }
 
     return (
-        <div>
-            <Typography variant="h5">Your Account</Typography>
-            Name: {data.me.name}
-            Email: {data.me.email}
-        </div>
+        <EditAccount me={data.me} editing={editing} onEditingChange={setEditing} />
     );
 }

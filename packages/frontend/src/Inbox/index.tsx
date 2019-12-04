@@ -8,6 +8,12 @@ import Drawer from '@material-ui/core/Drawer';
 const drawerWidth = 320;
 
 const useStyles = makeStyles(theme => ({
+    inbox: {
+        flex: 1,
+        display: 'flex',
+        overflow: 'hidden',
+        flexDirection: 'row'
+    },
     drawer: {
         width: drawerWidth,
         flexShrink: 0
@@ -29,11 +35,11 @@ const useStyles = makeStyles(theme => ({
     toolbar: theme.mixins.toolbar
 }));
 
-export default function MessageView() {
+export default function Inbox() {
     const classes = useStyles();
 
     return (
-        <>
+        <div className={classes.inbox}>
             <Drawer
                 className={classes.drawer}
                 variant="permanent"
@@ -47,7 +53,7 @@ export default function MessageView() {
             <main className={classes.content}>
                 <div className={classes.contentWrapper}>
                     <Switch>
-                        <Route path="/threads/:id">
+                        <Route path="/inbox/:id">
                             <Messages />
                         </Route>
                         <Route>
@@ -56,6 +62,6 @@ export default function MessageView() {
                     </Switch>
                 </div>
             </main>
-        </>
+        </div>
     );
 }

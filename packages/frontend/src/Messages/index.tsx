@@ -44,7 +44,7 @@ export default function Messages() {
     }
 
     if (!data.thread) {
-        return <Redirect to="/threads" />
+        return <Redirect to="/inbox" />
     }
 
     return (

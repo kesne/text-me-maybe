@@ -164,6 +164,25 @@ const MutationResolvers: MutationResolvers<Context> = {
 
         return { ok: true };
     },
+
+    async updateAccount(_parent, { name, email }, { user }) {
+        if (name) {
+            user.name = name;
+        }
+
+        if (email) {
+            user.email = email;
+        }
+
+        return await user.save();
+    },
+
+    async forgotPassword() {
+        const user = await User.findOne({ where: { email } });
+
+        await user.forgotPassword();
+        return { ok: true };
+    }
 };
 
 export default MutationResolvers;

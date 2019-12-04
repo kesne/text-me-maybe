@@ -36,7 +36,7 @@ export default function CreateThread({ onClose }: Props) {
         if (data) {
             // Force a refetch of threads from network
             client.query({ query: ThreadsDocument, fetchPolicy: 'network-only' });
-            history.push(`/threads/${data.createThread.id}`);
+            history.push(`/inbox/${data.createThread.id}`);
             onClose();
         }
     }, [data, history, onClose]);

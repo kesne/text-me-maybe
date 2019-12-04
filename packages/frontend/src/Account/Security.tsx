@@ -27,7 +27,7 @@ export default function Security() {
 
     return (
         <div>
-            <Typography variant="h4">Security</Typography>
+            <Typography variant="h5">Security</Typography>
             <Button variant="outlined" color="primary">
                 Change Password
             </Button>

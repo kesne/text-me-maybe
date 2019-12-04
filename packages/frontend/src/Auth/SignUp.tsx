@@ -50,7 +50,7 @@ export default function SignUp() {
     useEffect(() => {
         if (data) {
             setHasUser(true);
-            history.push('/threads');
+            history.push('/inbox');
         }
     }, [data, history, setHasUser]);
 

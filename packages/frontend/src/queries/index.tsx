@@ -34,6 +34,8 @@ export type Mutation = {
   deleteThread: Result,
   enableTotp: Result,
   disableTotp: Result,
+  updateAccount: User,
+  forgotPassword: Result,
 };
 
 
@@ -91,6 +93,17 @@ export type MutationEnableTotpArgs = {
 
 export type MutationDisableTotpArgs = {
   password: Scalars['String']
+};
+
+
+export type MutationUpdateAccountArgs = {
+  name?: Maybe<Scalars['String']>,
+  email?: Maybe<Scalars['String']>
+};
+
+
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String']
 };
 
 export type Query = {
@@ -251,8 +264,13 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'email' | 'hasTOTP'>
+    & MeFragmentFragment
   ) }
+);
+
+export type MeFragmentFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'name' | 'email' | 'hasTOTP'>
 );
 
 export type MessagesQueryVariables = {
@@ -344,7 +362,28 @@ export type ThreadsQuery = (
   )> }
 );
 
+export type UpdateAccountMutationVariables = {
+  name: Scalars['String'],
+  email: Scalars['String']
+};
 
+
+export type UpdateAccountMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAccount: (
+    { __typename?: 'User' }
+    & MeFragmentFragment
+  ) }
+);
+
+export const MeFragmentFragmentDoc = gql`
+    fragment MeFragment on User {
+  id
+  name
+  email
+  hasTOTP
+}
+    `;
 export const CreateThreadDocument = gql`
     mutation CreateThread($name: String!, $phoneNumber: String!, $message: String!) {
   createThread(name: $name, to: $phoneNumber, message: $message) {
@@ -577,13 +616,10 @@ export type MarkMessageSeenMutationOptions = ApolloReactCommon.BaseMutationOptio
 export const MeDocument = gql`
     query Me {
   me {
-    id
-    name
-    email
-    hasTOTP
+    ...MeFragment
   }
 }
-    `;
+    ${MeFragmentFragmentDoc}`;
 
 /**
  * __useMeQuery__
@@ -834,3 +870,36 @@ export function useThreadsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHook
 export type ThreadsQueryHookResult = ReturnType<typeof useThreadsQuery>;
 export type ThreadsLazyQueryHookResult = ReturnType<typeof useThreadsLazyQuery>;
 export type ThreadsQueryResult = ApolloReactCommon.QueryResult<ThreadsQuery, ThreadsQueryVariables>;
+export const UpdateAccountDocument = gql`
+    mutation UpdateAccount($name: String!, $email: String!) {
+  updateAccount(name: $name, email: $email) {
+    ...MeFragment
+  }
+}
+    ${MeFragmentFragmentDoc}`;
+export type UpdateAccountMutationFn = ApolloReactCommon.MutationFunction<UpdateAccountMutation, UpdateAccountMutationVariables>;
+
+/**
+ * __useUpdateAccountMutation__
+ *
+ * To run a mutation, you first call `useUpdateAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAccountMutation, { data, loading, error }] = useUpdateAccountMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useUpdateAccountMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAccountMutation, UpdateAccountMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateAccountMutation, UpdateAccountMutationVariables>(UpdateAccountDocument, baseOptions);
+      }
+export type UpdateAccountMutationHookResult = ReturnType<typeof useUpdateAccountMutation>;
+export type UpdateAccountMutationResult = ApolloReactCommon.MutationResult<UpdateAccountMutation>;
+export type UpdateAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAccountMutation, UpdateAccountMutationVariables>;

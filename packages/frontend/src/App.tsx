@@ -8,8 +8,10 @@ import client from './utils/client';
 import Header from './Header';
 import SignUp from './Auth/SignUp';
 import SignIn from './Auth/SignIn';
-import MessageView from './Inbox';
-import PrivateRoute from './PrivateRoute';
+import ForgotPassword from './Auth/ForgotPassword';
+import Home from './Home';
+import Inbox from './Inbox';
+import AuthenticatedRoute from './AuthenticatedRoute';
 import Account from './Account';
 import HasUserContext from './HasUserContext';
 
@@ -30,8 +32,7 @@ const useStyles = makeStyles(theme => ({
     content: {
         display: 'flex',
         flex: 1,
-        flexDirection: 'row',
-        overflow: 'hidden'
+        overflow: 'auto'
     },
     toolbar: theme.mixins.toolbar
 }));
@@ -67,18 +68,24 @@ export default function App() {
                             <div className={classes.toolbar} />
                             <div className={classes.content}>
                                 <Switch>
-                                    <Route path="/signin">
+                                    <AuthenticatedRoute unauthed path="/signin">
                                         <SignIn />
-                                    </Route>
-                                    <Route path="/signup">
+                                    </AuthenticatedRoute>
+                                    <AuthenticatedRoute unauthed path="/signup">
                                         <SignUp />
-                                    </Route>
-                                    <PrivateRoute path="/threads">
-                                        <MessageView />
-                                    </PrivateRoute>
-                                    <PrivateRoute path="/account">
+                                    </AuthenticatedRoute>
+                                    <AuthenticatedRoute unauthed path="/forgot">
+                                        <ForgotPassword />
+                                    </AuthenticatedRoute>
+                                    <AuthenticatedRoute authed path="/inbox">
+                                        <Inbox />
+                                    </AuthenticatedRoute>
+                                    <AuthenticatedRoute authed path="/account">
                                         <Account />
-                                    </PrivateRoute>
+                                    </AuthenticatedRoute>
+                                    <AuthenticatedRoute unauthed path="/" exact>
+                                        <Home />
+                                    </AuthenticatedRoute>
                                     <Route>
                                         <div>Where are you?</div>
                                     </Route>

@@ -1,7 +1,11 @@
 # TODO
 
+- Forgot password?
+
+
+- Verify email?
+
 -   Actually Look Into Phone Numbers?
--   Basic Profile Page?
 -   Improve thread message timestamp
     -   Group them into daily buckets
     -   Display a day header between days
