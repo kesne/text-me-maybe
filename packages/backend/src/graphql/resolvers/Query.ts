@@ -1,6 +1,6 @@
 import { QueryResolvers } from '../../generated-graphql';
 import { Thread } from '../../entity/Thread';
-import { Context } from './types';
+import { Context } from '../../types';
 
 const QueryResolvers: QueryResolvers<Context> = {
     me(_parent, _args, { user }) {

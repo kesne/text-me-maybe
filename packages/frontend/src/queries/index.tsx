@@ -35,7 +35,9 @@ export type Mutation = {
   enableTotp: Result,
   disableTotp: Result,
   updateAccount: User,
+  /** Password Resets: */
   forgotPassword: Result,
+  resetPassword: ResetPassword,
 };
 
 
@@ -106,6 +108,12 @@ export type MutationForgotPasswordArgs = {
   email: Scalars['String']
 };
 
+
+export type MutationResetPasswordArgs = {
+  uuid: Scalars['String'],
+  password?: Maybe<Scalars['String']>
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
@@ -117,6 +125,11 @@ export type Query = {
 
 export type QueryThreadArgs = {
   threadID: Scalars['Int']
+};
+
+export type ResetPassword = {
+   __typename?: 'ResetPassword',
+  complete: Scalars['Boolean'],
 };
 
 export type Result = {
@@ -311,6 +324,20 @@ export type OnboardTotpQuery = (
   & { onboardTotp: (
     { __typename?: 'TotpOnboarding' }
     & Pick<TotpOnboarding, 'name' | 'secret'>
+  ) }
+);
+
+export type ResetPasswordMutationVariables = {
+  uuid: Scalars['String'],
+  password?: Maybe<Scalars['String']>
+};
+
+
+export type ResetPasswordMutation = (
+  { __typename?: 'Mutation' }
+  & { resetPassword: (
+    { __typename?: 'ResetPassword' }
+    & Pick<ResetPassword, 'complete'>
   ) }
 );
 
@@ -767,6 +794,39 @@ export function useOnboardTotpLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type OnboardTotpQueryHookResult = ReturnType<typeof useOnboardTotpQuery>;
 export type OnboardTotpLazyQueryHookResult = ReturnType<typeof useOnboardTotpLazyQuery>;
 export type OnboardTotpQueryResult = ApolloReactCommon.QueryResult<OnboardTotpQuery, OnboardTotpQueryVariables>;
+export const ResetPasswordDocument = gql`
+    mutation ResetPassword($uuid: String!, $password: String) {
+  resetPassword(uuid: $uuid, password: $password) {
+    complete
+  }
+}
+    `;
+export type ResetPasswordMutationFn = ApolloReactCommon.MutationFunction<ResetPasswordMutation, ResetPasswordMutationVariables>;
+
+/**
+ * __useResetPasswordMutation__
+ *
+ * To run a mutation, you first call `useResetPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResetPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resetPasswordMutation, { data, loading, error }] = useResetPasswordMutation({
+ *   variables: {
+ *      uuid: // value for 'uuid'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useResetPasswordMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ResetPasswordMutation, ResetPasswordMutationVariables>) {
+        return ApolloReactHooks.useMutation<ResetPasswordMutation, ResetPasswordMutationVariables>(ResetPasswordDocument, baseOptions);
+      }
+export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
+export type ResetPasswordMutationResult = ApolloReactCommon.MutationResult<ResetPasswordMutation>;
+export type ResetPasswordMutationOptions = ApolloReactCommon.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
 export const SendMessageDocument = gql`
     mutation SendMessage($threadID: Int!, $message: String!) {
   sendMessage(threadID: $threadID, body: $message) {

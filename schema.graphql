@@ -48,6 +48,10 @@ type TotpOnboarding {
     secret: String!
 }
 
+type ResetPassword {
+    complete: Boolean!
+}
+
 type Query {
     threads: [Thread!]! @auth
     thread(threadID: Int!): Thread! @auth
@@ -67,5 +71,8 @@ type Mutation {
     enableTotp(secret: String!, token: String!): Result! @auth
     disableTotp(password: String!): Result! @auth
     updateAccount(name: String, email: String): User! @auth
+
+    # Password Resets:
     forgotPassword(email: String!): Result!
+    resetPassword(uuid: String!, password: String): ResetPassword!
 }

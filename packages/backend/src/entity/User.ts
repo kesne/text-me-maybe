@@ -3,12 +3,12 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
-    BeforeInsert,
     OneToMany,
     BaseEntity
 } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { Thread } from './Thread';
+import { Session, Cookies } from '../types';
 
 // NOTE: This was chosed based on a stack overflow post. Probably should do more
 // research if you ever deploy this for real.
@@ -16,18 +16,17 @@ const SALT_ROUNDS = 10;
 
 export enum AuthType {
     FULL = 'FULL',
-    TOTP = 'TOTP'
+    TOTP = 'TOTP',
+    PASSWORD_RESET = 'PASSWORD_RESET'
 }
-
-type Session = {
-    userID: number;
-    type: AuthType;
-};
 
 @Entity()
 export class User extends BaseEntity {
-    static async fromSession(session: Session): Promise<User | undefined> {
-        if (session.userID && session.type === AuthType.FULL) {
+    static async fromSession(
+        session: Session,
+        allowedType: AuthType = AuthType.FULL
+    ): Promise<User | undefined> {
+        if (session.userID && session.type === allowedType) {
             return await this.findOne(session.userID);
         }
         return;
@@ -62,7 +61,10 @@ export class User extends BaseEntity {
 
     @Column()
     passwordHash!: string;
-    password?: string;
+
+    async setPassword(newPassword: string) {
+        this.passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    }
 
     // TODO: Encrypt this somehow.
     @Column('varchar', { nullable: true })
@@ -96,20 +98,17 @@ export class User extends BaseEntity {
         return await bcrypt.compare(password, this.passwordHash);
     }
 
+    signIn(session: Session, cookies: Cookies, type: AuthType = AuthType.FULL) {
+        session.userID = this.id;
+        session.type = type;
+        if (type === AuthType.FULL) {
+            cookies.set('hasUser', '1', { httpOnly: false, signed: false });
+        }
+    }
+
     @OneToMany(
         () => Thread,
         thread => thread.user
     )
     threads!: Thread[];
-
-    @BeforeInsert()
-    async performPasswordHash() {
-        if (this.password) {
-            // Just ensure that we don't keep the password on the model:
-            const password = this.password;
-            delete this.password;
-
-            this.passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-        }
-    }
 }

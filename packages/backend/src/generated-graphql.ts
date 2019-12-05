@@ -34,7 +34,9 @@ export type Mutation = {
   enableTotp: Result,
   disableTotp: Result,
   updateAccount: User,
+  /** Password Resets: */
   forgotPassword: Result,
+  resetPassword: ResetPassword,
 };
 
 
@@ -105,6 +107,12 @@ export type MutationForgotPasswordArgs = {
   email: Scalars['String']
 };
 
+
+export type MutationResetPasswordArgs = {
+  uuid: Scalars['String'],
+  password?: Maybe<Scalars['String']>
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
@@ -116,6 +124,11 @@ export type Query = {
 
 export type QueryThreadArgs = {
   threadID: Scalars['Int']
+};
+
+export type ResetPassword = {
+   __typename?: 'ResetPassword',
+  complete: Scalars['Boolean'],
 };
 
 export type Result = {
@@ -246,6 +259,7 @@ export type ResolversTypes = {
   Result: ResolverTypeWrapper<Result>,
   SignInResult: ResolversTypes['Result'] | ResolversTypes['TOTPChallenge'],
   TOTPChallenge: ResolverTypeWrapper<TotpChallenge>,
+  ResetPassword: ResolverTypeWrapper<ResetPassword>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -263,6 +277,7 @@ export type ResolversParentTypes = {
   Result: Result,
   SignInResult: ResolversParentTypes['Result'] | ResolversParentTypes['TOTPChallenge'],
   TOTPChallenge: TotpChallenge,
+  ResetPassword: ResetPassword,
 };
 
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = {  }> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
@@ -289,6 +304,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   disableTotp?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationDisableTotpArgs, 'password'>>,
   updateAccount?: Resolver<ResolversTypes['User'], ParentType, ContextType, MutationUpdateAccountArgs>,
   forgotPassword?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationForgotPasswordArgs, 'email'>>,
+  resetPassword?: Resolver<ResolversTypes['ResetPassword'], ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'uuid'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -296,6 +312,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   thread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<QueryThreadArgs, 'threadID'>>,
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   onboardTotp?: Resolver<ResolversTypes['TotpOnboarding'], ParentType, ContextType>,
+};
+
+export type ResetPasswordResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResetPassword'] = ResolversParentTypes['ResetPassword']> = {
+  complete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type ResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = {
@@ -338,6 +358,7 @@ export type Resolvers<ContextType = any> = {
   Message?: MessageResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
+  ResetPassword?: ResetPasswordResolvers<ContextType>,
   Result?: ResultResolvers<ContextType>,
   SignInResult?: SignInResultResolvers,
   Thread?: ThreadResolvers<ContextType>,

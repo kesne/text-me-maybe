@@ -1,5 +1,5 @@
 import { SignInResultResolvers } from '../../generated-graphql';
-import { Context } from './types';
+import { Context } from '../../types';
 
 const SignInResultResolvers: SignInResultResolvers<Context> = {
     __resolveType(parent) {

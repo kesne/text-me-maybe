@@ -4,10 +4,10 @@ import {
     PrimaryGeneratedColumn,
     OneToOne,
     CreateDateColumn,
-    UpdateDateColumn,
     Column,
     Generated,
-    JoinColumn
+    JoinColumn,
+    BeforeRemove
 } from 'typeorm';
 import { User } from './User';
 
@@ -30,6 +30,8 @@ export class PasswordReset extends BaseEntity {
         passwordReset.user = user;
 
         await passwordReset.save();
+
+        console.log(passwordReset.uuid);
     }
 
     static async removeForUser(user: User) {
@@ -53,7 +55,4 @@ export class PasswordReset extends BaseEntity {
 
     @CreateDateColumn()
     createdAt!: string;
-
-    @UpdateDateColumn()
-    updatedAt!: string;
 }

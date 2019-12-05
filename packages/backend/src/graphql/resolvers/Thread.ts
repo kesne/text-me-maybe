@@ -1,6 +1,6 @@
 import { Message } from '../../entity/Message';
 import { ThreadResolvers } from '../../generated-graphql';
-import { Context } from './types';
+import { Context } from '../../types';
 
 const ThreadResolvers: ThreadResolvers<Context> = {
     lastMessage(parent) {

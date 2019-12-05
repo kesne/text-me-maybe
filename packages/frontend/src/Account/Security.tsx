@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import Button from '@airbnb/lunar/lib/components/Button';
+import DangerButton from '@airbnb/lunar/lib/components/DangerButton';
+import Text from '@airbnb/lunar/lib/components/Text';
+import Title from '@airbnb/lunar/lib/components/Title';
 import { useMeQuery } from '../queries';
 import OnboardTOTP from './OnboardTOTP';
 import DisableTOTP from './DisableTOTP';
@@ -25,23 +27,23 @@ export default function Security() {
         refetch();
     }
 
+    const TOTPButton = data.me.hasTOTP ? DangerButton : Button;
+
     return (
         <div>
-            <Typography variant="h5">Security</Typography>
-            <Button variant="outlined" color="primary">
+            <Title level={3}>Security</Title>
+            <Button>
                 Change Password
             </Button>
             <hr />
-            <Typography>
+            <Text>
                 Two factor auth <strong>{data.me.hasTOTP ? 'is' : 'is not'}</strong> enabled.
-            </Typography>
-            <Button
+            </Text>
+            <TOTPButton
                 onClick={() => setTOTPModal(true)}
-                variant="outlined"
-                color={data.me.hasTOTP ? 'secondary' : 'primary'}
             >
                 {data.me.hasTOTP ? 'Disable' : 'Enable'} TOTP
-            </Button>
+            </TOTPButton>
 
             {totpModal && <TOTPModal hasTOTP={data.me.hasTOTP} onClose={onClose} />}
         </div>

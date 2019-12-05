@@ -12,7 +12,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "concurrently": "^5.0.0"
+    "concurrently": "^5.0.0",
+    "mailgun-js": "^0.22.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.8.3",

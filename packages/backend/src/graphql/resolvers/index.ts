@@ -3,7 +3,7 @@ import ThreadResolvers from './Thread';
 import QueryResolvers from './Query';
 import MutationResolvers from './Mutation';
 import SignInResultResolvers from './SignInResult';
-import { Context } from './types';
+import { Context } from '../../types';
 
 const resolvers: Resolvers<Context> = {
     Query: {

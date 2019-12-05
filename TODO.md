@@ -1,6 +1,7 @@
 # TODO
 
-- Forgot password?
+- Send reset password emails?
+- Add some Lunar.
 
 
 - Verify email?
