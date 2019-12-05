@@ -4,6 +4,9 @@ import { Context } from './types';
 import { User, AuthType } from '../../entity/User';
 import { Thread } from '../../entity/Thread';
 import { Message, Sender } from '../../entity/Message';
+import { PasswordReset } from '../../entity/PasswordReset';
+
+const RESULT_OK = { ok: true };
 
 const MutationResolvers: MutationResolvers<Context> = {
     async signUp(_parent, { name, email, password }, { session, cookies }) {
@@ -18,7 +21,7 @@ const MutationResolvers: MutationResolvers<Context> = {
         session.userID = user.id;
         session.type = AuthType.FULL;
 
-        return { ok: true };
+        return RESULT_OK;
     },
 
     async signIn(_parent, { email, password }, { session, cookies }) {
@@ -34,6 +37,9 @@ const MutationResolvers: MutationResolvers<Context> = {
             throw new Error('Invalid password.');
         }
 
+        // Remove any password reset so that it is no longer valid after signing in:
+        PasswordReset.removeForUser(user);
+
         if (user.totpSecret) {
             session.userID = user.id;
             session.type = AuthType.TOTP;
@@ -47,7 +53,7 @@ const MutationResolvers: MutationResolvers<Context> = {
         session.userID = user.id;
         session.type = AuthType.FULL;
 
-        return { ok: true };
+        return RESULT_OK;
     },
 
     async enableTotp(_parent, { secret, token }, { user }) {
@@ -62,12 +68,12 @@ const MutationResolvers: MutationResolvers<Context> = {
         }
         user.totpSecret = secret;
         await user.save();
-        return { ok: true };
+        return RESULT_OK;
     },
 
     async disableTotp(_parent, { password }, { user }) {
         await user.disableTOTP(password);
-        return { ok: true };
+        return RESULT_OK;
     },
 
     async exchangeTOTP(_parent, { token }, { session, cookies }) {
@@ -81,7 +87,7 @@ const MutationResolvers: MutationResolvers<Context> = {
         session.userID = user.id;
         session.type = AuthType.FULL;
 
-        return { ok: true };
+        return RESULT_OK;
     },
 
     async createThread(_parent, { name, to, message: messageText }, { user }) {
@@ -162,7 +168,7 @@ const MutationResolvers: MutationResolvers<Context> = {
 
         await thread.remove();
 
-        return { ok: true };
+        return RESULT_OK;
     },
 
     async updateAccount(_parent, { name, email }, { user }) {
@@ -177,11 +183,10 @@ const MutationResolvers: MutationResolvers<Context> = {
         return await user.save();
     },
 
-    async forgotPassword() {
-        const user = await User.findOne({ where: { email } });
+    async forgotPassword(_parent, { email }) {
+        await PasswordReset.createForEmail(email);
 
-        await user.forgotPassword();
-        return { ok: true };
+        return RESULT_OK;
     }
 };
 

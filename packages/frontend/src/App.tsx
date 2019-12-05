@@ -9,6 +9,7 @@ import Header from './Header';
 import SignUp from './Auth/SignUp';
 import SignIn from './Auth/SignIn';
 import ForgotPassword from './Auth/ForgotPassword';
+import ResetPassword from './Auth/ResetPassword';
 import Home from './Home';
 import Inbox from './Inbox';
 import AuthenticatedRoute from './AuthenticatedRoute';
@@ -76,6 +77,9 @@ export default function App() {
                                     </AuthenticatedRoute>
                                     <AuthenticatedRoute unauthed path="/forgot">
                                         <ForgotPassword />
+                                    </AuthenticatedRoute>
+                                    <AuthenticatedRoute unauthed path="/reset-password/:uuid">
+                                        <ResetPassword />
                                     </AuthenticatedRoute>
                                     <AuthenticatedRoute authed path="/inbox">
                                         <Inbox />

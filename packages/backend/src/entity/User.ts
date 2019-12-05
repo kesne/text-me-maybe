@@ -96,10 +96,6 @@ export class User extends BaseEntity {
         return await bcrypt.compare(password, this.passwordHash);
     }
 
-    async forgotPassword() {
-
-    }
-
     @OneToMany(
         () => Thread,
         thread => thread.user
