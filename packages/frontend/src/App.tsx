@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Layout from '@airbnb/lunar-layouts/lib/components/Layout';
 import client from './utils/client';
 import Header from './Header';
 import SignUp from './Auth/SignUp';
@@ -59,46 +60,48 @@ export default function App() {
     );
 
     return (
-        <HasUserContext.Provider value={contextValue}>
-            <Router>
-                <ApolloProvider client={client}>
-                    <div className={classes.root}>
-                        <CssBaseline />
-                        <Header />
-                        <div className={classes.contentWrapper}>
-                            <div className={classes.toolbar} />
-                            <div className={classes.content}>
-                                <Switch>
-                                    <AuthenticatedRoute unauthed path="/signin">
-                                        <SignIn />
-                                    </AuthenticatedRoute>
-                                    <AuthenticatedRoute unauthed path="/signup">
-                                        <SignUp />
-                                    </AuthenticatedRoute>
-                                    <AuthenticatedRoute unauthed path="/forgot">
-                                        <ForgotPassword />
-                                    </AuthenticatedRoute>
-                                    <AuthenticatedRoute unauthed path="/reset-password/:uuid">
-                                        <ResetPassword />
-                                    </AuthenticatedRoute>
-                                    <AuthenticatedRoute authed path="/inbox">
-                                        <Inbox />
-                                    </AuthenticatedRoute>
-                                    <AuthenticatedRoute authed path="/account">
-                                        <Account />
-                                    </AuthenticatedRoute>
-                                    <AuthenticatedRoute unauthed path="/" exact>
-                                        <Home />
-                                    </AuthenticatedRoute>
-                                    <Route>
-                                        <div>Where are you?</div>
-                                    </Route>
-                                </Switch>
+        <Layout fluid>
+            <HasUserContext.Provider value={contextValue}>
+                <Router>
+                    <ApolloProvider client={client}>
+                        <div className={classes.root}>
+                            <CssBaseline />
+                            <Header />
+                            <div className={classes.contentWrapper}>
+                                <div className={classes.toolbar} />
+                                <div className={classes.content}>
+                                    <Switch>
+                                        <AuthenticatedRoute unauthed path="/signin">
+                                            <SignIn />
+                                        </AuthenticatedRoute>
+                                        <AuthenticatedRoute unauthed path="/signup">
+                                            <SignUp />
+                                        </AuthenticatedRoute>
+                                        <AuthenticatedRoute unauthed path="/forgot">
+                                            <ForgotPassword />
+                                        </AuthenticatedRoute>
+                                        <AuthenticatedRoute unauthed path="/reset-password/:uuid">
+                                            <ResetPassword />
+                                        </AuthenticatedRoute>
+                                        <AuthenticatedRoute authed path="/inbox">
+                                            <Inbox />
+                                        </AuthenticatedRoute>
+                                        <AuthenticatedRoute authed path="/account">
+                                            <Account />
+                                        </AuthenticatedRoute>
+                                        <AuthenticatedRoute unauthed path="/" exact>
+                                            <Home />
+                                        </AuthenticatedRoute>
+                                        <Route>
+                                            <div>Where are you?</div>
+                                        </Route>
+                                    </Switch>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </ApolloProvider>
-            </Router>
-        </HasUserContext.Provider>
+                    </ApolloProvider>
+                </Router>
+            </HasUserContext.Provider>
+        </Layout>
     );
 }

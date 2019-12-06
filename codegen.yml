@@ -6,6 +6,7 @@ generates:
             - typescript
             - typescript-resolvers
         config:
+            useIndexSignature: true
             maybeValue: T | null | undefined
     ./packages/frontend/src/queries/index.tsx:
         plugins:

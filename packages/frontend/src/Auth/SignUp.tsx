@@ -1,39 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import { useHistory } from 'react-router-dom';
+import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
+import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
+import Spacing from '@airbnb/lunar/lib/components/Spacing';
+import Input from '@airbnb/lunar/lib/components/Input';
+import Button from '@airbnb/lunar/lib/components/Button';
+import Link from '../Link';
+import AuthForm from './AuthForm';
 import { useSignUpMutation } from '../queries';
 import HasUserContext from '../HasUserContext';
 
-const useStyles = makeStyles(theme => ({
-    paper: {
-        marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1)
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2)
-    }
-}));
-
 export default function SignUp() {
-    const classes = useStyles();
+    const [classes, cx] = useStyles(() => ({
+        rightAlign: {
+            display: 'flex',
+            justifyContent: 'flex-end'
+        }
+    }));
     const history = useHistory();
     const { setHasUser } = useContext(HasUserContext);
     const [name, setName] = useState('');
@@ -55,74 +38,50 @@ export default function SignUp() {
     }, [data, history, setHasUser]);
 
     return (
-        <Container component="main" maxWidth="xs">
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Sign up
-                </Typography>
-                <form className={classes.form} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Name"
-                        name="name"
-                        autoComplete="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        disabled={loading}
-                        autoFocus
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={loading}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        disabled={loading}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        disabled={loading}
-                        onClick={() => signUp()}
-                    >
+        <AuthForm title="Sign up">
+            <form noValidate>
+                <Input
+                    required
+                    label="Name"
+                    name="name"
+                    autoComplete="name"
+                    value={name}
+                    onChange={setName}
+                    disabled={loading}
+                    autoFocus
+                />
+                <Input
+                    required
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={setEmail}
+                    disabled={loading}
+                />
+                <Input
+                    required
+                    name="password"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={setPassword}
+                    disabled={loading}
+                />
+                <ButtonGroup endAlign>
+                    <Button type="submit" disabled={loading} onClick={() => signUp()}>
                         Sign Up
                     </Button>
-                    <Grid container>
-                        <Grid item xs />
-                        <Grid item>
-                            <Link component={RouterLink} to="/signin" variant="body2">
-                                Already have an account? Sign in
-                            </Link>
-                        </Grid>
-                    </Grid>
-                </form>
-            </div>
-        </Container>
+                </ButtonGroup>
+                <Spacing top={3}>
+                    <div className={cx(classes.rightAlign)}>
+                        <Link small to="/signin">
+                            Already have an account? Sign in
+                        </Link>
+                    </div>
+                </Spacing>
+            </form>
+        </AuthForm>
     );
 }

@@ -7,9 +7,12 @@ import {
     Column,
     Generated,
     JoinColumn,
-    BeforeRemove
+    AfterInsert
 } from 'typeorm';
+import Queue from 'bull';
 import { User } from './User';
+
+const resetQueue = new Queue('reset emails');
 
 @Entity()
 export class PasswordReset extends BaseEntity {
@@ -55,4 +58,12 @@ export class PasswordReset extends BaseEntity {
 
     @CreateDateColumn()
     createdAt!: string;
+
+    @AfterInsert()
+    sendEmail() {
+        resetQueue.add({
+            to: this.user.email,
+            uuid: this.uuid
+        });
+    }
 }

@@ -1,8 +1,10 @@
 {
-   "type": "sqlite",
-   "database": "database.sqlite",
+   "type": "postgres",
    "synchronize": true,
    "logging": false,
+   "username": "postgres",
+   "password": "text-me-maybe",
+   "database": "postgres",
    "entities": [
       "src/entity/**/*.ts"
    ],

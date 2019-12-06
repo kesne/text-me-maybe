@@ -4,6 +4,7 @@ import Router from '@koa/router';
 import cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
 import session from 'koa-session';
+import redisStore from 'koa-redis';
 import { ApolloServer } from 'apollo-server-koa';
 import { createConnection } from 'typeorm';
 import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions';
@@ -47,7 +48,8 @@ const SESSION_CONFIG = {
     httpOnly: true,
     signed: true,
     rolling: true,
-    renew: false
+    renew: false,
+    store: redisStore({})
 };
 
 app.use(

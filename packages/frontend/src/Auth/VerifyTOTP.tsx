@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import Text from '@airbnb/lunar/lib/components/Text';
+import Spacing from '@airbnb/lunar/lib/components/Spacing';
+import Input from '@airbnb/lunar/lib/components/Input';
+import Button from '@airbnb/lunar/lib/components/Button';
+import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
 import { useExchangeTotpMutation } from '../queries';
 
 const useStyles = makeStyles(theme => ({
@@ -32,37 +34,33 @@ export default function VerifyTOTP({ onSignIn }: Props) {
 
     return (
         <>
-            <Typography>
-                Two factor auth is enabled on this account. Please enter the token from your
-                authenticator app below:
-            </Typography>
-            <TextField
-                variant="outlined"
-                margin="normal"
+            <Spacing bottom={2}>
+                <Text>
+                    Two factor auth is enabled on this account. Please enter the token from your
+                    authenticator app below:
+                </Text>
+            </Spacing>
+            <Input
                 required
-                fullWidth
                 type="number"
                 label="Token"
                 name="token"
                 value={token}
-                onChange={e => setToken(e.target.value)}
-                inputProps={{
-                    pattern: '[0-9]{6}',
-                    maxlength: '6'
-                }}
+                onChange={setToken}
+                pattern="[0-9]{6}"
+                maxLength={6}
                 autoFocus
             />
-            <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={() => exchangeTotp()}
-                disabled={loading}
-            >
-                Verify Two Factor Auth
-            </Button>
+            <ButtonGroup endAlign>
+                <Button
+                    type="submit"
+                    className={classes.submit}
+                    onClick={() => exchangeTotp()}
+                    disabled={loading}
+                >
+                    Verify Two Factor Auth
+                </Button>
+            </ButtonGroup>
         </>
     );
 }

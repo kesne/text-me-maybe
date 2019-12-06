@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
+import Spacing from '@airbnb/lunar/lib/components/Spacing';
+import Input from '@airbnb/lunar/lib/components/Input';
+import Button from '@airbnb/lunar/lib/components/Button';
+import Row from '@airbnb/lunar/lib/components/Row';
+import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
+import Link from '../Link';
 import { useSignInMutation } from '../queries';
-
-const useStyles = makeStyles((theme) => ({
-    submit: {
-        margin: theme.spacing(3, 0, 2)
-    }
-}));
 
 type Props = {
     onSignIn(): void;
@@ -19,7 +13,6 @@ type Props = {
 };
 
 export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
-    const classes = useStyles();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [signIn, { data, loading }] = useSignInMutation({
@@ -41,55 +34,48 @@ export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
 
     return (
         <>
-            <TextField
-                variant="outlined"
-                margin="normal"
+            <Input
                 required
-                fullWidth
                 label="Email Address"
                 name="email"
                 autoComplete="email"
                 disabled={loading}
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={setEmail}
                 autoFocus
             />
-            <TextField
-                variant="outlined"
-                margin="normal"
+            <Input
                 required
-                fullWidth
                 name="password"
                 label="Password"
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={setPassword}
                 autoComplete="current-password"
                 disabled={loading}
             />
-            <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={() => signIn()}
-                disabled={loading}
-            >
-                Sign In
-            </Button>
-            <Grid container>
-                <Grid item xs>
-                    <Link component={RouterLink} to="/forgot" variant="body2">
+            <ButtonGroup endAlign>
+                <Button
+                    type="submit"
+                    onClick={() => signIn()}
+                    disabled={loading}
+                >
+                    Sign In
+                </Button>
+            </ButtonGroup>
+            <Spacing top={3}>
+                <Row
+                    after={
+                        <Link small to="/signup">
+                            Don't have an account? Sign Up
+                        </Link>
+                    }
+                >
+                    <Link small to="/forgot">
                         Forgot password?
                     </Link>
-                </Grid>
-                <Grid item>
-                    <Link component={RouterLink} to="/signup" variant="body2">
-                        Don't have an account? Sign Up
-                    </Link>
-                </Grid>
-            </Grid>
+                </Row>
+            </Spacing>
         </>
     );
 }

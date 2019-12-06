@@ -1,48 +1,27 @@
 import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import green from '@material-ui/core/colors/green';
+import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
+import Text from '@airbnb/lunar/lib/components/Text';
+import Input from '@airbnb/lunar/lib/components/Input';
+import Spacing from '@airbnb/lunar/lib/components/Spacing';
+import Button from '@airbnb/lunar/lib/components/Button';
+import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
+import IconCheck from '@airbnb/lunar-icons/lib/interface/IconCheckAlt';
 import { useForgotPasswordMutation } from '../queries';
-
-const useStyles = makeStyles(theme => ({
-    paper: {
-        marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
-    desc: {
-        marginTop: theme.spacing(1)
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1)
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2)
-    },
-    completeIcon: {
-        fontSize: '4rem',
-        margin: theme.spacing(4),
-        color: green[500]
-    }
-}));
+import AuthForm from './AuthForm';
+import Link from '../Link';
 
 export default function ForgotPassword() {
-    const classes = useStyles();
+    const [classes, cx] = useStyles(theme => ({
+        rightAlign: {
+            display: 'flex',
+            justifyContent: 'flex-end'
+        },
+        complete: {
+            margin: theme.unit * 4,
+            display: 'flex',
+            justifyContent: 'center'
+        }
+    }));
     const [email, setEmail] = useState('');
     const [forgotPassword, { data, loading }] = useForgotPasswordMutation({
         variables: {
@@ -51,66 +30,57 @@ export default function ForgotPassword() {
     });
 
     return (
-        <Container component="main" maxWidth="xs">
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Forgot Password
-                </Typography>
-                {data ? (
-                    <>
-                        <CheckCircleIcon className={classes.completeIcon} />
-                        <Typography>
-                            A confirmation has been sent to your email. Click the link in the email
-                            to finish resetting your password
-                        </Typography>
-                    </>
-                ) : (
-                    <>
-                        <div className={classes.desc}>
-                            <Typography variant="subtitle1">
-                                Enter the email you created your account with, and we will email you
-                                a link to reset your password.
-                            </Typography>
-                        </div>
-                        <form className={classes.form} noValidate>
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
+        <AuthForm title="Forgot password">
+            {data ? (
+                <>
+                    <Text>
+                        A confirmation has been sent to your email. Click the link in the email to
+                        finish resetting your password
+                    </Text>
+                    <div className={cx(classes.complete)}>
+                        <IconCheck color="green" size={64} />
+                    </div>
+                </>
+            ) : (
+                <>
+                    <Text>
+                        Enter the email you created your account with, and we will email you a link
+                        to reset your password.
+                    </Text>
+                    <Spacing top={2}>
+                        <form noValidate>
+                            <Input
                                 required
-                                fullWidth
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
                                 value={email}
-                                onChange={e => setEmail(e.target.value)}
+                                onChange={setEmail}
                                 disabled={loading}
                             />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                className={classes.submit}
-                                disabled={loading}
-                                onClick={() => forgotPassword()}
-                            >
-                                Email Recovery Link
-                            </Button>
-                            <Grid container>
-                                <Grid item xs />
-                                <Grid item>
-                                    <Link component={RouterLink} to="/signin" variant="body2">
-                                        Remembered your password? Sign in
-                                    </Link>
-                                </Grid>
-                            </Grid>
+                            <ButtonGroup endAlign>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={loading}
+                                    onClick={() => forgotPassword()}
+                                >
+                                    Email Recovery Link
+                                </Button>
+                            </ButtonGroup>
                         </form>
-                    </>
-                )}
-            </div>
-        </Container>
+                    </Spacing>
+                    <Spacing top={3}>
+                        <div className={cx(classes.rightAlign)}>
+                            <Link small to="/signin">
+                                Remembered your password? Sign in
+                            </Link>
+                        </div>
+                    </Spacing>
+                </>
+            )}
+        </AuthForm>
     );
 }

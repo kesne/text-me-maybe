@@ -1,7 +1,7 @@
 # TODO
 
-- Send reset password emails?
-- Add some Lunar.
+- Improve messaging UI
+
 
 
 - Verify email?
@@ -12,5 +12,3 @@
     -   Display a day header between days
     -   Just display timestamp more muted on the messages
     -   Click to see the time?
--   Time-permitting, look into Docker (maybe just expose it?)
--   Other stuff?

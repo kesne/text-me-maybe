@@ -17,9 +17,9 @@ const QueryResolvers: QueryResolvers<Context> = {
     async threads(_parent, _args, { user }) {
         // TODO: Move this into thread:
         return await Thread.createQueryBuilder('thread')
-            .where('thread.userId = :userId', { userId: user.id })
+            .where('thread."userId" = :userId', { userId: user.id })
             .leftJoin('thread.messages', 'messages')
-            .addOrderBy('messages.createdAt', 'DESC')
+            .addOrderBy('"messages"."createdAt"', 'DESC')
             .getMany();
     },
     async onboardTotp(_parent, _args, { user }) {

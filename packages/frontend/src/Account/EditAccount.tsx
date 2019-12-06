@@ -58,7 +58,7 @@ export default function EditAccount({ me, editing, onEditingChange }: Props) {
                             </td>
                             <td>
                                 {editing ? (
-                                    <Input label="Name" value={name} onChange={setName} />
+                                    <Input hideLabel label="Name" value={name} onChange={setName} />
                                 ) : (
                                     me.name
                                 )}
@@ -70,7 +70,7 @@ export default function EditAccount({ me, editing, onEditingChange }: Props) {
                             </td>
                             <td>
                                 {editing ? (
-                                    <Input label="Email" value={email} onChange={setEmail} />
+                                    <Input hideLabel label="Email" value={email} onChange={setEmail} />
                                 ) : (
                                     me.email
                                 )}

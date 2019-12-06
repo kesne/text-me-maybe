@@ -175,7 +175,8 @@ export type User = {
   hasTOTP: Scalars['Boolean'],
 };
 
-
+export type WithIndex<TObject> = TObject & Record<string, any>;
+export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -245,7 +246,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
+export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
   Thread: ResolverTypeWrapper<Thread>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
@@ -260,10 +261,10 @@ export type ResolversTypes = {
   SignInResult: ResolversTypes['Result'] | ResolversTypes['TOTPChallenge'],
   TOTPChallenge: ResolverTypeWrapper<TotpChallenge>,
   ResetPassword: ResolverTypeWrapper<ResetPassword>,
-};
+}>;
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
+export type ResolversParentTypes = ResolversObject<{
   Query: {},
   Thread: Thread,
   Int: Scalars['Int'],
@@ -278,20 +279,20 @@ export type ResolversParentTypes = {
   SignInResult: ResolversParentTypes['Result'] | ResolversParentTypes['TOTPChallenge'],
   TOTPChallenge: TotpChallenge,
   ResetPassword: ResetPassword,
-};
+}>;
 
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = {  }> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
-export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = {
+export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   sender?: Resolver<ResolversTypes['Sender'], ParentType, ContextType>,
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   seen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-};
+}>;
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationCreateThreadArgs, 'name' | 'to' | 'message'>>,
   sendMessage?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'threadID' | 'body'>>,
   signUp?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'name' | 'email' | 'password'>>,
@@ -305,28 +306,28 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateAccount?: Resolver<ResolversTypes['User'], ParentType, ContextType, MutationUpdateAccountArgs>,
   forgotPassword?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationForgotPasswordArgs, 'email'>>,
   resetPassword?: Resolver<ResolversTypes['ResetPassword'], ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'uuid'>>,
-};
+}>;
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   threads?: Resolver<Array<ResolversTypes['Thread']>, ParentType, ContextType>,
   thread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<QueryThreadArgs, 'threadID'>>,
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   onboardTotp?: Resolver<ResolversTypes['TotpOnboarding'], ParentType, ContextType>,
-};
+}>;
 
-export type ResetPasswordResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResetPassword'] = ResolversParentTypes['ResetPassword']> = {
+export type ResetPasswordResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResetPassword'] = ResolversParentTypes['ResetPassword']> = ResolversObject<{
   complete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-};
+}>;
 
-export type ResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = {
+export type ResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = ResolversObject<{
   ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-};
+}>;
 
-export type SignInResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['SignInResult'] = ResolversParentTypes['SignInResult']> = {
+export type SignInResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['SignInResult'] = ResolversParentTypes['SignInResult']> = ResolversObject<{
   __resolveType: TypeResolveFn<'Result' | 'TOTPChallenge', ParentType, ContextType>
-};
+}>;
 
-export type ThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = {
+export type ThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   phoneNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
@@ -336,25 +337,25 @@ export type ThreadResolvers<ContextType = any, ParentType extends ResolversParen
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   ended?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-};
+}>;
 
-export type TotpChallengeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TOTPChallenge'] = ResolversParentTypes['TOTPChallenge']> = {
+export type TotpChallengeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TOTPChallenge'] = ResolversParentTypes['TOTPChallenge']> = ResolversObject<{
   totpChallenge?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-};
+}>;
 
-export type TotpOnboardingResolvers<ContextType = any, ParentType extends ResolversParentTypes['TotpOnboarding'] = ResolversParentTypes['TotpOnboarding']> = {
+export type TotpOnboardingResolvers<ContextType = any, ParentType extends ResolversParentTypes['TotpOnboarding'] = ResolversParentTypes['TotpOnboarding']> = ResolversObject<{
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   secret?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-};
+}>;
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   hasTOTP?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-};
+}>;
 
-export type Resolvers<ContextType = any> = {
+export type Resolvers<ContextType = any> = ResolversObject<{
   Message?: MessageResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
@@ -365,7 +366,7 @@ export type Resolvers<ContextType = any> = {
   TOTPChallenge?: TotpChallengeResolvers<ContextType>,
   TotpOnboarding?: TotpOnboardingResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
-};
+}>;
 
 
 /**
@@ -373,9 +374,9 @@ export type Resolvers<ContextType = any> = {
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
 */
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;
-export type DirectiveResolvers<ContextType = any> = {
+export type DirectiveResolvers<ContextType = any> = ResolversObject<{
   auth?: AuthDirectiveResolver<any, any, ContextType>,
-};
+}>;
 
 
 /**
