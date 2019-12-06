@@ -1,0 +1,21 @@
+{
+  "name": "@text-me-maybe/worker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node-dev --respawn --transpileOnly ./src/index.ts"
+  },
+  "dependencies": {
+    "bull": "^3.12.1",
+    "mailgun-js": "^0.22.0"
+  },
+  "devDependencies": {
+    "@types/bull": "^3.10.6",
+    "@types/mailgun-js": "^0.22.3",
+    "@types/node": "^12.12.7",
+    "node-dev": "^4.0.0",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.2"
+  }
+}

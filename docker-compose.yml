@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: 'postgres'
+    image: 'postgres:11'
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data/'
+    environment:
+      POSTGRES_PASSWORD: text-me-maybe
+
+  redis:
+    container_name: 'redis'
+    image: 'redis'
+    ports:
+      - '127.0.0.1:6379:6379'
+    volumes:
+      - 'redisdata:/data'
+
+volumes:
+  pgdata: {}
+  redisdata: {}
