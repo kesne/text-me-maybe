@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Message } from './Message';
 import { User } from './User';
+import { PhoneNumber } from './PhoneNumber';
 
 @Entity()
 export class Thread extends BaseEntity {
@@ -18,9 +19,6 @@ export class Thread extends BaseEntity {
 
     @Column()
     name!: string;
-
-    @Column()
-    phoneNumber!: string;
 
     @Column()
     recipient!: string;
@@ -39,6 +37,12 @@ export class Thread extends BaseEntity {
         message => message.thread
     )
     messages!: Message[];
+
+    @ManyToOne(
+        () => PhoneNumber,
+        phoneNumber => phoneNumber.threads
+    )
+    phoneNumber!: PhoneNumber;
 
     @CreateDateColumn()
     createdAt!: string;
