@@ -1,0 +1,78 @@
+directive @auth on FIELD_DEFINITION
+
+enum Sender {
+    SELF
+    OTHER
+}
+
+type User {
+    id: Int!
+    name: String!
+    email: String!
+    hasTOTP: Boolean!
+}
+
+type TOTPChallenge {
+    totpChallenge: Boolean!
+}
+
+type Result {
+    ok: Boolean!
+}
+
+union SignInResult = Result | TOTPChallenge
+
+type Message {
+    id: Int!
+    body: String!
+    sender: Sender!
+    createdAt: String!
+    updatedAt: String
+    seen: Boolean!
+}
+
+type Thread {
+    id: Int!
+    name: String!
+    phoneNumber: String!
+    recipient: String!
+    messages: [Message!]!
+    lastMessage: Message
+    createdAt: String!
+    updatedAt: String
+    ended: Boolean!
+}
+
+type TotpOnboarding {
+    name: String!
+    secret: String!
+}
+
+type ResetPassword {
+    complete: Boolean!
+}
+
+type Query {
+    threads: [Thread!]! @auth
+    thread(threadID: Int!): Thread! @auth
+    me: User! @auth
+    onboardTotp: TotpOnboarding! @auth
+}
+
+type Mutation {
+    createThread(name: String!, to: String!, message: String!): Thread! @auth
+    sendMessage(threadID: Int!, body: String!): Message! @auth
+    signUp(name: String!, email: String!, password: String!): Result!
+    signIn(email: String!, password: String!): SignInResult!
+    exchangeTOTP(token: String!): Result!
+    markMessageAsSeen(id: Int!): Message! @auth
+    endThread(id: Int!): Thread! @auth
+    deleteThread(id: Int!): Result! @auth
+    enableTotp(secret: String!, token: String!): Result! @auth
+    disableTotp(password: String!): Result! @auth
+    updateAccount(name: String, email: String): User! @auth
+
+    # Password Resets:
+    forgotPassword(email: String!): Result!
+    resetPassword(uuid: String!, password: String): ResetPassword!
+}

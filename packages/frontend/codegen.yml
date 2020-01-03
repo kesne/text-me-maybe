@@ -1,0 +1,13 @@
+schema: ../backend/schema.graphql
+documents: ./src/queries/*.graphql
+generates:
+    ./src/queries/index.tsx:
+        plugins:
+            - typescript
+            - typescript-operations
+            - typescript-react-apollo
+        config:
+            gqlImport: apollo-boost#gql
+            withHooks: true
+            withComponent: false
+            withHOC: false
