@@ -1,4 +1,4 @@
-import * as otplib from 'otplib';
+import { authenticator } from 'otplib';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from 'typeorm';
 import { compare, hash } from 'bcryptjs';
 import { Thread } from './Thread';
@@ -36,7 +36,7 @@ export class User extends BaseEntity {
             return;
         }
 
-        const isValid = otplib.authenticator.verify({ secret: user.totpSecret, token });
+        const isValid = authenticator.verify({ secret: user.totpSecret, token });
         if (!isValid) {
             return;
         }
@@ -85,7 +85,7 @@ export class User extends BaseEntity {
     }
 
     generateTotpSecret() {
-        return otplib.authenticator.generateSecret();
+        return authenticator.generateSecret();
     }
 
     async checkPassword(password: string) {

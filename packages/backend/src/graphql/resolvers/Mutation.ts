@@ -1,4 +1,4 @@
-import * as otplib from 'otplib';
+import { authenticator } from 'otplib';
 import { MutationResolvers } from '../../schema.graphql';
 import { Context } from '../../types';
 import { User, AuthType } from '../../entity/User';
@@ -57,7 +57,7 @@ const MutationResolvers: MutationResolvers<Context> = {
         }
 
         // TODO: Move to user?
-        const isValid = otplib.authenticator.verify({ secret, token });
+        const isValid = authenticator.verify({ secret, token });
         if (!isValid) {
             throw new Error('Invalid TOTP');
         }
