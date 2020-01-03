@@ -2,7 +2,7 @@ import ApolloClient from 'apollo-boost';
 import Cookies from 'js-cookie';
 
 export default new ApolloClient({
-    uri: 'http://localhost:1337/graphql',
+    uri: '/api/graphql',
     credentials: 'include',
     // TODO: The server should clear the cookie here:
     onError(error) {

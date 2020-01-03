@@ -1,4 +1,4 @@
-import { SignInResultResolvers } from '../../generated-graphql';
+import { SignInResultResolvers } from '../../schema.graphql';
 import { Context } from '../../types';
 
 const SignInResultResolvers: SignInResultResolvers<Context> = {

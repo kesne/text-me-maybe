@@ -1,4 +1,4 @@
-import { Resolvers } from '../../generated-graphql';
+import { Resolvers } from '../../schema.graphql';
 import ThreadResolvers from './Thread';
 import QueryResolvers from './Query';
 import MutationResolvers from './Mutation';

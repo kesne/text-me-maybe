@@ -1,5 +1,5 @@
 import * as otplib from 'otplib';
-import { MutationResolvers } from '../../generated-graphql';
+import { MutationResolvers } from '../../schema.graphql';
 import { Context } from '../../types';
 import { User, AuthType } from '../../entity/User';
 import { Thread } from '../../entity/Thread';

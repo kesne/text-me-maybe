@@ -1,5 +1,5 @@
 import { Message } from '../../entity/Message';
-import { ThreadResolvers } from '../../generated-graphql';
+import { ThreadResolvers } from '../../schema.graphql';
 import { Context } from '../../types';
 
 const ThreadResolvers: ThreadResolvers<Context> = {

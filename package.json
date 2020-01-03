@@ -3,22 +3,13 @@
     "repository": "git@github.com:kesne/text-me-maybe.git",
     "author": "Jordan Gensler <jordangens@gmail.com>",
     "scripts": {
-        "start": "concurrently --restart-tries 3 --retart-after 1000 -n docker,backend,worker,frontend -c 'yellow.bold,blue.bold,green.bold,magenta.bold' 'docker-compose up' 'cd ./packages/backend; yarn start' 'cd ./packages/worker; yarn start' 'cd ./packages/frontend; yarn start'",
-        "codegen": "graphql-codegen"
+        "codegen": "yarn workspace @text-me-maybe/backend codegen && yarn workspace @text-me-maybe/frontend codegen"
     },
     "workspaces": [
         "packages/*"
     ],
     "license": "MIT",
     "private": true,
-    "dependencies": {
-        "concurrently": "^5.0.0"
-    },
-    "devDependencies": {
-        "@graphql-codegen/cli": "^1.8.3",
-        "@graphql-codegen/typescript": "^1.8.3",
-        "@graphql-codegen/typescript-operations": "^1.8.3",
-        "@graphql-codegen/typescript-react-apollo": "^1.8.3",
-        "@graphql-codegen/typescript-resolvers": "^1.8.3"
-    }
+    "dependencies": {},
+    "devDependencies": {}
 }

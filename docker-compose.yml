@@ -1,24 +1,49 @@
 version: '3'
 
 services:
-  postgres:
-    container_name: 'postgres'
-    image: 'postgres:11'
-    ports:
-      - '127.0.0.1:5432:5432'
-    volumes:
-      - 'pgdata:/var/lib/postgresql/data/'
-    environment:
-      POSTGRES_PASSWORD: text-me-maybe
+    postgres:
+        container_name: 'tmm-postgres'
+        image: 'postgres:11'
+        ports:
+            - '127.0.0.1:5432:5432'
+        volumes:
+            - 'pgdata:/var/lib/postgresql/data/'
+        environment:
+            POSTGRES_PASSWORD: text-me-maybe
 
-  redis:
-    container_name: 'redis'
-    image: 'redis'
-    ports:
-      - '127.0.0.1:6379:6379'
-    volumes:
-      - 'redisdata:/data'
+    redis:
+        container_name: 'tmm-redis'
+        image: 'redis'
+        ports:
+            - '127.0.0.1:6379:6379'
+        volumes:
+            - 'redisdata:/data'
+
+    backend:
+        image: node:12-alpine
+        command: yarn workspace @text-me-maybe/backend start
+        ports:
+            - '127.0.0.1:1337:1337'
+        volumes:
+            - .:/srv/backend:rw
+        working_dir: /srv/backend
+        env_file:
+            - .env
+        depends_on:
+            - redis
+            - postgres
+
+    frontend:
+        image: node:12-alpine
+        command: yarn workspace @text-me-maybe/frontend start
+        ports:
+            - '127.0.0.1:3000:3000'
+        volumes:
+            - .:/srv/frontend:rw
+        working_dir: /srv/frontend
+        depends_on:
+            - backend
 
 volumes:
-  pgdata: {}
-  redisdata: {}
+    pgdata: {}
+    redisdata: {}

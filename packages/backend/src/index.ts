@@ -7,18 +7,18 @@ import session from 'koa-session';
 import redisStore from 'koa-redis';
 import { ApolloServer } from 'apollo-server-koa';
 import { createConnection } from 'typeorm';
-import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions';
-import schema from './graphql/schema';
+import redis from './redis';
+import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
-import config from '../ormconfig.json';
 import { User } from './entity/User';
 import AuthDirective from './graphql/AuthDirective';
+import ormconfig from '../ormconfig';
 
 const app = new Koa();
 const router = new Router();
 
 const server = new ApolloServer({
-    typeDefs: schema,
+    typeDefs,
     resolvers,
     schemaDirectives: {
         auth: AuthDirective
@@ -49,7 +49,9 @@ const SESSION_CONFIG = {
     signed: true,
     rolling: true,
     renew: false,
-    store: redisStore({})
+    store: redisStore({
+        client: redis
+    })
 };
 
 app.use(
@@ -77,14 +79,14 @@ app.use(router.allowedMethods());
 //     res.end(twiml.toString());
 // });
 
-createConnection(config as SqliteConnectionOptions)
+createConnection(ormconfig)
     .then(async connection => {
         app.use((ctx, next) => {
             ctx.connection = connection;
             return next();
         }).use(auth);
 
-        server.applyMiddleware({ app });
+        server.applyMiddleware({ app, path: '/api/graphql' });
 
         console.log('Connected to the database.');
 

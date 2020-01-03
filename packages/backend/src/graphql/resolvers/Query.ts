@@ -1,4 +1,4 @@
-import { QueryResolvers } from '../../generated-graphql';
+import { QueryResolvers } from '../../schema.graphql';
 import { Thread } from '../../entity/Thread';
 import { Context } from '../../types';
 

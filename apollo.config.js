@@ -3,10 +3,10 @@ module.exports = {
         includes: ['./packages/**/*.graphql'],
         service: {
             name: 'text-me-maybe',
-            localSchemaFile: './schema.graphql'
+            localSchemaFile: './packages/backend/schema.graphql'
         }
     },
     service: {
-        localSchemaFile: './schema.graphql'
+        localSchemaFile: './packages/backend/schema.graphql'
     }
 };

@@ -1,12 +1,6 @@
 import * as otplib from 'otplib';
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    OneToMany,
-    BaseEntity
-} from 'typeorm';
-import bcrypt from 'bcrypt';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from 'typeorm';
+import { compare, hash } from 'bcryptjs';
 import { Thread } from './Thread';
 import { Session, Cookies } from '../types';
 
@@ -63,7 +57,7 @@ export class User extends BaseEntity {
     passwordHash!: string;
 
     async setPassword(newPassword: string) {
-        this.passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+        this.passwordHash = await hash(newPassword, SALT_ROUNDS);
     }
 
     // TODO: Encrypt this somehow.
@@ -79,7 +73,7 @@ export class User extends BaseEntity {
             return;
         }
 
-        const passwordValid = await bcrypt.compare(password, this.passwordHash);
+        const passwordValid = await compare(password, this.passwordHash);
 
         if (!passwordValid) {
             throw new Error('Password is not valid!');
@@ -95,7 +89,7 @@ export class User extends BaseEntity {
     }
 
     async checkPassword(password: string) {
-        return await bcrypt.compare(password, this.passwordHash);
+        return await compare(password, this.passwordHash);
     }
 
     signIn(session: Session, cookies: Cookies, type: AuthType = AuthType.FULL) {

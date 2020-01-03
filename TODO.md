@@ -1,11 +1,12 @@
 # TODO
 
-- Improve messaging UI
+-   Model Phone Numbers.
+-   Migrations.
+-   More Lunar.
 
+## Eventually?
 
-
-- Verify email?
-
+-   Verify email?
 -   Actually Look Into Phone Numbers?
 -   Improve thread message timestamp
     -   Group them into daily buckets
