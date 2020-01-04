@@ -148,7 +148,7 @@ export type Thread = {
    __typename?: 'Thread',
   id: Scalars['Int'],
   name: Scalars['String'],
-  phoneNumber: Scalars['String'],
+  number: Scalars['String'],
   recipient: Scalars['String'],
   messages: Array<Message>,
   lastMessage?: Maybe<Message>,
@@ -308,7 +308,7 @@ export type MessagesQuery = (
   { __typename?: 'Query' }
   & { thread: (
     { __typename?: 'Thread' }
-    & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'createdAt' | 'ended'>
+    & Pick<Thread, 'id' | 'name' | 'recipient' | 'number' | 'createdAt' | 'ended'>
     & { messages: Array<(
       { __typename?: 'Message' }
       & Pick<Message, 'id' | 'body' | 'sender' | 'createdAt'>
@@ -394,7 +394,7 @@ export type ThreadsQuery = (
   { __typename?: 'Query' }
   & { threads: Array<(
     { __typename?: 'Thread' }
-    & Pick<Thread, 'id' | 'name' | 'recipient' | 'phoneNumber' | 'updatedAt' | 'ended'>
+    & Pick<Thread, 'id' | 'name' | 'recipient' | 'number' | 'updatedAt' | 'ended'>
     & { lastMessage: Maybe<(
       { __typename?: 'Message' }
       & Pick<Message, 'id' | 'body' | 'seen'>
@@ -723,7 +723,7 @@ export const MessagesDocument = gql`
     id
     name
     recipient
-    phoneNumber
+    number
     createdAt
     ended
     messages {
@@ -939,7 +939,7 @@ export const ThreadsDocument = gql`
     id
     name
     recipient
-    phoneNumber
+    number
     updatedAt
     ended
     lastMessage {

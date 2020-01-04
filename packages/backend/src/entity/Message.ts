@@ -47,9 +47,10 @@ export class Message extends BaseEntity {
 
     @BeforeInsert()
     async sendMessage() {
+        const fromNumber = await this.thread.getNumber();
         const twilioReponse = await twilio.messages.create({
             body: this.body,
-            from: this.thread.phoneNumber,
+            from: fromNumber,
             to: this.thread.recipient
         });
 

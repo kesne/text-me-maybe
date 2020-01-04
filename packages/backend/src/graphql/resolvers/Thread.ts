@@ -1,6 +1,7 @@
 import { Message } from '../../entity/Message';
 import { ThreadResolvers } from '../../schema.graphql';
 import { Context } from '../../types';
+import { Thread } from '../../entity/Thread';
 
 const ThreadResolvers: ThreadResolvers<Context> = {
     lastMessage(parent) {
@@ -16,6 +17,9 @@ const ThreadResolvers: ThreadResolvers<Context> = {
             .where('message."threadId" = :threadId', { threadId: parent.id })
             .addOrderBy('message.createdAt', 'DESC')
             .getMany();
+    },
+    number(parent: Thread) {
+        return parent.getNumber();
     }
 };
 

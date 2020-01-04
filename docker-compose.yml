@@ -44,6 +44,22 @@ services:
         depends_on:
             - backend
 
+    ngrok:
+        image: wernight/ngrok
+        ports:
+            - '4040:4040'
+        env_file:
+            - .env
+        command:
+            - /bin/sh
+            - -c
+            - |
+                ngrok http -subdomain=text-me-maybe backend:1337
+        volumes:
+            - .:/home/ngrok/.ngrok2/
+        depends_on:
+            - backend
+
 volumes:
     pgdata: {}
     redisdata: {}

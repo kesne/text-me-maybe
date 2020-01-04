@@ -44,6 +44,13 @@ export class Thread extends BaseEntity {
     )
     phoneNumber!: PhoneNumber;
 
+    async getNumber() {
+        if (this.phoneNumber) return this.phoneNumber.phoneNumber;
+
+        const number = await PhoneNumber.findOne({ where: { threads: this } });
+        return number?.phoneNumber || 'FIXME';
+    }
+
     @CreateDateColumn()
     createdAt!: string;
 

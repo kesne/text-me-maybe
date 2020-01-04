@@ -13,6 +13,7 @@ import resolvers from './graphql/resolvers';
 import { User } from './entity/User';
 import AuthDirective from './graphql/AuthDirective';
 import ormconfig from '../ormconfig';
+import { handle } from './purchaseLock';
 
 const app = new Koa();
 const router = new Router();
@@ -54,6 +55,11 @@ const SESSION_CONFIG = {
     })
 };
 
+router.get('/api/ack', (ctx) => {
+    handle.ack();
+    ctx.body = 'Acknowledged!';
+});
+
 app.use(
     cors({
         credentials: true
@@ -79,19 +85,23 @@ app.use(router.allowedMethods());
 //     res.end(twiml.toString());
 // });
 
-createConnection(ormconfig)
-    .then(async connection => {
-        app.use((ctx, next) => {
-            ctx.connection = connection;
-            return next();
-        }).use(auth);
+async function main() {
+    const connection = await createConnection(ormconfig);
 
-        server.applyMiddleware({ app, path: '/api/graphql' });
+    app.use((ctx, next) => {
+        ctx.connection = connection;
+        return next();
+    });
 
-        console.log('Connected to the database.');
+    app.use(auth);
 
-        app.listen(1337, () => {
-            console.log('Koa server listening on port 1337');
-        });
-    })
-    .catch(error => console.log(error));
+    server.applyMiddleware({ app, path: '/api/graphql' });
+
+    console.log('Connected to the database.');
+
+    app.listen(1337, () => {
+        console.log('Koa server listening on port 1337');
+    });
+}
+
+main().catch(err => console.error(err));

@@ -3,7 +3,7 @@ query Threads {
         id
         name
         recipient
-        phoneNumber
+        number
         updatedAt
         ended
         lastMessage {

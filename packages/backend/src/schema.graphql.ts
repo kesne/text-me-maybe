@@ -147,7 +147,7 @@ export type Thread = {
    __typename?: 'Thread',
   id: Scalars['Int'],
   name: Scalars['String'],
-  phoneNumber: Scalars['String'],
+  number: Scalars['String'],
   recipient: Scalars['String'],
   messages: Array<Message>,
   lastMessage?: Maybe<Message>,
@@ -330,7 +330,7 @@ export type SignInResultResolvers<ContextType = any, ParentType extends Resolver
 export type ThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  phoneNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  number?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   recipient?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>,
   lastMessage?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>,

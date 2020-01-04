@@ -34,7 +34,7 @@ type Message {
 type Thread {
     id: Int!
     name: String!
-    phoneNumber: String!
+    number: String!
     recipient: String!
     messages: [Message!]!
     lastMessage: Message

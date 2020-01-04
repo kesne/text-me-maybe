@@ -33,8 +33,6 @@ export class PasswordReset extends BaseEntity {
         passwordReset.user = user;
 
         await passwordReset.save();
-
-        console.log(passwordReset.uuid);
     }
 
     static async removeForUser(user: User) {

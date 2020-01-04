@@ -3,7 +3,7 @@ query Messages($threadID: Int!) {
         id
         name
         recipient
-        phoneNumber
+        number
         createdAt
         ended
         messages {

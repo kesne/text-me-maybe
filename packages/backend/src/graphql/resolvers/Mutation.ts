@@ -5,6 +5,7 @@ import { User, AuthType } from '../../entity/User';
 import { Thread } from '../../entity/Thread';
 import { Message, Sender } from '../../entity/Message';
 import { PasswordReset } from '../../entity/PasswordReset';
+import { PhoneNumber } from '../../entity/PhoneNumber';
 
 const RESULT_OK = { ok: true };
 
@@ -83,9 +84,12 @@ const MutationResolvers: MutationResolvers<Context> = {
         return RESULT_OK;
     },
 
+    // TODO: Validate phoneNumber "to" using twilio lookup API.
     async createThread(_parent, { name, to, message: messageText }, { user }) {
+        const phoneNumber = await PhoneNumber.getOrCreateForRecipient(to);
+
         const thread = new Thread();
-        thread.phoneNumber = '+16264657420';
+        thread.phoneNumber = phoneNumber;
         thread.recipient = to;
         thread.user = user;
         thread.name = name;

@@ -55,7 +55,7 @@ export default function Messages() {
                     <Message key={message.id} message={message} />
                 ))}
                 <FetchMore onMore={() => {}} />
-                <YouAre phoneNumber={data.thread.phoneNumber} createdAt={data.thread.createdAt} />
+                <YouAre phoneNumber={data.thread.number} createdAt={data.thread.createdAt} />
             </div>
 
             {data.thread.ended ? (
