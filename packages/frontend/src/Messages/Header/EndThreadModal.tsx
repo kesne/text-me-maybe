@@ -1,11 +1,8 @@
 import React, { useEffect } from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import Modal from '@airbnb/lunar/lib/components/Modal';
+import Text from '@airbnb/lunar/lib/components/Text';
+import Button from '@airbnb/lunar/lib/components/Button';
+import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
 import { Thread, useEndThreadMutation } from '../../queries';
 
 type Props = {
@@ -27,29 +24,24 @@ export default function EndThreadModal({ thread, onClose }: Props) {
     }, [data, onClose]);
 
     return (
-        <Dialog open onClose={onClose}>
-            <DialogTitle>End thread "{thread.name}"</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    <Typography color="textSecondary">
-                        Ending a thread will prevent the other person from messaging you again! Are
-                        you sure that you want to do this?
-                    </Typography>
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="primary">
-                    Cancel
-                </Button>
-                <Button
-                    onClick={() => endThread()}
-                    disabled={loading}
-                    variant="contained"
-                    color="primary"
-                >
-                    End Thread
-                </Button>
-            </DialogActions>
-        </Dialog>
+        <Modal
+            title={`End thread "${thread.name}"`}
+            footer={
+                <ButtonGroup endAlign>
+                    <Button inverted onClick={onClose}>
+                        Cancel
+                    </Button>
+                    <Button onClick={() => endThread()} disabled={loading}>
+                        End Thread
+                    </Button>
+                </ButtonGroup>
+            }
+            onClose={onClose}
+        >
+            <Text>
+                Ending a thread will prevent the other person from messaging you again! Are you sure
+                that you want to do this?
+            </Text>
+        </Modal>
     );
 }

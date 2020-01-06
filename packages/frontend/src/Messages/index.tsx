@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, useParams } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
 import Message from './Message';
 import SendMessage from './SendMessage';
 import { useMessagesQuery } from '../queries';
@@ -9,23 +9,22 @@ import Header from './Header';
 import YouAre from './YouAre';
 import ThreadEnded from './ThreadEnded';
 
-const useStyles = makeStyles(() => ({
-    wrapper: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden'
-    },
-    container: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column-reverse',
-        overflowY: 'auto'
-    }
-}));
-
 export default function Messages() {
-    const classes = useStyles();
+    const [classes, cx] = useStyles(() => ({
+        wrapper: {
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+        },
+        container: {
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column-reverse',
+            overflowY: 'auto'
+        }
+    }));
+
     const { id } = useParams() as Record<string, string>;
     const threadID = Number(id);
 
@@ -44,13 +43,13 @@ export default function Messages() {
     }
 
     if (!data.thread) {
-        return <Redirect to="/inbox" />
+        return <Redirect to="/inbox" />;
     }
 
     return (
-        <div className={classes.wrapper}>
+        <div className={cx(classes.wrapper)}>
             <Header thread={data.thread} />
-            <div className={classes.container}>
+            <div className={cx(classes.container)}>
                 {data.thread.messages.map(message => (
                     <Message key={message.id} message={message} />
                 ))}

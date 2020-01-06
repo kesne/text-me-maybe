@@ -1,41 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useRouteMatch, useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import AddIcon from '@material-ui/icons/Add';
-import FolderIcon from '@material-ui/icons/Folder';
+import { useRouteMatch, useHistory } from 'react-router-dom';
+import List from '@airbnb/lunar/lib/components/List';
+import Button from '@airbnb/lunar/lib/components/Button';
 import CreateThread from './CreateThread';
 import { useThreadsQuery } from '../queries';
-
-const useStyles = makeStyles(theme => ({
-    container: {
-        position: 'relative',
-        flex: 1
-    },
-    buttonContainer: {
-        position: 'sticky',
-        padding: theme.spacing(),
-        bottom: 0,
-        display: 'flex',
-        justifyContent: 'flex-end'
-    },
-    badge: {
-        height: theme.spacing(),
-        width: theme.spacing(),
-        borderRadius: theme.spacing(),
-        color: 'white',
-        backgroundColor: theme.palette.primary.main
-    }
-}));
+import ThreadItem from './ThreadItem';
 
 export default function Threads() {
-    const classes = useStyles();
     const [creating, setCreating] = useState(false);
     const { data, error, loading } = useThreadsQuery();
     const history = useHistory();
@@ -58,44 +29,30 @@ export default function Threads() {
     }
 
     return (
-        <div className={classes.container}>
+        <div>
             <List>
-                <ListItem onClick={() => setCreating(true)} button>
-                    <ListItemAvatar>
-                        <Avatar>
-                            <Fab color="primary">
-                                <AddIcon />
-                            </Fab>
-                        </Avatar>
-                    </ListItemAvatar>
-
-                    <ListItemText primary="New conversation" />
-                </ListItem>
                 {data.threads.map(thread => (
-                    <ListItem
+                    <ThreadItem
                         key={thread.id}
+                        id={thread.id}
+                        title={thread.name}
+                        subtitle={thread.lastMessage ? thread.lastMessage.body : null}
+                        seen={thread.lastMessage ? thread.lastMessage.seen : true}
                         selected={Number(params.id) === thread.id}
-                        component={Link}
-                        to={`/inbox/${thread.id}`}
-                        button
-                    >
-                        <ListItemAvatar>
-                            <Avatar>
-                                <FolderIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                            primary={thread.name}
-                            secondary={thread.lastMessage ? thread.lastMessage.body : null}
-                        />
-                        {thread.lastMessage && !thread.lastMessage.seen && (
-                            <ListItemSecondaryAction>
-                                <div className={classes.badge}></div>
-                            </ListItemSecondaryAction>
-                        )}
-                    </ListItem>
+                    />
                 ))}
             </List>
+            <div
+                style={{
+                    position: 'sticky',
+                    bottom: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '8px'
+                }}
+            >
+                <Button onClick={() => setCreating(true)}>New Converstaion</Button>
+            </div>
             {creating && <CreateThread onClose={() => setCreating(false)} />}
         </div>
     );

@@ -1,16 +1,7 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import Text from '@airbnb/lunar/lib/components/Text';
 import moment from 'moment';
 import formatPhone from '../utils/formatPhone';
-
-const useStyles = makeStyles(() => ({
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    }
-}));
 
 type Props = {
     phoneNumber: string;
@@ -18,12 +9,14 @@ type Props = {
 };
 
 export default function YouAre({ phoneNumber, createdAt }: Props) {
-    const classes = useStyles();
-
     return (
-        <div className={classes.container}>
-            <Typography variant="overline">You are {formatPhone(phoneNumber)}</Typography>
-            <Typography variant="overline">Conversation started {moment(Number(createdAt)).fromNow()}</Typography>
-        </div>
+        <>
+            <Text centerAlign small muted>
+                You are {formatPhone(phoneNumber)}
+            </Text>
+            <Text centerAlign small muted>
+                Conversation started {moment(Number(createdAt)).fromNow()}
+            </Text>
+        </>
     );
 }

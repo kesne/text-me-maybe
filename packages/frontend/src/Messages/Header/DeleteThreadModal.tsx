@@ -1,12 +1,9 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import Modal from '@airbnb/lunar/lib/components/Modal';
+import Text from '@airbnb/lunar/lib/components/Text';
+import Button from '@airbnb/lunar/lib/components/Button';
+import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
 import { Thread, useDeleteThreadMutation, ThreadsDocument, ThreadsQuery } from '../../queries';
 
 type Props = {
@@ -45,28 +42,21 @@ export default function DeleteThreadModal({ thread, onClose }: Props) {
     }, [data, onClose, history]);
 
     return (
-        <Dialog open onClose={onClose}>
-            <DialogTitle>Delete thread "{thread.name}"</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    <Typography color="textSecondary">
-                        Deleting a thread will remove it forever! Are you sure you want to do this?
-                    </Typography>
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="primary">
-                    Cancel
-                </Button>
-                <Button
-                    onClick={() => deleteThread()}
-                    disabled={loading}
-                    variant="contained"
-                    color="primary"
-                >
-                    Delete Thread
-                </Button>
-            </DialogActions>
-        </Dialog>
+        <Modal
+            title={`Delete thread "${thread.name}"`}
+            onClose={onClose}
+            footer={
+                <ButtonGroup endAlign>
+                    <Button inverted onClick={onClose}>
+                        Cancel
+                    </Button>
+                    <Button onClick={() => deleteThread()} disabled={loading}>
+                        Delete Thread
+                    </Button>
+                </ButtonGroup>
+            }
+        >
+            <Text>Deleting a thread will remove it forever! Are you sure you want to do this?</Text>
+        </Modal>
     );
 }

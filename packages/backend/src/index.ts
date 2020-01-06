@@ -14,6 +14,7 @@ import { User } from './entity/User';
 import AuthDirective from './graphql/AuthDirective';
 import ormconfig from '../ormconfig';
 import { handle } from './purchaseLock';
+import { twiml } from 'twilio';
 
 const app = new Koa();
 const router = new Router();
@@ -58,6 +59,14 @@ const SESSION_CONFIG = {
 router.get('/api/ack', (ctx) => {
     handle.ack();
     ctx.body = 'Acknowledged!';
+});
+
+router.post('/api/incoming-sms', (ctx) => {
+    console.log(ctx.request.body);
+
+    const response = new twiml.MessagingResponse();
+    ctx.type = 'text/xml';
+    ctx.body = response.toString();
 });
 
 app.use(
