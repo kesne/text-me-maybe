@@ -60,7 +60,7 @@ export default function App() {
     );
 
     return (
-        <Layout fluid>
+        <Layout fluid noPadding>
             <HasUserContext.Provider value={contextValue}>
                 <Router>
                     <ApolloProvider client={client}>

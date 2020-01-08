@@ -15,6 +15,9 @@ import AuthDirective from './graphql/AuthDirective';
 import ormconfig from '../ormconfig';
 import { handle } from './purchaseLock';
 import { twiml } from 'twilio';
+import { Thread } from './entity/Thread';
+import { PhoneNumber } from './entity/PhoneNumber';
+import { Message, Sender } from './entity/Message';
 
 const app = new Koa();
 const router = new Router();
@@ -61,8 +64,30 @@ router.get('/api/ack', (ctx) => {
     ctx.body = 'Acknowledged!';
 });
 
-router.post('/api/incoming-sms', (ctx) => {
-    console.log(ctx.request.body);
+router.post('/api/incoming-sms', async (ctx) => {
+    const phoneNumber = await PhoneNumber.findOne({
+        where: [{
+            phoneNumber: ctx.request.body.To,
+        }]
+    });
+
+    if (phoneNumber) {
+        const thread = await Thread.findOne({
+            where: {
+                recipient: ctx.request.body.From,
+                phoneNumber: phoneNumber
+            }
+        });
+
+        if (thread) {
+            const message = new Message();
+            message.sender = Sender.Other;
+            message.body = ctx.request.body.Body;
+            message.thread = thread;
+
+            await message.save();
+        }
+    }
 
     const response = new twiml.MessagingResponse();
     ctx.type = 'text/xml';

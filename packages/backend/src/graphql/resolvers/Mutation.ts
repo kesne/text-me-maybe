@@ -86,11 +86,17 @@ const MutationResolvers: MutationResolvers<Context> = {
 
     // TODO: Validate phoneNumber "to" using twilio lookup API.
     async createThread(_parent, { name, to, message: messageText }, { user }) {
-        const phoneNumber = await PhoneNumber.getOrCreateForRecipient(to);
+        const recipient = await Thread.formatRecipient(to);
+
+        if (!recipient) {
+            throw new Error('Invalid recipient!');
+        }
+
+        const phoneNumber = await PhoneNumber.getOrCreateForRecipient(recipient);
 
         const thread = new Thread();
-        thread.phoneNumber = phoneNumber;
-        thread.recipient = to;
+        thread.phoneNumber = Promise.resolve(phoneNumber);
+        thread.recipient = recipient;
         thread.user = user;
         thread.name = name;
 
@@ -201,6 +207,7 @@ const MutationResolvers: MutationResolvers<Context> = {
                 throw new Error('Did not find a started password reset.');
             }
 
+            // TODO: Why is this commented out??
             // await reset.remove();
 
             await user.setPassword(password);

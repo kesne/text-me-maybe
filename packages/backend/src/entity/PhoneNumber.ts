@@ -25,18 +25,21 @@ export class PhoneNumber extends BaseEntity {
             .map(thread => thread.phoneNumber?.id)
             .filter(Boolean);
 
-        const where = phoneNumberIdsWithRecipient.length
+        const phoneNumberDenyList = phoneNumberIdsWithRecipient.length
             ? {
                   id: phoneNumberIdsWithRecipient.length
                       ? Not(In(phoneNumberIdsWithRecipient))
-                      : undefined,
-                  allocating: true
+                      : undefined
               }
-            : {
-                  allocating: true
-              };
+            : {};
 
-        let phoneNumber = await PhoneNumber.findOne({ where });
+        let phoneNumber = await PhoneNumber.findOne({
+            where: {
+                ...phoneNumberDenyList,
+                allocating: true,
+                phoneNumber: Not(recipient)
+            }
+        });
 
         if (phoneNumber) return phoneNumber;
 
@@ -61,10 +64,10 @@ export class PhoneNumber extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({ unique: true })
     twilioSid!: string;
 
-    @Column()
+    @Column({ unique: true })
     phoneNumber!: string;
 
     @Column({ default: true })

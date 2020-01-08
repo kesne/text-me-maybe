@@ -11,9 +11,15 @@ import {
 import { Message } from './Message';
 import { User } from './User';
 import { PhoneNumber } from './PhoneNumber';
+import twilio from '../twilio';
 
 @Entity()
 export class Thread extends BaseEntity {
+    static async formatRecipient(recipient: string) {
+        const lookup = await twilio.lookups.phoneNumbers(recipient.slice(2)).fetch({ countryCode: 'US' })
+        return lookup.phoneNumber;
+    }
+
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -42,13 +48,11 @@ export class Thread extends BaseEntity {
         () => PhoneNumber,
         phoneNumber => phoneNumber.threads
     )
-    phoneNumber!: PhoneNumber;
+    phoneNumber!: Promise<PhoneNumber>;
 
     async getNumber() {
-        if (this.phoneNumber) return this.phoneNumber.phoneNumber;
-
-        const number = await PhoneNumber.findOne({ where: { threads: this } });
-        return number?.phoneNumber || 'FIXME';
+        const number = await this.phoneNumber;
+        return number.phoneNumber;
     }
 
     @CreateDateColumn()

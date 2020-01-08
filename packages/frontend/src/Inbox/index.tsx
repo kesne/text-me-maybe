@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        padding: theme.spacing(2)
     },
     toolbar: theme.mixins.toolbar
 }));

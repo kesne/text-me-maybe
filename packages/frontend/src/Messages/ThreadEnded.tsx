@@ -8,7 +8,6 @@ export default function ThreadEnded() {
             display: 'flex',
             justifyContent: 'center',
             padding: theme.unit * 2,
-            background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.1), transparent)'
         }
     }));
 

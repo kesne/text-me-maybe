@@ -47,7 +47,13 @@ export class Message extends BaseEntity {
 
     @BeforeInsert()
     async sendMessage() {
+        // We only want to send messages on Twilio if they're outgoing messages.
+        if (this.sender != Sender.Self) {
+            return;
+        }
+
         const fromNumber = await this.thread.getNumber();
+
         const twilioReponse = await twilio.messages.create({
             body: this.body,
             from: fromNumber,

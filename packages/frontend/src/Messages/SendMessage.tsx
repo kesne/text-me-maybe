@@ -1,18 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import SendIcon from '@material-ui/icons/Send';
+import Input from '@airbnb/lunar/lib/components/Input';
+import Row from '@airbnb/lunar/lib/components/Row';
+import Button from '@airbnb/lunar/lib/components/Button';
 import { useSendMessageMutation } from '../queries';
-
-const useStyles = makeStyles(theme => ({
-    container: {
-        padding: theme.spacing(2),
-        background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.1), transparent)',
-        display: 'flex'
-    }
-}));
 
 const KEY_ENTER = 'Enter';
 
@@ -22,7 +12,6 @@ type Props = {
 };
 
 export default function SendMessage({ threadID, refetch }: Props) {
-    const classes = useStyles();
     const inputRef = useRef<HTMLInputElement>();
     const [message, setMessage] = useState('');
     const [sendMessage, { loading, data, error }] = useSendMessageMutation({
@@ -65,31 +54,17 @@ export default function SendMessage({ threadID, refetch }: Props) {
     }, [data, refetch]);
 
     return (
-        <div className={classes.container}>
-            <TextField
-                inputRef={inputRef}
-                label="Message..."
+        <Row after={<Button>Send</Button>}>
+            <Input
+                hideLabel
+                label="Message to send"
+                placeholder="Message to send"
                 value={message}
-                disabled={loading}
-                onChange={e => setMessage(e.target.value)}
+                onChange={setMessage}
                 onKeyUp={checkSend}
-                error={!!error}
-                helperText={error ? error.message : undefined}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton
-                                color="primary"
-                                onClick={() => sendMessage()}
-                                disabled={loading}
-                            >
-                                <SendIcon />
-                            </IconButton>
-                        </InputAdornment>
-                    )
-                }}
-                fullWidth
+                disabled={loading}
+                errorMessage={error ? error.message : undefined}
             />
-        </div>
+        </Row>
     );
 }

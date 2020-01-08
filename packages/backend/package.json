@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "seed": "ts-node --transpile-only ./src/__dev__/seed.ts",
     "codegen": "graphql-codegen",
     "start": "ts-node-dev --respawn --watch ./schema.graphql --transpileOnly ./src/index.ts"
   },
