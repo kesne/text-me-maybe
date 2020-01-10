@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Loader from '@airbnb/lunar/lib/components/Loader';
 import EditAccount from './EditAccount';
 import { useMeQuery } from '../queries';
 
@@ -7,7 +8,7 @@ export default function Basics() {
     const [editing, setEditing] = useState(false);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loader />;
     }
 
     if (!data) {

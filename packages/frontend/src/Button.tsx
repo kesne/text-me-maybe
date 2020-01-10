@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import LunarLink, { Props as LinkProps } from '@airbnb/lunar/lib/components/Link';
+import LunarButton, { Props as ButtonProps } from '@airbnb/lunar/lib/components/Button';
 
 type Props = {
     to: string;
-} & LinkProps;
+} & ButtonProps;
 
-export default function LinkThing({ to, ...props }: Props) {
+export default function ButtonThing({ to, ...props }: Props) {
     const history = useHistory();
     const handleClick = useCallback(
         e => {
@@ -16,5 +16,5 @@ export default function LinkThing({ to, ...props }: Props) {
         [history, to]
     );
 
-    return <LunarLink onClick={handleClick} href={to} {...props} />;
+    return <LunarButton onClick={handleClick} href={to} {...props} />;
 }

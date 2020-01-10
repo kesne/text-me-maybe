@@ -61,9 +61,6 @@ export default function ForgotPassword() {
                             <ButtonGroup endAlign>
                                 <Button
                                     type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
                                     disabled={loading}
                                     onClick={() => forgotPassword()}
                                 >

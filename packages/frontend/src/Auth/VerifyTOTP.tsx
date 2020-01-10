@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Text from '@airbnb/lunar/lib/components/Text';
 import Spacing from '@airbnb/lunar/lib/components/Spacing';
 import Input from '@airbnb/lunar/lib/components/Input';
@@ -7,18 +6,11 @@ import Button from '@airbnb/lunar/lib/components/Button';
 import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
 import { useExchangeTotpMutation } from '../queries';
 
-const useStyles = makeStyles(theme => ({
-    submit: {
-        margin: theme.spacing(3, 0, 2)
-    }
-}));
-
 type Props = {
     onSignIn(): void;
 };
 
 export default function VerifyTOTP({ onSignIn }: Props) {
-    const classes = useStyles();
     const [token, setToken] = useState('');
     const [exchangeTotp, { data, loading }] = useExchangeTotpMutation({
         variables: {
@@ -54,7 +46,6 @@ export default function VerifyTOTP({ onSignIn }: Props) {
             <ButtonGroup endAlign>
                 <Button
                     type="submit"
-                    className={classes.submit}
                     onClick={() => exchangeTotp()}
                     disabled={loading}
                 >

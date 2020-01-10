@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import MuiPhoneNumber from 'material-ui-phone-number';
+import Modal from '@airbnb/lunar/lib/components/Modal';
+import Button from '@airbnb/lunar/lib/components/Button';
+import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
+import Input from '@airbnb/lunar/lib/components/Input';
+import Text from '@airbnb/lunar/lib/components/Text';
+import Spacing from '@airbnb/lunar/lib/components/Spacing';
 import client from '../utils/client';
 import { useCreateThreadMutation, ThreadsDocument } from '../queries';
+import PhoneNumber from 'awesome-phonenumber';
 
 type Props = {
     onClose: () => void;
@@ -19,6 +17,7 @@ type Props = {
 export default function CreateThread({ onClose }: Props) {
     const history = useHistory();
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [phoneNumberValid, setPhoneNumberValid] = useState(true);
     const [message, setMessage] = useState('');
     const [name, setName] = useState('');
 
@@ -32,6 +31,16 @@ export default function CreateThread({ onClose }: Props) {
         }
     });
 
+    function handleBlur() {
+        const formattedNumber = new PhoneNumber(phoneNumber, 'US');
+        if (formattedNumber.isValid()) {
+            setPhoneNumberValid(true);
+            setPhoneNumber(formattedNumber.getNumber('national'));
+        } else {
+            setPhoneNumberValid(false);
+        }
+    }
+
     useEffect(() => {
         if (data) {
             // Force a refetch of threads from network
@@ -42,55 +51,36 @@ export default function CreateThread({ onClose }: Props) {
     }, [data, history, onClose]);
 
     return (
-        <Dialog open onClose={onClose}>
-            <DialogTitle>Create a new message thread</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    <Typography color="textSecondary">
-                        Message will arrive from a unique phone number, and will not be associated
-                        with you.
-                    </Typography>
-                    <TextField
-                        label="Name"
-                        value={name}
-                        onChange={e => setName(e.target.value)}
-                        margin="normal"
-                        disabled={loading}
-                        fullWidth
-                        autoFocus
-                    />
-                    <MuiPhoneNumber
-                        label="Phone Number"
-                        value={phoneNumber}
-                        defaultCountry="us"
-                        onChange={setPhoneNumber}
-                        margin="normal"
-                        disabled={loading}
-                        fullWidth
-                    />
-                    <TextField
-                        label="Message"
-                        value={message}
-                        onChange={e => setMessage(e.target.value)}
-                        margin="normal"
-                        disabled={loading}
-                        fullWidth
-                    />
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="primary">
-                    Cancel
-                </Button>
-                <Button
-                    onClick={() => createThread()}
-                    disabled={loading}
-                    variant="contained"
-                    color="primary"
-                >
-                    Create Thread
-                </Button>
-            </DialogActions>
-        </Dialog>
+        <Modal
+            title="Create a new message thread"
+            onClose={onClose}
+            footer={
+                <ButtonGroup endAlign>
+                    <Button onClick={onClose} inverted>
+                        Cancel
+                    </Button>
+                    <Button onClick={() => createThread()} disabled={loading}>
+                        Create Thread
+                    </Button>
+                </ButtonGroup>
+            }
+        >
+            <Spacing bottom={2}>
+                <Text large>
+                    Message will arrive from a unique phone number, and will not be associated with
+                    you.
+                </Text>
+            </Spacing>
+            <Input label="Name" value={name} onChange={setName} disabled={loading} autoFocus />
+            <Input
+                label="Phone Number"
+                value={phoneNumber}
+                onChange={setPhoneNumber}
+                onBlur={handleBlur}
+                disabled={loading}
+                errorMessage={phoneNumberValid ? 'Please enter a valid phone number' : undefined}
+            />
+            <Input label="Message" value={message} onChange={setMessage} disabled={loading} />
+        </Modal>
     );
 }

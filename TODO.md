@@ -1,8 +1,7 @@
 # TODO
 
--   Model Phone Numbers.
--   Migrations.
 -   More Lunar.
+-   Migrations.
 
 ## Eventually?
 

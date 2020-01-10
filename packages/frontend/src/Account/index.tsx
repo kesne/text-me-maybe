@@ -1,64 +1,37 @@
 import React from 'react';
-import { Link as RouterLink, Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import Layout from '@airbnb/lunar-layouts/lib/components/Layout';
+import Card, { Content as CardContent } from '@airbnb/lunar/lib/components/Card';
+import Grid, { Col } from '@airbnb/lunar/lib/components/Grid';
+import Text from '@airbnb/lunar/lib/components/Text';
 import Basics from './Basics';
 import Security from './Security';
 import Billing from './Billing';
 
-const useStyles = makeStyles(theme => ({
-    container: {
-        marginTop: theme.spacing(2)
-    }
-}));
-
 export default function Account() {
-    const classes = useStyles();
-    const match = useRouteMatch('/account/:page');
+    const history = useHistory();
 
-    const matchParams: Record<string, string> = match ? match.params : {};
+    function navigateTo(path: string) {
+        return () => history.push(`/account/${path}`);
+    }
 
     return (
-        <Container className={classes.container} maxWidth="md">
-            <Grid container spacing={2}>
-                <Grid item xs={4}>
-                    <Paper>
-                        <List>
-                            <ListItem
-                                component={RouterLink}
-                                to="/account"
-                                selected={!matchParams.page}
-                                button
-                            >
-                                <ListItemText primary="Account" />
-                            </ListItem>
-                            <ListItem
-                                component={RouterLink}
-                                to="/account/security"
-                                selected={matchParams.page === 'security'}
-                                button
-                            >
-                                <ListItemText primary="Security" />
-                            </ListItem>
-                            <ListItem
-                                component={RouterLink}
-                                to="/account/billing"
-                                selected={matchParams.page === 'billing'}
-                                button
-                            >
-                                <ListItemText primary="Billing" />
-                            </ListItem>
-                        </List>
-                    </Paper>
-                </Grid>
-                <Grid item xs={8}>
+        <Layout centerAlign>
+            <Grid>
+                <Col span={4}>
+                    <Card>
+                        <CardContent onClick={navigateTo('')} compact>
+                            <Text>Account</Text>
+                        </CardContent>
+                        <CardContent onClick={navigateTo('security')} compact>
+                            <Text>Security</Text>
+                        </CardContent>
+                        <CardContent onClick={navigateTo('billing')} compact>
+                            <Text>Billing</Text>
+                        </CardContent>
+                    </Card>
+                </Col>
+                <Col span={8}>
                     <Card>
                         <CardContent>
                             <Switch>
@@ -77,8 +50,8 @@ export default function Account() {
                             </Switch>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Col>
             </Grid>
-        </Container>
+        </Layout>
     );
 }

@@ -1,5 +1,6 @@
 import Lunar from '@airbnb/lunar/lib';
 
 Lunar.initialize({
-    name: 'Text Me Maybe'
+    name: 'Text Me Maybe',
+    theme: 'dark'
 });

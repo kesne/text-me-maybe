@@ -1,46 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
 import Modal from '@airbnb/lunar/lib/components/Modal';
 import Text from '@airbnb/lunar/lib/components/Text';
 import Button from '@airbnb/lunar/lib/components/Button';
 import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
 import Input from '@airbnb/lunar/lib/components/Input';
-
+import Loader from '@airbnb/lunar/lib/components/Loader';
 import { useOnboardTotpQuery, useEnableTotpMutation } from '../queries';
-
-const useStyles = makeStyles(theme => ({
-    qrCode: {
-        display: 'block',
-        margin: `${theme.spacing(2)}px auto`
-    },
-    secret: {
-        fontFamily: 'monospace',
-        fontSize: '1.3rem'
-    },
-    inputWrapper: {
-        display: 'flex',
-        justifyContent: 'center'
-    },
-    input: {
-        fontFamily: 'monospace',
-        fontSize: '4rem',
-        width: 200,
-        textAlign: 'center',
-        '::-webkit-outer-spin-button': {
-            '-webkit-appearance': 'none'
-        },
-        '::-webkit-inner-spin-button': {
-            '-webkit-appearance': 'none'
-        }
-    }
-}));
 
 type Props = {
     onClose(): void;
 };
 
 export default function OnboardTOTP({ onClose }: Props) {
-    const classes = useStyles();
+    const [classes, cx] = useStyles(theme => ({
+        qrCode: {
+            display: 'block',
+            margin: `${theme.unit * 2}px auto`
+        },
+        secret: {
+            fontFamily: 'monospace',
+            fontSize: '1.3rem'
+        },
+        inputWrapper: {
+            display: 'flex',
+            justifyContent: 'center'
+        }
+    }));
+
     const [token, setToken] = useState('');
     const { data, loading } = useOnboardTotpQuery({
         fetchPolicy: 'network-only'
@@ -60,7 +47,7 @@ export default function OnboardTOTP({ onClose }: Props) {
     }, [totpEnableState.data, onClose]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loader />;
     }
 
     if (!data) {
@@ -93,16 +80,16 @@ export default function OnboardTOTP({ onClose }: Props) {
                 will require you to enter a pin from the authenticator app every time you sign in.
             </Text>
             <img
-                className={classes.qrCode}
+                className={cx(classes.qrCode)}
                 alt="Enable Two Factor Authentication"
                 src={`https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=${OTP_DATA}`}
             />
             <Text>
                 Or enter it manually:
                 <br />
-                <div className={classes.secret}>{data.onboardTotp.secret}</div>
+                <div className={cx(classes.secret)}>{data.onboardTotp.secret}</div>
             </Text>
-            <div className={classes.inputWrapper}>
+            <div className={cx(classes.inputWrapper)}>
                 <Input
                     large
                     label="Token"

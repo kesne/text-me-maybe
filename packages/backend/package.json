@@ -9,9 +9,9 @@
     "start": "ts-node-dev --respawn --watch ./schema.graphql --transpileOnly ./src/index.ts"
   },
   "dependencies": {
-    "@graphql-codegen/cli": "1.9.1",
-    "@graphql-codegen/typescript": "1.9.1",
-    "@graphql-codegen/typescript-resolvers": "1.9.1",
+    "@graphql-codegen/cli": "1.11.2",
+    "@graphql-codegen/typescript": "1.11.2",
+    "@graphql-codegen/typescript-resolvers": "1.11.2",
     "@koa/cors": "^3.0.0",
     "@koa/router": "^8.0.5",
     "apollo-server-koa": "^2.9.15",

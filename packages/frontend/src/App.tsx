@@ -2,8 +2,7 @@ import React, { useState, useMemo } from 'react';
 import Cookie from 'js-cookie';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
 import Layout from '@airbnb/lunar-layouts/lib/components/Layout';
 import client from './utils/client';
 import Header from './Header';
@@ -17,33 +16,29 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 import Account from './Account';
 import HasUserContext from './HasUserContext';
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        minHeight: '100vh'
-    },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1
-    },
-    contentWrapper: {
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        flexGrow: 1
-    },
-    content: {
-        display: 'flex',
-        flex: 1,
-        overflow: 'auto'
-    },
-    toolbar: theme.mixins.toolbar
-}));
-
 const HAS_USER_COOKIE = 'hasUser';
 const HAS_USER_VALUE = '1';
 
 export default function App() {
-    const classes = useStyles();
+    const [classes, cx] = useStyles(() => ({
+        root: {
+            display: 'flex',
+            flexDirection: 'column',
+            // TODO: This should probably be min-height,
+            // we just need to sort out the messages view.
+            height: '100vh'
+        },
+        contentWrapper: {
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1
+        },
+        content: {
+            display: 'flex',
+            flex: 1,
+            overflow: 'auto'
+        }
+    }));
     const [hasUser, setHasUser] = useState(
         Cookie.get(HAS_USER_COOKIE) === HAS_USER_VALUE ? true : false
     );
@@ -64,40 +59,34 @@ export default function App() {
             <HasUserContext.Provider value={contextValue}>
                 <Router>
                     <ApolloProvider client={client}>
-                        <div className={classes.root}>
-                            <CssBaseline />
+                        <div className={cx(classes.root)}>
                             <Header />
-                            <div className={classes.contentWrapper}>
-                                <div className={classes.toolbar} />
-                                <div className={classes.content}>
-                                    <Switch>
-                                        <AuthenticatedRoute unauthed path="/signin">
-                                            <SignIn />
-                                        </AuthenticatedRoute>
-                                        <AuthenticatedRoute unauthed path="/signup">
-                                            <SignUp />
-                                        </AuthenticatedRoute>
-                                        <AuthenticatedRoute unauthed path="/forgot">
-                                            <ForgotPassword />
-                                        </AuthenticatedRoute>
-                                        <AuthenticatedRoute unauthed path="/reset-password/:uuid">
-                                            <ResetPassword />
-                                        </AuthenticatedRoute>
-                                        <AuthenticatedRoute authed path="/inbox">
-                                            <Inbox />
-                                        </AuthenticatedRoute>
-                                        <AuthenticatedRoute authed path="/account">
-                                            <Account />
-                                        </AuthenticatedRoute>
-                                        <AuthenticatedRoute unauthed path="/" exact>
-                                            <Home />
-                                        </AuthenticatedRoute>
-                                        <Route>
-                                            <div>Where are you?</div>
-                                        </Route>
-                                    </Switch>
-                                </div>
-                            </div>
+                            <Switch>
+                                <AuthenticatedRoute unauthed path="/signin">
+                                    <SignIn />
+                                </AuthenticatedRoute>
+                                <AuthenticatedRoute unauthed path="/signup">
+                                    <SignUp />
+                                </AuthenticatedRoute>
+                                <AuthenticatedRoute unauthed path="/forgot">
+                                    <ForgotPassword />
+                                </AuthenticatedRoute>
+                                <AuthenticatedRoute unauthed path="/reset-password/:uuid">
+                                    <ResetPassword />
+                                </AuthenticatedRoute>
+                                <AuthenticatedRoute authed path="/inbox">
+                                    <Inbox />
+                                </AuthenticatedRoute>
+                                <AuthenticatedRoute authed path="/account">
+                                    <Account />
+                                </AuthenticatedRoute>
+                                <AuthenticatedRoute unauthed path="/" exact>
+                                    <Home />
+                                </AuthenticatedRoute>
+                                <Route>
+                                    <div>Where are you?</div>
+                                </Route>
+                            </Switch>
                         </div>
                     </ApolloProvider>
                 </Router>

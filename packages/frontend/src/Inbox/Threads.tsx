@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import List from '@airbnb/lunar/lib/components/List';
 import Button from '@airbnb/lunar/lib/components/Button';
+import Loader from '@airbnb/lunar/lib/components/Loader';
+import Card from '@airbnb/lunar/lib/components/Card';
 import CreateThread from './CreateThread';
 import { useThreadsQuery } from '../queries';
 import ThreadItem from './ThreadItem';
@@ -21,7 +23,7 @@ export default function Threads() {
     const params: Record<string, string> = match ? match.params : {};
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loader />;
     }
 
     if (error || !data) {
@@ -29,7 +31,7 @@ export default function Threads() {
     }
 
     return (
-        <div>
+        <Card>
             <List>
                 {data.threads.map(thread => (
                     <ThreadItem
@@ -54,6 +56,6 @@ export default function Threads() {
                 <Button onClick={() => setCreating(true)}>New Converstaion</Button>
             </div>
             {creating && <CreateThread onClose={() => setCreating(false)} />}
-        </div>
+        </Card>
     );
 }
