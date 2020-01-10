@@ -18,7 +18,7 @@ export default function Account() {
     return (
         <Layout centerAlign>
             <Grid>
-                <Col span={4}>
+                <Col span={3}>
                     <Card>
                         <CardContent onClick={navigateTo('')} compact>
                             <Text>Account</Text>
@@ -31,7 +31,7 @@ export default function Account() {
                         </CardContent>
                     </Card>
                 </Col>
-                <Col span={8}>
+                <Col span={9}>
                     <Card>
                         <CardContent>
                             <Switch>

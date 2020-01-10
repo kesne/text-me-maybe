@@ -2,5 +2,6 @@ import Lunar from '@airbnb/lunar/lib';
 
 Lunar.initialize({
     name: 'Text Me Maybe',
-    theme: 'dark'
+    // TODO: Allow users to turn on dark mode.
+    // theme: 'dark'
 });
