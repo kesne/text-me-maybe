@@ -38,11 +38,14 @@ services:
         command: yarn workspace @text-me-maybe/frontend start
         ports:
             - '127.0.0.1:3000:3000'
+            - '127.0.0.1:3001:3001'
         volumes:
             - .:/srv/frontend:rw
         working_dir: /srv/frontend
         depends_on:
             - backend
+        env_file:
+            - .env
 
     ngrok:
         image: wernight/ngrok

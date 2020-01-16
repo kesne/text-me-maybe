@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
+import Button from 'antd/es/button';
 import List from '@airbnb/lunar/lib/components/List';
-import Button from '@airbnb/lunar/lib/components/Button';
 import Loader from '@airbnb/lunar/lib/components/Loader';
 import Card from '@airbnb/lunar/lib/components/Card';
 import CreateThread from './CreateThread';
@@ -53,7 +53,7 @@ export default function Threads() {
                     padding: '8px'
                 }}
             >
-                <Button onClick={() => setCreating(true)}>New Converstaion</Button>
+                <Button type="primary" onClick={() => setCreating(true)}>New Conversation</Button>
             </div>
             {creating && <CreateThread onClose={() => setCreating(false)} />}
         </Card>
