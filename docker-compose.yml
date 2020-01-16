@@ -20,7 +20,7 @@ services:
             - 'redisdata:/data'
 
     backend:
-        image: node:12-alpine
+        image: node:12
         command: yarn workspace @text-me-maybe/backend start
         ports:
             - '127.0.0.1:1337:1337'
@@ -34,7 +34,7 @@ services:
             - postgres
 
     frontend:
-        image: node:12-alpine
+        image: node:12
         command: yarn workspace @text-me-maybe/frontend start
         ports:
             - '127.0.0.1:3000:3000'
@@ -44,8 +44,6 @@ services:
         working_dir: /srv/frontend
         depends_on:
             - backend
-        env_file:
-            - .env
 
     ngrok:
         image: wernight/ngrok
