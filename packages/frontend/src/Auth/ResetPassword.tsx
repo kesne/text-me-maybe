@@ -1,22 +1,27 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import Button from '@airbnb/lunar/lib/components/Button';
-import Input from '@airbnb/lunar/lib/components/Input';
-import Text from '@airbnb/lunar/lib/components/Text';
-import Title from '@airbnb/lunar/lib/components/Title';
+import { Button, Form, Input, Typography } from 'antd';
 import { useResetPasswordMutation } from '../queries';
 import HasUserContext from '../HasUserContext';
+import AuthForm from './AuthForm';
+
+const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 }
+};
+
+const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 }
+};
 
 export default function ResetPassword() {
-    const [password, setPassword] = useState('');
     const params = useParams<{ uuid: string }>();
     const { setHasUser } = useContext(HasUserContext);
     const history = useHistory();
     const [resetPassword, { data, loading }] = useResetPasswordMutation({
         variables: {
-            uuid: params.uuid,
-            password
-        },
+            uuid: params.uuid
+        }
     });
 
     useEffect(() => {
@@ -33,23 +38,37 @@ export default function ResetPassword() {
         }
     }, [data, history, setHasUser]);
 
-    function handleFinishReset() {
-        resetPassword();
-    }
+    const onFinish = (values: Record<string, string>) => {
+        resetPassword({
+            variables: {
+                uuid: params.uuid,
+                password: values.password
+            }
+        });
+    };
 
     return (
-        <div>
-            <Title level={3}>Password Reset</Title>
-            <Text>You can set a new password for your account below, which can be used for all future sign-ins.</Text>
-            <Input
-                name="password"
-                label="New Password"
-                placeholder="Password..."
-                value={password}
-                disabled={!data || loading}
-                onChange={setPassword}
-            />
-            <Button onClick={handleFinishReset}>Reset Password</Button>
-        </div>
+        <AuthForm title="Password Reset">
+            <Typography.Paragraph>
+                You can set a new password for your account below, which can be used for all future
+                sign-ins.
+            </Typography.Paragraph>
+
+            <Form {...layout} name="login" onFinish={onFinish}>
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your password!' }]}
+                >
+                    <Input.Password autoFocus />
+                </Form.Item>
+
+                <Form.Item {...tailLayout}>
+                    <Button type="primary" htmlType="submit" disabled={loading}>
+                        Reset Password
+                    </Button>
+                </Form.Item>
+            </Form>
+        </AuthForm>
     );
 }

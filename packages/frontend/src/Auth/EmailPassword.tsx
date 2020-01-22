@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import Spacing from '@airbnb/lunar/lib/components/Spacing';
-import Input from '@airbnb/lunar/lib/components/Input';
-import Button from '@airbnb/lunar/lib/components/Button';
-import Row from '@airbnb/lunar/lib/components/Row';
-import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
+import React, { useEffect } from 'react';
+import { Form, Input, Button } from 'antd';
+import Spacing from '../Spacing';
+import Row from '../Row';
 import Link from '../Link';
 import { useSignInMutation } from '../queries';
+
+const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 }
+};
+
+const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 }
+};
 
 type Props = {
     onSignIn(): void;
@@ -13,14 +20,7 @@ type Props = {
 };
 
 export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [signIn, { data, loading }] = useSignInMutation({
-        variables: {
-            email,
-            password
-        }
-    });
+    const [signIn, { data, loading }] = useSignInMutation();
 
     useEffect(() => {
         if (data) {
@@ -32,46 +32,49 @@ export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
         }
     }, [data, onSignIn, onTOTPChallenge]);
 
+    const onFinish = (values: Record<string, string>) => {
+        signIn({
+            variables: {
+                email: values.email,
+                password: values.password
+            }
+        });
+    };
+
     return (
         <>
-            <Input
-                required
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                disabled={loading}
-                value={email}
-                onChange={setEmail}
-                autoFocus
-            />
-            <Input
-                required
-                name="password"
-                label="Password"
-                type="password"
-                value={password}
-                onChange={setPassword}
-                autoComplete="current-password"
-                disabled={loading}
-            />
-            <ButtonGroup endAlign>
-                <Button
-                    type="submit"
-                    onClick={() => signIn()}
-                    disabled={loading}
+            <Form {...layout} name="login" onFinish={onFinish}>
+                <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
                 >
-                    Sign In
-                </Button>
-            </ButtonGroup>
+                    <Input autoFocus />
+                </Form.Item>
+
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your password!' }]}
+                >
+                    <Input.Password />
+                </Form.Item>
+
+                <Form.Item {...tailLayout}>
+                    <Button type="primary" htmlType="submit" disabled={loading}>
+                        Sign In
+                    </Button>
+                </Form.Item>
+            </Form>
             <Spacing top={3}>
                 <Row
                     after={
-                        <Link small to="/signup">
+                        <Link to="/signup">
                             Don't have an account? Sign Up
                         </Link>
                     }
                 >
-                    <Link small to="/forgot">
+                    <Link to="/forgot">
                         Forgot password?
                     </Link>
                 </Row>

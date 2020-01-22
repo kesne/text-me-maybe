@@ -1,52 +1,54 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
+import { Empty } from 'antd';
 import Threads from './Threads';
 import Messages from '../Messages';
 
-export default function Inbox() {
-    const [classes, cx] = useStyles(theme => ({
-        inbox: {
-            flex: 1,
-            display: 'flex',
-            overflow: 'hidden',
-            flexDirection: 'row'
-        },
-        drawer: {
-            width: 320,
-            padding: theme.unit * 2
-        },
-        content: {
-            display: 'flex',
-            flexDirection: 'column',
-            flexGrow: 1
-        },
-        contentWrapper: {
-            flexGrow: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            padding: theme.unit * 2
-        }
-    }));
+const Container = styled.div`
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+`;
 
+const Drawer = styled.div`
+    width: 320px;
+    padding: 16px;
+`;
+
+const Content = styled.main`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+`;
+
+const ContentOverflow = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 16px;
+`;
+
+export default function Inbox() {
     return (
-        <div className={cx(classes.inbox)}>
-            <div className={cx(classes.drawer)}>
+        <Container>
+            <Drawer>
                 <Threads />
-            </div>
-            <main className={cx(classes.content)}>
-                <div className={cx(classes.contentWrapper)}>
+            </Drawer>
+            <Content>
+                <ContentOverflow>
                     <Switch>
                         <Route path="/inbox/:id">
                             <Messages />
                         </Route>
                         <Route>
-                            <div>Emoty</div>
+                            <Empty />
                         </Route>
                     </Switch>
-                </div>
-            </main>
-        </div>
+                </ContentOverflow>
+            </Content>
+        </Container>
     );
 }

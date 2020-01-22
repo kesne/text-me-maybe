@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import MenuToggle, { Item as MenuItem } from '@airbnb/lunar/lib/components/MenuToggle';
+import { Link } from 'react-router-dom';
+import { Menu } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useMeQuery } from '../queries';
 import HasUserContext from '../HasUserContext';
@@ -9,13 +10,10 @@ export default function UserButton() {
     const { data, loading } = useMeQuery();
     const { setHasUser } = useContext(HasUserContext);
 
+    // TODO: We can implement this better probably:
     function signOut() {
         setHasUser(false);
         history.push('/');
-    }
-
-    function handleAccount() {
-        history.push('/account');
     }
 
     if (loading || !data || !data.me) {
@@ -23,9 +21,11 @@ export default function UserButton() {
     }
 
     return (
-        <MenuToggle accessibilityLabel={data.me.name} toggleLabel={data.me.name}>
-            <MenuItem onClick={handleAccount}>My account</MenuItem>
-            <MenuItem onClick={signOut}>Sign out</MenuItem>
-        </MenuToggle>
+        <Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
+            <Menu.SubMenu title={data.me.name}>
+                <Menu.Item><Link to="/account">My account</Link></Menu.Item>
+                <Menu.Item onClick={signOut}>Sign out</Menu.Item>
+            </Menu.SubMenu>
+        </Menu>
     );
 }

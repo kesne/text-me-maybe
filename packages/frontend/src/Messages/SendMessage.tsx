@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Input from '@airbnb/lunar/lib/components/Input';
-import Row from '@airbnb/lunar/lib/components/Row';
-import Button from '@airbnb/lunar/lib/components/Button';
+import React, { useEffect } from 'react';
+import { Form, Input, Button } from 'antd';
 import { useSendMessageMutation } from '../queries';
-
-const KEY_ENTER = 'Enter';
+import Row from '../Row';
 
 type Props = {
     threadID: number;
@@ -12,10 +9,8 @@ type Props = {
 };
 
 export default function SendMessage({ threadID, refetch }: Props) {
-    const inputRef = useRef<HTMLInputElement>();
-    const [message, setMessage] = useState('');
+    const [form] = Form.useForm();
     const [sendMessage, { loading, data, error }] = useSendMessageMutation({
-        variables: { message, threadID },
         update(cache, { data }) {
             if (!data) {
                 return;
@@ -37,34 +32,40 @@ export default function SendMessage({ threadID, refetch }: Props) {
         }
     });
 
-    function checkSend(e: React.KeyboardEvent) {
-        if (e.key === KEY_ENTER) {
-            sendMessage();
-        }
-    }
-
     useEffect(() => {
         if (data) {
-            setMessage('');
             refetch();
-            if (inputRef.current) {
-                inputRef.current.focus();
-            }
         }
     }, [data, refetch]);
 
+    async function handleFinish(values: Record<string, any>) {
+        await sendMessage({
+            variables: {
+                threadID,
+                message: values.message
+            }
+        });
+
+        form.resetFields();
+    }
+
     return (
-        <Row after={<Button>Send</Button>}>
-            <Input
-                hideLabel
-                label="Message to send"
-                placeholder="Message to send"
-                value={message}
-                onChange={setMessage}
-                onKeyUp={checkSend}
-                disabled={loading}
-                errorMessage={error ? error.message : undefined}
-            />
-        </Row>
+        <Form form={form} onFinish={handleFinish}>
+            <Row
+                after={
+                    <Button htmlType="submit" type="primary">
+                        Send
+                    </Button>
+                }
+            >
+                <Form.Item
+                    name="message"
+                    validateStatus={error && 'error'}
+                    help={error && error.message}
+                >
+                    <Input placeholder="Message..." disabled={loading} />
+                </Form.Item>
+            </Row>
+        </Form>
     );
 }

@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
-import Loader from '@airbnb/lunar/lib/components/Loader';
+import React from 'react';
+import { Spin } from 'antd';
 import EditAccount from './EditAccount';
 import { useMeQuery } from '../queries';
 
+// TODO: Why does this file exist????
 export default function Basics() {
     const { data, loading } = useMeQuery();
-    const [editing, setEditing] = useState(false);
 
     if (loading) {
-        return <Loader />;
+        return <Spin />;
     }
 
     if (!data) {
         return <div>No dataz?</div>;
     }
 
-    return (
-        <EditAccount me={data.me} editing={editing} onEditingChange={setEditing} />
-    );
+    return <EditAccount me={data.me} />;
 }

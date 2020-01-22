@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import Button from 'antd/es/button';
-import List from '@airbnb/lunar/lib/components/List';
-import Loader from '@airbnb/lunar/lib/components/Loader';
-import Card from '@airbnb/lunar/lib/components/Card';
+import { Button, Spin, Card, List } from 'antd';
 import CreateThread from './CreateThread';
 import { useThreadsQuery } from '../queries';
 import ThreadItem from './ThreadItem';
@@ -20,10 +17,8 @@ export default function Threads() {
         }
     }, [data, match, history]);
 
-    const params: Record<string, string> = match ? match.params : {};
-
     if (loading) {
-        return <Loader />;
+        return <Spin />;
     }
 
     if (error || !data) {
@@ -32,29 +27,16 @@ export default function Threads() {
 
     return (
         <Card>
-            <List>
-                {data.threads.map(thread => (
-                    <ThreadItem
-                        key={thread.id}
-                        id={thread.id}
-                        title={thread.name}
-                        subtitle={thread.lastMessage ? thread.lastMessage.body : null}
-                        seen={thread.lastMessage ? thread.lastMessage.seen : true}
-                        selected={Number(params.id) === thread.id}
-                    />
-                ))}
-            </List>
-            <div
-                style={{
-                    position: 'sticky',
-                    bottom: 0,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    padding: '8px'
-                }}
-            >
-                <Button type="primary" onClick={() => setCreating(true)}>New Conversation</Button>
+            <div>
+                <Button type="primary" onClick={() => setCreating(true)}>
+                    New Conversation
+                </Button>
             </div>
+            <List
+                itemLayout="horizontal"
+                dataSource={data.threads}
+                renderItem={item => <ThreadItem key={item.id} thread={item} />}
+            />
             {creating && <CreateThread onClose={() => setCreating(false)} />}
         </Card>
     );

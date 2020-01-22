@@ -1,55 +1,35 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
-import Text from '@airbnb/lunar/lib/components/Text';
-import Row from '@airbnb/lunar/lib/components/Row';
-import { Item as ListItem } from '@airbnb/lunar/lib/components/List';
+import { List } from 'antd';
+import { Thread } from '../queries';
 
 type Props = {
-    id: number;
-    title: string;
-    subtitle: React.ReactNode;
-    seen: boolean;
-    selected: boolean;
-    onClick?: () => void;
+    thread: Partial<Thread>;
 };
 
-export default function ThreadItem({ id, title, subtitle, seen, selected, onClick }: Props) {
-    const [classes, cx] = useStyles(theme => ({
-        button: {
-            display: 'block',
-            textDecoration: 'none',
-            padding: theme.unit * 2,
-            ':hover': {
-                background: theme.color.accent.bgHover
-            }
-        },
-        selected: {
-            background: theme.color.accent.bgHover
-        },
-        badge: {
-            height: theme.unit,
-            width: theme.unit,
-            borderRadius: theme.unit,
-            color: 'white',
-            backgroundColor: theme.color.core.primary[0]
-        }
-    }));
+const StyledLink = styled(Link)`
+    display: block;
+    border-bottom: 1px solid #f0f0f0;
+    &:last-child {
+        border-bottom: none;
+    }
+`;
 
+const Badge = styled.div`
+    height: 8px;
+    width: 8px;
+    border-radius: 8px;
+    background-color: blue;
+`;
+
+export default function ThreadItem({ thread }: Props) {
     return (
-        <ListItem bordered>
-            <Link
-                to={`/inbox/${id}`}
-                onClick={onClick}
-                className={cx(classes.button, selected && classes.selected)}
-            >
-                <Row after={!seen && <div className={cx(classes.badge)}></div>}>
-                    <Text>{title}</Text>
-                    <Text small muted>
-                        {subtitle}
-                    </Text>
-                </Row>
-            </Link>
-        </ListItem>
+        <StyledLink to={`/inbox/${thread.id}`}>
+            <List.Item>
+                <List.Item.Meta title={thread.name} description={thread.lastMessage?.body} />
+                {!thread.lastMessage?.body && <Badge />}
+            </List.Item>
+        </StyledLink>
     );
 }

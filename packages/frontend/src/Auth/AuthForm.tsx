@@ -1,33 +1,27 @@
 import React from 'react';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
-import Title from '@airbnb/lunar/lib/components/Title';
-import Card from '@airbnb/lunar/lib/components/Card';
-import CardContent from '@airbnb/lunar/lib/components/Card/Content';
-import Spacing from '@airbnb/lunar/lib/components/Spacing';
+import styled from 'styled-components';
+import { Typography, Card } from 'antd';
+import Spacing from '../Spacing';
 
 type Props = {
-    title: String;
+    title: string;
     children: NonNullable<React.ReactNode>;
 };
 
-export default function AuthForm({ title, children }: Props) {
-    const [classes, cx] = useStyles(() => ({
-        container: {
-            width: 400,
-            margin: '0 auto'
-        }
-    }));
+const Container = styled.div`
+    max-width: 400px;
+    margin: 0 auto;
+`;
 
+export default function AuthForm({ title, children }: Props) {
     return (
-        <div className={cx(classes.container)}>
+        <Container>
             <Spacing top={8}>
                 <Card>
-                    <CardContent>
-                        <Title level={1}>{title}</Title>
-                        {children}
-                    </CardContent>
+                    <Typography.Title>{title}</Typography.Title>
+                    {children}
                 </Card>
             </Spacing>
-        </div>
+        </Container>
     );
 }

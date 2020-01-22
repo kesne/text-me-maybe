@@ -1,6 +1,6 @@
 import React from 'react';
-import Text from '@airbnb/lunar/lib/components/Text';
+import { Typography } from 'antd';
 
 export default function Billing() {
-    return <Text>Yeet, this is a placeholder. :)</Text>;
+    return <Typography.Text>Yeet, this is a placeholder. :)</Typography.Text>;
 }

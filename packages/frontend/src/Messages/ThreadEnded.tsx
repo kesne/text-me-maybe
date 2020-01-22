@@ -1,19 +1,17 @@
 import React from 'react';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
-import Text from '@airbnb/lunar/lib/components/Text';
+import styled from 'styled-components';
+import { Typography } from 'antd';
+
+const Message = styled.div`
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+`;
 
 export default function ThreadEnded() {
-    const [classes, cx] = useStyles(theme => ({
-        container: {
-            display: 'flex',
-            justifyContent: 'center',
-            padding: theme.unit * 2,
-        }
-    }));
-
     return (
-        <div className={cx(classes.container)}>
-            <Text>Thread has ended.</Text>
-        </div>
+        <Message>
+            <Typography.Text>Thread has ended.</Typography.Text>
+        </Message>
     );
 }

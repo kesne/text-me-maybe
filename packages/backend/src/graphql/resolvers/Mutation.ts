@@ -86,13 +86,18 @@ const MutationResolvers: MutationResolvers<Context> = {
 
     // TODO: Validate phoneNumber "to" using twilio lookup API.
     async createThread(_parent, { name, to, message: messageText }, { user }) {
+        console.log('Testing 123...', to);
         const recipient = await Thread.formatRecipient(to);
+
+        console.log(recipient);
 
         if (!recipient) {
             throw new Error('Invalid recipient!');
         }
 
         const phoneNumber = await PhoneNumber.getOrCreateForRecipient(recipient);
+
+        console.log(phoneNumber);
 
         const thread = new Thread();
         thread.phoneNumber = Promise.resolve(phoneNumber);

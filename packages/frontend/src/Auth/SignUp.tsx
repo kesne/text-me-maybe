@@ -1,34 +1,31 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
-import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
-import Spacing from '@airbnb/lunar/lib/components/Spacing';
-import Input from '@airbnb/lunar/lib/components/Input';
-import Button from '@airbnb/lunar/lib/components/Button';
+import styled from 'styled-components';
+import { Form, Button, Input } from 'antd';
+import Spacing from '../Spacing';
 import Link from '../Link';
 import AuthForm from './AuthForm';
 import { useSignUpMutation } from '../queries';
 import HasUserContext from '../HasUserContext';
 
+const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 }
+};
+
+const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 }
+};
+
+const LinkContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+`;
+
 export default function SignUp() {
-    const [classes, cx] = useStyles(() => ({
-        rightAlign: {
-            display: 'flex',
-            justifyContent: 'flex-end'
-        }
-    }));
     const history = useHistory();
     const { setHasUser } = useContext(HasUserContext);
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [signUp, { data, loading }] = useSignUpMutation({
-        variables: {
-            name,
-            email,
-            password
-        }
-    });
+    const [signUp, { data, loading }] = useSignUpMutation();
 
     useEffect(() => {
         if (data) {
@@ -37,51 +34,53 @@ export default function SignUp() {
         }
     }, [data, history, setHasUser]);
 
+    const onFinish = (values: Record<string, string>) => {
+        signUp({
+            variables: {
+                name: values.name,
+                email: values.email,
+                password: values.password
+            }
+        });
+    };
+
     return (
         <AuthForm title="Sign up">
-            <form noValidate>
-                <Input
-                    required
+            <Form {...layout} name="signup" onFinish={onFinish}>
+                <Form.Item
                     label="Name"
                     name="name"
-                    autoComplete="name"
-                    value={name}
-                    onChange={setName}
-                    disabled={loading}
-                    autoFocus
-                />
-                <Input
-                    required
-                    label="Email Address"
+                    rules={[{ required: true, message: 'Please input your name!' }]}
+                >
+                    <Input autoFocus />
+                </Form.Item>
+                <Form.Item
+                    label="Email"
                     name="email"
-                    autoComplete="email"
-                    value={email}
-                    onChange={setEmail}
-                    disabled={loading}
-                />
-                <Input
-                    required
-                    name="password"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
+                >
+                    <Input autoFocus />
+                </Form.Item>
+
+                <Form.Item
                     label="Password"
-                    type="password"
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={setPassword}
-                    disabled={loading}
-                />
-                <ButtonGroup endAlign>
-                    <Button type="submit" disabled={loading} onClick={() => signUp()}>
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your password!' }]}
+                >
+                    <Input.Password />
+                </Form.Item>
+
+                <Form.Item {...tailLayout}>
+                    <Button type="primary" htmlType="submit" disabled={loading}>
                         Sign Up
                     </Button>
-                </ButtonGroup>
+                </Form.Item>
                 <Spacing top={3}>
-                    <div className={cx(classes.rightAlign)}>
-                        <Link small to="/signin">
-                            Already have an account? Sign in
-                        </Link>
-                    </div>
+                    <LinkContainer>
+                        <Link to="/signin">Already have an account? Sign in</Link>
+                    </LinkContainer>
                 </Spacing>
-            </form>
+            </Form>
         </AuthForm>
     );
 }

@@ -1,44 +1,41 @@
 import React from 'react';
-import Layout from '@airbnb/lunar-layouts/lib/components/Layout';
-import Grid from '@airbnb/lunar/lib/components/Grid';
-import Spacing from '@airbnb/lunar/lib/components/Spacing';
-import Title from '@airbnb/lunar/lib/components/Title';
-import Button from '@airbnb/lunar/lib/components/Button';
-import IconLock from '@airbnb/lunar-icons/lib/interface/IconLock';
-import IconBolt from '@airbnb/lunar-icons/lib/general/IconBolt';
-import IconVerifiedUser from '@airbnb/lunar-icons/lib/general/IconVerifiedUser';
+import { Link } from 'react-router-dom';
+import { Layout, Typography, Button, Row } from 'antd';
+import { ThunderboltOutlined, LockOutlined, ControlOutlined } from '@ant-design/icons';
 import ValueProp from './ValueProp';
+import Spacing from '../Spacing';
 
+// TODO: Make a better content wrapper that has max width o something.
 export default function Home() {
     return (
-        <Layout centerAlign>
-            <Title level={1}>Never reveal your phone number again</Title>
-            <Title level={3}>
+        <Layout.Content style={{ padding: '0 50px' }}>
+            <Typography.Title>Never reveal your phone number again</Typography.Title>
+            <Typography.Title level={4}>
                 Send text messages to anyone without revealing your phone number, starting at just
                 $5 per month.
-            </Title>
+            </Typography.Title>
             <Spacing vertical={4}>
-                <Button large href="/signup">
-                    Get Started
+                <Button type="primary" size="large" shape="round">
+                    <Link to="/signup">Get Started</Link>
                 </Button>
             </Spacing>
-            <Grid>
+            <Row gutter={16}>
                 <ValueProp
-                    Icon={IconLock}
+                    Icon={LockOutlined}
                     header="Private"
                     description="Messages come from a completely unique phone number."
                 />
                 <ValueProp
-                    Icon={IconBolt}
+                    Icon={ControlOutlined}
                     header="In Control"
                     description="Stop anyone from messaging you instantly by ending a conversation."
                 />
                 <ValueProp
-                    Icon={IconVerifiedUser}
+                    Icon={ThunderboltOutlined}
                     header="Fast"
                     description="You can start conversations in seconds, without any setup."
                 />
-            </Grid>
-        </Layout>
+            </Row>
+        </Layout.Content>
     );
 }

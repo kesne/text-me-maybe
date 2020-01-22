@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, useParams } from 'react-router-dom';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
-import Loader from '@airbnb/lunar/lib/components/Loader';
+import styled from 'styled-components';
+import { Spin, Card } from 'antd';
 import Message from './Message';
 import SendMessage from './SendMessage';
 import { useMessagesQuery } from '../queries';
@@ -10,29 +10,31 @@ import Header from './Header';
 import YouAre from './YouAre';
 import ThreadEnded from './ThreadEnded';
 
-export default function Messages() {
-    const [classes, cx] = useStyles(theme => ({
-        box: {
-            ...theme.pattern.box,
-            background: theme.color.accent.bg,
-            overflow: 'hidden',
-            display: 'flex'
-        },
-        wrapper: {
-            padding: theme.unit * 2,
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden'
-        },
-        container: {
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column-reverse',
-            overflowY: 'auto'
-        }
-    }));
+const StyledCard = styled(Card)`
+    overflow: hidden;
+    .ant-card-body {
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+    }
+`;
 
+const Wrapper = styled.div`
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+`;
+
+const Container = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+`;
+
+export default function Messages() {
     const { id } = useParams() as Record<string, string>;
     const threadID = Number(id);
 
@@ -43,7 +45,7 @@ export default function Messages() {
     });
 
     if (loading) {
-        return <Loader />;
+        return <Spin size="large" />;
     }
 
     if (!data) {
@@ -55,23 +57,23 @@ export default function Messages() {
     }
 
     return (
-        <div className={cx(classes.box)}>
-            <div className={cx(classes.wrapper)}>
+        <StyledCard>
+            <Wrapper>
                 <Header thread={data.thread} />
-                <div className={cx(classes.container)}>
+                <Container>
                     {data.thread.messages.map(message => (
                         <Message key={message.id} message={message} />
                     ))}
                     <FetchMore onMore={() => {}} />
                     <YouAre phoneNumber={data.thread.number} createdAt={data.thread.createdAt} />
-                </div>
+                </Container>
 
                 {data.thread.ended ? (
                     <ThreadEnded />
                 ) : (
                     <SendMessage threadID={threadID} refetch={refetch} />
                 )}
-            </div>
-        </div>
+            </Wrapper>
+        </StyledCard>
     );
 }

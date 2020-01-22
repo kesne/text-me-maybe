@@ -2,8 +2,8 @@ import React, { useState, useMemo } from 'react';
 import Cookie from 'js-cookie';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
+import { Layout } from 'antd';
 import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
-import Layout from '@airbnb/lunar-layouts/lib/components/Layout';
 import client from './utils/client';
 import Header from './Header';
 import SignUp from './Auth/SignUp';
@@ -55,7 +55,7 @@ export default function App() {
     );
 
     return (
-        <Layout fluid noPadding>
+        <Layout>
             <HasUserContext.Provider value={contextValue}>
                 <Router>
                     <ApolloProvider client={client}>

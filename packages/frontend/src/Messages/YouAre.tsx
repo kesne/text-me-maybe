@@ -1,5 +1,5 @@
 import React from 'react';
-import Text from '@airbnb/lunar/lib/components/Text';
+import { Typography } from 'antd';
 import moment from 'moment';
 import formatPhone from '../utils/formatPhone';
 
@@ -11,12 +11,12 @@ type Props = {
 export default function YouAre({ phoneNumber, createdAt }: Props) {
     return (
         <>
-            <Text centerAlign small muted>
+            <Typography.Text type="secondary">
                 You are {formatPhone(phoneNumber)}
-            </Text>
-            <Text centerAlign small muted>
+            </Typography.Text>
+            <Typography.Text type="secondary">
                 Conversation started {moment(Number(createdAt)).fromNow()}
-            </Text>
+            </Typography.Text>
         </>
     );
 }

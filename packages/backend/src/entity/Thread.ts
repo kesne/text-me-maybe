@@ -16,7 +16,7 @@ import twilio from '../twilio';
 @Entity()
 export class Thread extends BaseEntity {
     static async formatRecipient(recipient: string) {
-        const lookup = await twilio.lookups.phoneNumbers(recipient.slice(2)).fetch({ countryCode: 'US' })
+        const lookup = await twilio.lookups.phoneNumbers(recipient).fetch({ countryCode: 'US' });
         return lookup.phoneNumber;
     }
 

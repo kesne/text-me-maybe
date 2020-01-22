@@ -1,44 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
-import Modal from '@airbnb/lunar/lib/components/Modal';
-import Text from '@airbnb/lunar/lib/components/Text';
-import Button from '@airbnb/lunar/lib/components/Button';
-import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
-import Input from '@airbnb/lunar/lib/components/Input';
-import Loader from '@airbnb/lunar/lib/components/Loader';
+import styled from 'styled-components';
+import { Modal, InputNumber, Form, Spin, Typography } from 'antd';
 import { useOnboardTotpQuery, useEnableTotpMutation } from '../queries';
 
 type Props = {
     onClose(): void;
 };
 
-export default function OnboardTOTP({ onClose }: Props) {
-    const [classes, cx] = useStyles(theme => ({
-        qrCode: {
-            display: 'block',
-            margin: `${theme.unit * 2}px auto`
-        },
-        secret: {
-            fontFamily: 'monospace',
-            fontSize: '1.3rem'
-        },
-        inputWrapper: {
-            display: 'flex',
-            justifyContent: 'center'
-        }
-    }));
+const Code = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
 
-    const [token, setToken] = useState('');
+const QRCode = styled.img`
+    display: block;
+    margin: 16px auto;
+`;
+
+export default function OnboardTOTP({ onClose }: Props) {
+    const [form] = Form.useForm();
     const { data, loading } = useOnboardTotpQuery({
         fetchPolicy: 'network-only'
     });
 
-    const [enableTotp, totpEnableState] = useEnableTotpMutation({
-        variables: {
-            token,
-            secret: data ? data.onboardTotp.secret : ''
-        }
-    });
+    const [enableTotp, totpEnableState] = useEnableTotpMutation();
+
+    async function handleOk() {
+        const values = await form.validateFields();
+
+        await enableTotp({
+            variables: {
+                token: String(values.token),
+                secret: data ? data.onboardTotp.secret : ''
+            }
+        });
+    }
 
     useEffect(() => {
         if (totpEnableState.data) {
@@ -47,7 +44,7 @@ export default function OnboardTOTP({ onClose }: Props) {
     }, [totpEnableState.data, onClose]);
 
     if (loading) {
-        return <Loader />;
+        return <Spin />;
     }
 
     if (!data) {
@@ -58,49 +55,42 @@ export default function OnboardTOTP({ onClose }: Props) {
 
     return (
         <Modal
+            visible
             title="Two Factor Auth Setup"
-            onClose={onClose}
-            footer={
-                <ButtonGroup endAlign>
-                    <Button onClick={onClose} inverted>
-                        Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        disabled={totpEnableState.loading}
-                        onClick={() => enableTotp()}
-                    >
-                        Enable
-                    </Button>
-                </ButtonGroup>
-            }
+            onCancel={onClose}
+            onOk={handleOk}
+            confirmLoading={totpEnableState.loading}
         >
-            <Text>
-                Scan this QR code in an authenticator app to enable Two Factor Authentication. This
-                will require you to enter a pin from the authenticator app every time you sign in.
-            </Text>
-            <img
-                className={cx(classes.qrCode)}
-                alt="Enable Two Factor Authentication"
-                src={`https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=${OTP_DATA}`}
-            />
-            <Text>
-                Or enter it manually:
-                <br />
-                <div className={cx(classes.secret)}>{data.onboardTotp.secret}</div>
-            </Text>
-            <div className={cx(classes.inputWrapper)}>
-                <Input
-                    large
-                    label="Token"
-                    placeholder="6 digit code..."
-                    value={token}
-                    onChange={setToken}
-                    maxLength={6}
-                    pattern="[0-9]{6}"
-                    autoFocus
+            <Form form={form} layout="vertical" name="totp">
+                <Typography.Paragraph>
+                    Scan this QR code in an authenticator app to enable Two Factor Authentication.
+                    This will require you to enter a pin from the authenticator app every time you
+                    sign in.
+                </Typography.Paragraph>
+                <QRCode
+                    alt="Enable Two Factor Authentication"
+                    src={`https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=${OTP_DATA}`}
                 />
-            </div>
+                <Typography.Paragraph>
+                    Or enter it manually:
+                    <br />
+                    <Code>
+                        <Typography.Title level={3} code>
+                            {data.onboardTotp.secret}
+                        </Typography.Title>
+                    </Code>
+                </Typography.Paragraph>
+                <Form.Item label="Token" name="token">
+                    <InputNumber
+                        size="large"
+                        placeholder="6 digit code..."
+                        maxLength={6}
+                        pattern="[0-9]{6}"
+                        required
+                        autoFocus
+                    />
+                </Form.Item>
+            </Form>
         </Modal>
     );
 }

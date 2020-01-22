@@ -1,8 +1,6 @@
 import React from 'react';
-import { Col } from '@airbnb/lunar/lib/components/Grid';
-import Card, { Content as CardContent } from '@airbnb/lunar/lib/components/Card';
-import Text from '@airbnb/lunar/lib/components/Text';
-import Row from '@airbnb/lunar/lib/components/Row';
+import { Col, Card, Typography } from 'antd';
+import Row from '../Row';
 
 type Props = {
     header: string;
@@ -12,14 +10,12 @@ type Props = {
 
 export default function ValueProp({ header, description, Icon }: Props) {
     return (
-        <Col span={4}>
+        <Col span={8}>
             <Card>
-                <CardContent>
-                    <Row before={<Icon size={64} />} middleAlign>
-                        <Text large>{header}</Text>
-                        <Text>{description}</Text>
-                    </Row>
-                </CardContent>
+                <Row before={<Icon style={{ fontSize: 64 }} />} middleAlign>
+                    <Typography.Title level={4}>{header}</Typography.Title>
+                    <Typography.Text>{description}</Typography.Text>
+                </Row>
             </Card>
         </Col>
     );
