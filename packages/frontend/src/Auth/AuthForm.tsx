@@ -8,8 +8,9 @@ type Props = {
     children: NonNullable<React.ReactNode>;
 };
 
+// TODO: better responsive shit
 const Container = styled.div`
-    max-width: 400px;
+    width: 400px;
     margin: 0 auto;
 `;
 

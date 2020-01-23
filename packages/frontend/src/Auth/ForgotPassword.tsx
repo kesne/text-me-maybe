@@ -1,11 +1,11 @@
 import React from 'react';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
+import styled from 'styled-components';
 import { Typography, Input, Button, Form } from 'antd';
-import IconCheck from '@airbnb/lunar-icons/lib/interface/IconCheckAlt';
 import { useForgotPasswordMutation } from '../queries';
 import Spacing from '../Spacing';
 import AuthForm from './AuthForm';
 import Link from '../Link';
+import { CheckCircleTwoTone } from '@ant-design/icons';
 
 const layout = {
     labelCol: { span: 8 },
@@ -16,23 +16,26 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 }
 };
 
-export default function ForgotPassword() {
-    const [classes, cx] = useStyles(theme => ({
-        rightAlign: {
-            display: 'flex',
-            justifyContent: 'flex-end'
-        },
-        complete: {
-            margin: theme.unit * 4,
-            display: 'flex',
-            justifyContent: 'center'
-        }
-    }));
+const RightAlign = styled.div`
+    display: flex;
+    justify-content: flex-end;
+`;
 
+const Complete = styled.div`
+    margin: 32px;
+    display: flex;
+    justify-content: center;
+`;
+
+export default function ForgotPassword() {
     const [forgotPassword, { data, loading }] = useForgotPasswordMutation();
 
-    const onFinish = () => {
-        console.log('done');
+    const onFinish = (values: Record<string, any>) => {
+        forgotPassword({
+            variables: {
+                email: values.email
+            }
+        });
     };
 
     return (
@@ -43,9 +46,9 @@ export default function ForgotPassword() {
                         A confirmation has been sent to your email. Click the link in the email to
                         finish resetting your password
                     </Typography.Paragraph>
-                    <div className={cx(classes.complete)}>
-                        <IconCheck color="green" size={64} />
-                    </div>
+                    <Complete>
+                        <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 64 }} />
+                    </Complete>
                 </>
             ) : (
                 <>
@@ -71,11 +74,9 @@ export default function ForgotPassword() {
                         </Form>
                     </Spacing>
                     <Spacing top={3}>
-                        <div className={cx(classes.rightAlign)}>
-                            <Link to="/signin">
-                                Remembered your password? Sign in
-                            </Link>
-                        </div>
+                        <RightAlign>
+                            <Link to="/signin">Remembered your password? Sign in</Link>
+                        </RightAlign>
                     </Spacing>
                 </>
             )}

@@ -3,7 +3,7 @@ import Cookie from 'js-cookie';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { Layout } from 'antd';
-import useStyles from '@airbnb/lunar/lib/hooks/useStyles';
+import styled from 'styled-components';
 import client from './utils/client';
 import Header from './Header';
 import SignUp from './Auth/SignUp';
@@ -19,26 +19,15 @@ import HasUserContext from './HasUserContext';
 const HAS_USER_COOKIE = 'hasUser';
 const HAS_USER_VALUE = '1';
 
+const Root = styled.div`
+    display: flex;
+    flex-direction: column;
+    // TODO: This should probably be min-height,
+    // we just need to sort out the messages view.
+    height: 100vh;
+`;
+
 export default function App() {
-    const [classes, cx] = useStyles(() => ({
-        root: {
-            display: 'flex',
-            flexDirection: 'column',
-            // TODO: This should probably be min-height,
-            // we just need to sort out the messages view.
-            height: '100vh'
-        },
-        contentWrapper: {
-            display: 'flex',
-            flexDirection: 'column',
-            flexGrow: 1
-        },
-        content: {
-            display: 'flex',
-            flex: 1,
-            overflow: 'auto'
-        }
-    }));
     const [hasUser, setHasUser] = useState(
         Cookie.get(HAS_USER_COOKIE) === HAS_USER_VALUE ? true : false
     );
@@ -59,7 +48,7 @@ export default function App() {
             <HasUserContext.Provider value={contextValue}>
                 <Router>
                     <ApolloProvider client={client}>
-                        <div className={cx(classes.root)}>
+                        <Root>
                             <Header />
                             <Switch>
                                 <AuthenticatedRoute unauthed path="/signin">
@@ -87,7 +76,7 @@ export default function App() {
                                     <div>Where are you?</div>
                                 </Route>
                             </Switch>
-                        </div>
+                        </Root>
                     </ApolloProvider>
                 </Router>
             </HasUserContext.Provider>

@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
 import { Typography, Menu, Dropdown, Button } from 'antd';
 import Row from '../../Row';
-import EndThreadModal from './EndThreadModal';
 import { Thread } from '../../queries';
-import DeleteThreadModal from './DeleteThreadModal';
+import DeleteOrEndThreadModal from './DeleteOrEndThreadModal';
 
 type Props = {
     thread: Partial<Thread>;
 };
 
 export default function Header({ thread }: Props) {
-    const [endThreadOpen, setEndThreadOpen] = useState(false);
-    const [deleteThreadOpen, setDeleteThreadOpen] = useState(false);
+    const [openedModal, setOpenedModal] = useState<null | 'end' | 'delete'>(null);
 
-    const handleOpenEndModal = () => {
-        setEndThreadOpen(true);
-    };
-
-    const handleOpenDeleteModal = () => {
-        setDeleteThreadOpen(true);
+    const handleOpenModal = (mode: 'end' | 'delete') => () => {
+        setOpenedModal(mode);
     };
 
     const menu = (
@@ -28,11 +22,11 @@ export default function Header({ thread }: Props) {
             <Menu.Item key="0" disabled>
                 To: <Typography.Text copyable>{thread.recipient}</Typography.Text>
             </Menu.Item>
-            <Menu.Item key="1" onClick={handleOpenEndModal}>
+            <Menu.Item key="1" onClick={handleOpenModal('end')}>
                 End Thread
             </Menu.Item>
             <Menu.Divider />
-            <Menu.Item key="3" onClick={handleOpenDeleteModal}>
+            <Menu.Item key="3" onClick={handleOpenModal('delete')}>
                 Delete Thread
             </Menu.Item>
         </Menu>
@@ -50,11 +44,12 @@ export default function Header({ thread }: Props) {
                 <Typography.Title level={3}>{thread.name}</Typography.Title>
             </Row>
 
-            {endThreadOpen && (
-                <EndThreadModal thread={thread} onClose={() => setEndThreadOpen(false)} />
-            )}
-            {deleteThreadOpen && (
-                <DeleteThreadModal thread={thread} onClose={() => setDeleteThreadOpen(false)} />
+            {openedModal && (
+                <DeleteOrEndThreadModal
+                    mode={openedModal}
+                    thread={thread}
+                    onClose={() => setOpenedModal(null)}
+                />
             )}
         </>
     );

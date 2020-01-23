@@ -22,13 +22,11 @@ export default function SignUp() {
 
     return (
         <AuthForm title="Sign in">
-            <form noValidate>
-                {totpChallenge ? (
-                    <VerifyTOTP onSignIn={onSignIn} />
-                ) : (
-                    <EmailPassword onSignIn={onSignIn} onTOTPChallenge={onTOTPChallenge} />
-                )}
-            </form>
+            {totpChallenge ? (
+                <VerifyTOTP onSignIn={onSignIn} />
+            ) : (
+                <EmailPassword onSignIn={onSignIn} onTOTPChallenge={onTOTPChallenge} />
+            )}
         </AuthForm>
     );
 }

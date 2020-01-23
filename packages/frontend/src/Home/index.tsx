@@ -14,7 +14,7 @@ export default function Home() {
                 Send text messages to anyone without revealing your phone number, starting at just
                 $5 per month.
             </Typography.Title>
-            <Spacing vertical={4}>
+            <Spacing top={4} bottom={4}>
                 <Button type="primary" size="large" shape="round">
                     <Link to="/signup">Get Started</Link>
                 </Button>

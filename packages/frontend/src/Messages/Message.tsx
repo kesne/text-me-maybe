@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import moment from 'moment';
-import MessageItem from '@airbnb/lunar/lib/components/MessageItem';
-import Text from '@airbnb/lunar/lib/components/Text';
+import { Typography } from 'antd';
 import { Message as MessageData, Sender, useMarkMessageSeenMutation } from '../queries';
 
 type Props = {
@@ -22,11 +21,14 @@ export default function Message({ message }: Props) {
     }, [message, markMessageSeen]);
 
     return (
-        <MessageItem
-            title={message.sender === Sender.Other ? 'Other Person' : 'You!'}
-            formattedTimestamp={moment(Number(message.createdAt)).format('dddd, MMM D, h:mm')}
-        >
-            <Text>{message.body}</Text>
-        </MessageItem>
+        <div>
+            <Typography.Title level={3}>
+                {message.sender === Sender.Other ? 'Other Person' : 'You'}
+            </Typography.Title>
+            <Typography.Paragraph>{message.body}</Typography.Paragraph>
+            <Typography.Paragraph>
+                {moment(Number(message.createdAt)).format('dddd, MMM D, h:mm')}
+            </Typography.Paragraph>
+        </div>
     );
 }

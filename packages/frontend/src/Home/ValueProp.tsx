@@ -12,7 +12,7 @@ export default function ValueProp({ header, description, Icon }: Props) {
     return (
         <Col span={8}>
             <Card>
-                <Row before={<Icon style={{ fontSize: 64 }} />} middleAlign>
+                <Row before={<Icon style={{ fontSize: 64 }} />}>
                     <Typography.Title level={4}>{header}</Typography.Title>
                     <Typography.Text>{description}</Typography.Text>
                 </Row>

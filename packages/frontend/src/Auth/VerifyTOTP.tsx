@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import Text from '@airbnb/lunar/lib/components/Text';
-import Spacing from '@airbnb/lunar/lib/components/Spacing';
-import Input from '@airbnb/lunar/lib/components/Input';
-import Button from '@airbnb/lunar/lib/components/Button';
-import ButtonGroup from '@airbnb/lunar/lib/components/ButtonGroup';
+import React, { useEffect } from 'react';
+import { Form, Input, Button, Typography } from 'antd';
 import { useExchangeTotpMutation } from '../queries';
+
+const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 }
+};
+
+const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 }
+};
 
 type Props = {
     onSignIn(): void;
 };
 
 export default function VerifyTOTP({ onSignIn }: Props) {
-    const [token, setToken] = useState('');
-    const [exchangeTotp, { data, loading }] = useExchangeTotpMutation({
-        variables: {
-            token
-        }
-    });
+    const [exchangeTotp, { data, loading }] = useExchangeTotpMutation();
 
     useEffect(() => {
         if (data) {
@@ -24,34 +24,34 @@ export default function VerifyTOTP({ onSignIn }: Props) {
         }
     }, [data, onSignIn]);
 
+    function handleFinish(values: Record<string, any>) {
+        exchangeTotp({
+            variables: {
+                token: values.token
+            }
+        });
+    }
+
     return (
-        <>
-            <Spacing bottom={2}>
-                <Text>
-                    Two factor auth is enabled on this account. Please enter the token from your
-                    authenticator app below:
-                </Text>
-            </Spacing>
-            <Input
-                required
-                type="number"
+        <Form {...layout} name="verify-totp" onFinish={handleFinish}>
+            <Typography.Paragraph>
+                Two factor auth is enabled on this account. Please enter the token from your
+                authenticator app below:
+            </Typography.Paragraph>
+
+            <Form.Item
                 label="Token"
                 name="token"
-                value={token}
-                onChange={setToken}
-                pattern="[0-9]{6}"
-                maxLength={6}
-                autoFocus
-            />
-            <ButtonGroup endAlign>
-                <Button
-                    type="submit"
-                    onClick={() => exchangeTotp()}
-                    disabled={loading}
-                >
+                rules={[{ required: true, message: 'Please enter the two factor auth token.' }]}
+            >
+                <Input pattern="[0-9]{6}" maxLength={6} autoFocus />
+            </Form.Item>
+
+            <Form.Item {...tailLayout}>
+                <Button type="primary" htmlType="submit" disabled={loading}>
                     Verify Two Factor Auth
                 </Button>
-            </ButtonGroup>
-        </>
+            </Form.Item>
+        </Form>
     );
 }
