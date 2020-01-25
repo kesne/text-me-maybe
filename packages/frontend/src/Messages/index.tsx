@@ -7,7 +7,6 @@ import SendMessage from './SendMessage';
 import { useMessagesQuery } from '../queries';
 import FetchMore from './FetchMore';
 import Header from './Header';
-import YouAre from './YouAre';
 import ThreadEnded from './ThreadEnded';
 
 const StyledCard = styled(Card)`
@@ -20,7 +19,6 @@ const StyledCard = styled(Card)`
 `;
 
 const Wrapper = styled.div`
-    padding: 16px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -57,23 +55,24 @@ export default function Messages() {
     }
 
     return (
-        <StyledCard>
-            <Wrapper>
-                <Header thread={data.thread} />
-                <Container>
-                    {data.thread.messages.map(message => (
-                        <Message key={message.id} message={message} />
-                    ))}
-                    <FetchMore onMore={() => {}} />
-                    <YouAre phoneNumber={data.thread.number} createdAt={data.thread.createdAt} />
-                </Container>
+        <>
+            <Header thread={data.thread} />
+            <StyledCard>
+                <Wrapper>
+                    <Container>
+                        {data.thread.messages.map(message => (
+                            <Message key={message.id} thread={data.thread} message={message} />
+                        ))}
+                        <FetchMore onMore={() => {}} />
+                    </Container>
 
-                {data.thread.ended ? (
-                    <ThreadEnded />
-                ) : (
-                    <SendMessage threadID={threadID} refetch={refetch} />
-                )}
-            </Wrapper>
-        </StyledCard>
+                    {data.thread.ended ? (
+                        <ThreadEnded />
+                    ) : (
+                        <SendMessage threadID={threadID} refetch={refetch} />
+                    )}
+                </Wrapper>
+            </StyledCard>
+        </>
     );
 }

@@ -53,7 +53,7 @@ export default function SendMessage({ threadID, refetch }: Props) {
         <Form form={form} onFinish={handleFinish}>
             <Row
                 after={
-                    <Button htmlType="submit" type="primary">
+                    <Button htmlType="submit" type="primary" size="large">
                         Send
                     </Button>
                 }
@@ -62,8 +62,9 @@ export default function SendMessage({ threadID, refetch }: Props) {
                     name="message"
                     validateStatus={error && 'error'}
                     help={error && error.message}
+                    noStyle
                 >
-                    <Input placeholder="Message..." disabled={loading} />
+                    <Input placeholder="Message..." disabled={loading} size="large" />
                 </Form.Item>
             </Row>
         </Form>

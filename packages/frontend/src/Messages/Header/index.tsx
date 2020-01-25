@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { Typography, Menu, Dropdown, Button } from 'antd';
-import Row from '../../Row';
+import styled from 'styled-components';
+import { PageHeader, Typography, Button } from 'antd';
 import { Thread } from '../../queries';
 import DeleteOrEndThreadModal from './DeleteOrEndThreadModal';
+import moment from 'moment';
+import formatPhone from '../../utils/formatPhone';
 
 type Props = {
     thread: Partial<Thread>;
 };
+
+const StyledPageHeader = styled(PageHeader)`
+    border: 1px solid #f0f0f0;
+    border-bottom: none;
+`;
 
 export default function Header({ thread }: Props) {
     const [openedModal, setOpenedModal] = useState<null | 'end' | 'delete'>(null);
@@ -15,34 +22,29 @@ export default function Header({ thread }: Props) {
         setOpenedModal(mode);
     };
 
-    const menu = (
-        // TODO: display the details of the thread (to / from) in the header.
-        // We talked about this before and decided against it but I think honestly it's worth it.
-        <Menu>
-            <Menu.Item key="0" disabled>
-                To: <Typography.Text copyable>{thread.recipient}</Typography.Text>
-            </Menu.Item>
-            <Menu.Item key="1" onClick={handleOpenModal('end')}>
-                End Thread
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item key="3" onClick={handleOpenModal('delete')}>
-                Delete Thread
-            </Menu.Item>
-        </Menu>
-    );
+    const subtitle = `Conversation with ${formatPhone(
+        thread.recipient!
+    )}. Messages will come from ${formatPhone(thread.number!)}`;
 
     return (
         <>
-            <Row
-                after={
-                    <Dropdown overlay={menu} trigger={['click']}>
-                        <Button>Actions</Button>
-                    </Dropdown>
-                }
+            <StyledPageHeader
+                ghost={false}
+                title={thread.name}
+                subTitle={subtitle}
+                extra={[
+                    <Button key="end" type="ghost" onClick={handleOpenModal('end')}>
+                        End Thread
+                    </Button>,
+                    <Button key="delete" type="danger" onClick={handleOpenModal('delete')}>
+                        Delete Thread
+                    </Button>
+                ]}
             >
-                <Typography.Title level={3}>{thread.name}</Typography.Title>
-            </Row>
+                <Typography.Text type="secondary">
+                    Conversation started {moment(Number(thread.createdAt)).fromNow()}
+                </Typography.Text>
+            </StyledPageHeader>
 
             {openedModal && (
                 <DeleteOrEndThreadModal

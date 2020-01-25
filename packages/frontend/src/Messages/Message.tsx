@@ -1,13 +1,23 @@
 import React, { useEffect } from 'react';
 import moment from 'moment';
-import { Typography } from 'antd';
-import { Message as MessageData, Sender, useMarkMessageSeenMutation } from '../queries';
+import { Comment, Tooltip } from 'antd';
+import {
+    Message as MessageData,
+    Thread,
+    Sender,
+    useMarkMessageSeenMutation,
+    useMeQuery
+} from '../queries';
 
 type Props = {
+    thread: Partial<Thread>;
     message: Partial<MessageData>;
 };
 
-export default function Message({ message }: Props) {
+export default function Message({ thread, message }: Props) {
+    const me = useMeQuery({
+        fetchPolicy: 'cache-only'
+    });
     const [markMessageSeen] = useMarkMessageSeenMutation();
 
     useEffect(() => {
@@ -20,15 +30,21 @@ export default function Message({ message }: Props) {
         }
     }, [message, markMessageSeen]);
 
+    const author = message.sender === Sender.Other ? thread.name : me.data?.me.name;
+
     return (
         <div>
-            <Typography.Title level={3}>
-                {message.sender === Sender.Other ? 'Other Person' : 'You'}
-            </Typography.Title>
-            <Typography.Paragraph>{message.body}</Typography.Paragraph>
-            <Typography.Paragraph>
-                {moment(Number(message.createdAt)).format('dddd, MMM D, h:mm')}
-            </Typography.Paragraph>
+            <Comment
+                author={author}
+                content={message.body}
+                datetime={
+                    <Tooltip
+                        title={moment(Number(message.createdAt)).format('YYYY-MM-DD HH:mm:ss')}
+                    >
+                        <span>{moment(Number(message.createdAt)).fromNow()}</span>
+                    </Tooltip>
+                }
+            />
         </div>
     );
 }
