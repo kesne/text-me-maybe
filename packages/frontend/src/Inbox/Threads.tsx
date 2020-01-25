@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import { Button, Spin, Card, List } from 'antd';
+import { Button, Spin, Card, List, Input } from 'antd';
 import CreateThread from './CreateThread';
 import { useThreadsQuery } from '../queries';
 import ThreadItem from './ThreadItem';
+import { FormOutlined } from '@ant-design/icons';
+import Row from '../Row';
 
 export default function Threads() {
     const [creating, setCreating] = useState(false);
@@ -27,11 +29,9 @@ export default function Threads() {
 
     return (
         <Card>
-            <div>
-                <Button type="primary" onClick={() => setCreating(true)}>
-                    New Conversation
-                </Button>
-            </div>
+            <Row after={<Button onClick={() => setCreating(true)} icon={<FormOutlined />} />}>
+                <Input.Search placeholder="Search..." />
+            </Row>
             <List
                 itemLayout="horizontal"
                 dataSource={data.threads}

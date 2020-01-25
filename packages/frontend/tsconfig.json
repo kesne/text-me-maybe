@@ -26,10 +26,13 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "preserve"
   },
   "include": [
     "src",
     "types"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

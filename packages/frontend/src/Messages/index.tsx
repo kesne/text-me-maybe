@@ -12,6 +12,7 @@ import ThreadEnded from './ThreadEnded';
 const StyledCard = styled(Card)`
     overflow: hidden;
     .ant-card-body {
+        padding-top: 0;
         overflow: hidden;
         height: 100%;
         display: flex;
