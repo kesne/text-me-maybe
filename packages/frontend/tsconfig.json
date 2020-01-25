@@ -8,7 +8,6 @@
       "es2017.object"
     ],
     "outDir": "./lib",
-    "rootDir": "./src",
     "downlevelIteration": true,
     "strict": true,
     "noUnusedLocals": true,
@@ -30,7 +29,9 @@
   },
   "include": [
     "src",
-    "types"
+    "pages",
+    "components",
+    "types",
   ],
   "exclude": [
     "node_modules"

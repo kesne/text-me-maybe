@@ -1,10 +1,9 @@
-import React from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
 import { Typography, Input, Button, Form } from 'antd';
-import { useForgotPasswordMutation } from '../queries';
-import Spacing from '../Spacing';
-import AuthForm from './AuthForm';
-import Link from '../Link';
+import { useForgotPasswordMutation } from '../../src/queries';
+import Spacing from '../../components/Spacing';
+import Container from '../../components/Auth/Container';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 
 const layout = {
@@ -27,7 +26,7 @@ const Complete = styled.div`
     justify-content: center;
 `;
 
-export default function ForgotPassword() {
+export default function Forgot() {
     const [forgotPassword, { data, loading }] = useForgotPasswordMutation();
 
     const onFinish = (values: Record<string, any>) => {
@@ -39,7 +38,7 @@ export default function ForgotPassword() {
     };
 
     return (
-        <AuthForm title="Forgot password">
+        <Container title="Forgot password">
             {data ? (
                 <>
                     <Typography.Paragraph>
@@ -75,11 +74,13 @@ export default function ForgotPassword() {
                     </Spacing>
                     <Spacing top={3}>
                         <RightAlign>
-                            <Link to="/signin">Remembered your password? Sign in</Link>
+                            <Link href="/auth/sign-in">
+                                <a>Remembered your password? Sign in</a>
+                            </Link>
                         </RightAlign>
                     </Spacing>
                 </>
             )}
-        </AuthForm>
+        </Container>
     );
 }

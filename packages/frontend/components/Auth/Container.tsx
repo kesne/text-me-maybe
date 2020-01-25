@@ -9,20 +9,20 @@ type Props = {
 };
 
 // TODO: better responsive shit
-const Container = styled.div`
+const AuthContainer = styled.div`
     width: 400px;
     margin: 0 auto;
 `;
 
-export default function AuthForm({ title, children }: Props) {
+export default function Container({ title, children }: Props) {
     return (
-        <Container>
+        <AuthContainer>
             <Spacing top={8}>
                 <Card>
                     <Typography.Title>{title}</Typography.Title>
                     {children}
                 </Card>
             </Spacing>
-        </Container>
+        </AuthContainer>
     );
 }

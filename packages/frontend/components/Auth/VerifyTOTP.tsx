@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button, Typography } from 'antd';
-import { useExchangeTotpMutation } from '../queries';
+import { useExchangeTotpMutation } from '../../src/queries';
 
 const layout = {
     labelCol: { span: 8 },

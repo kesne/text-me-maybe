@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
+import Link from 'next/link';
 import Spacing from '../Spacing';
 import Row from '../Row';
-import Link from '../Link';
-import { useSignInMutation } from '../queries';
+import { useSignInMutation } from '../../src/queries';
 
 const layout = {
     labelCol: { span: 8 },
@@ -69,13 +69,13 @@ export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
             <Spacing top={3}>
                 <Row
                     after={
-                        <Link to="/signup">
-                            Don't have an account? Sign Up
+                        <Link href="/auth/sign-up">
+                            <a>Don't have an account? Sign Up</a>
                         </Link>
                     }
                 >
-                    <Link to="/forgot">
-                        Forgot password?
+                    <Link href="/auth/forgot">
+                        <a>Forgot password?</a>
                     </Link>
                 </Row>
             </Spacing>

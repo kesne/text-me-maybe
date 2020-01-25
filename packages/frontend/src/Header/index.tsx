@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import UserButton from './UserButton';
 import HasUserContext from '../HasUserContext';
@@ -17,7 +17,7 @@ export default function Header() {
                 ) : (
                     <Menu theme="dark" mode="horizontal" selectedKeys={[]} style={{ lineHeight: '64px' }}>
                         <Menu.Item>
-                            <Link to="/signin">Sign In</Link>
+                            {/* <Link to="/signin">Sign In</Link> */}
                         </Menu.Item>
                     </Menu>
                 )}

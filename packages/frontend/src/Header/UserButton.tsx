@@ -1,19 +1,19 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu } from 'antd';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import { useMeQuery } from '../queries';
 import HasUserContext from '../HasUserContext';
 
 export default function UserButton() {
-    const history = useHistory();
+    // const history = useHistory();
     const { data, loading } = useMeQuery();
     const { setHasUser } = useContext(HasUserContext);
 
     // TODO: We can implement this better probably:
     function signOut() {
         setHasUser(false);
-        history.push('/');
+        // history.push('/');
     }
 
     if (loading || !data || !data.me) {
