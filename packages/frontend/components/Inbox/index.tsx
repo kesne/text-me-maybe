@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import { Empty } from 'antd';
 import Threads from './Threads';
-import Messages from '../Messages';
+import Messages from './Messages';
 
 const Container = styled.div`
     flex: 1;

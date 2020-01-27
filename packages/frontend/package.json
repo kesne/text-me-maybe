@@ -21,28 +21,12 @@
         "next": "^9.2.1",
         "react": "^16.12.0",
         "react-dom": "^16.12.0",
-        "react-router-dom": "^5.1.2",
-        "react-scripts": "3.3.0",
         "styled-components": "^5.0.0"
     },
     "scripts": {
         "codegen": "graphql-codegen",
-        "start": "TSC_COMPILE_ON_ERROR=true react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
+        "start": "next",
+        "build": "next build"
     },
     "devDependencies": {
         "@types/js-cookie": "^2.2.4",

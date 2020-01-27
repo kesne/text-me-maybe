@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import PhoneNumber from 'awesome-phonenumber';
 import { PageHeader, Typography, Button } from 'antd';
-import { Thread } from '../../queries';
+import { Thread } from '../../../../queries';
 import DeleteOrEndThreadModal from './DeleteOrEndThreadModal';
 import moment from 'moment';
-import formatPhone from '../../utils/formatPhone';
 
 type Props = {
     thread: Partial<Thread>;
 };
+
+function formatPhone(number: string) {
+    return new PhoneNumber(number).getNumber('national');
+}
 
 const StyledPageHeader = styled(PageHeader)`
     border: 1px solid #f0f0f0;

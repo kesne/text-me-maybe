@@ -8,7 +8,7 @@ import {
     ThreadsQuery,
     EndThreadDocument,
     DeleteThreadDocument
-} from '../../queries';
+} from '../../../../queries';
 
 type Props = {
     thread: Partial<Thread>;

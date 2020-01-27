@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { List } from 'antd';
-import { Thread } from '../queries';
+import { Thread } from '../../queries';
 
 type Props = {
     thread: Partial<Thread>;

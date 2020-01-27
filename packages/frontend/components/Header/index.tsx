@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-// import { Link } from 'react-router-dom';
+import React from 'react';
+import Link from 'next/link';
 import { Layout, Menu } from 'antd';
 import UserButton from './UserButton';
-import HasUserContext from '../HasUserContext';
 
 export default function Header() {
-    const { hasUser } = useContext(HasUserContext);
+    // TODO: Find a real way to do the hasUser stuff.
+    const hasUser = false;
 
     return (
         <Layout.Header>
@@ -15,9 +15,16 @@ export default function Header() {
                 {hasUser ? (
                     <UserButton />
                 ) : (
-                    <Menu theme="dark" mode="horizontal" selectedKeys={[]} style={{ lineHeight: '64px' }}>
+                    <Menu
+                        theme="dark"
+                        mode="horizontal"
+                        selectedKeys={[]}
+                        style={{ lineHeight: '64px' }}
+                    >
                         <Menu.Item>
-                            {/* <Link to="/signin">Sign In</Link> */}
+                            <Link href="/auth/sign-in">
+                                <a>Sign In</a>
+                            </Link>
                         </Menu.Item>
                     </Menu>
                 )}

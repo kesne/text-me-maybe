@@ -1,3 +1,10 @@
-const Index = () => <div>billing</div>;
+import { Typography } from 'antd';
+import Container from '../../components/Account/Container';
 
-export default Index;
+export default function BillingRoute() {
+    return (
+        <Container>
+            <Typography.Text>Yeet, this is a placeholder. :)</Typography.Text>;
+        </Container>
+    );
+}

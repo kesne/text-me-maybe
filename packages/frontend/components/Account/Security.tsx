@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Typography } from 'antd';
-import { useMeQuery } from '../queries';
+import { Button, Typography, Spin } from 'antd';
+import { useMeQuery } from '../../queries';
 import OnboardTOTP from './OnboardTOTP';
 import DisableTOTP from './DisableTOTP';
 
@@ -16,7 +16,7 @@ export default function Security() {
     const { data, loading, refetch } = useMeQuery();
 
     if (loading || !data) {
-        return <div>Loading page...</div>;
+        return <Spin />;
     }
 
     function onClose() {
@@ -26,10 +26,8 @@ export default function Security() {
 
     return (
         <div>
-            <Typography.Title>Security</Typography.Title >
-            <Button>
-                Change Password
-            </Button>
+            <Typography.Title>Security</Typography.Title>
+            <Button>Change Password</Button>
             <hr />
             <Typography.Text>
                 Two factor auth <strong>{data.me.hasTOTP ? 'is' : 'is not'}</strong> enabled.

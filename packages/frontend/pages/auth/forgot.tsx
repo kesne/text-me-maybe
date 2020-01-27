@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Typography, Input, Button, Form } from 'antd';
-import { useForgotPasswordMutation } from '../../src/queries';
+import { useForgotPasswordMutation } from '../../queries';
 import Spacing from '../../components/Spacing';
 import Container from '../../components/Auth/Container';
 import { CheckCircleTwoTone } from '@ant-design/icons';

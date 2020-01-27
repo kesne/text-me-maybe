@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { Button, Spin, Card, List, Input } from 'antd';
 import CreateThread from './CreateThread';
-import { useThreadsQuery } from '../queries';
+import { useThreadsQuery } from '../../queries';
 import ThreadItem from './ThreadItem';
 import { FormOutlined } from '@ant-design/icons';
-import Row from '../Row';
+import Row from '../../src/Row';
 
 export default function Threads() {
     const [creating, setCreating] = useState(false);

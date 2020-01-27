@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Form, Button, Input } from 'antd';
 import Spacing from '../../components/Spacing';
 import Container from '../../components/Auth/Container';
-import { useSignUpMutation } from '../../src/queries';
+import { useSignUpMutation } from '../../queries';
 import Router from 'next/router';
 
 const layout = {

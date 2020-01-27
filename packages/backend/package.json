@@ -41,7 +41,6 @@
     "@types/koa-session": "^5.10.1",
     "@types/koa__router": "^8.0.2",
     "@types/node": "^13.1.2",
-    "@types/react-router-dom": "^5.1.3",
     "node-dev": "^4.0.0",
     "sqlite3": "^4.1.1",
     "ts-node-dev": "^1.0.0-pre.44",

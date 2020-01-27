@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Spin, Card } from 'antd';
 import Message from './Message';
 import SendMessage from './SendMessage';
-import { useMessagesQuery } from '../queries';
+import { useMessagesQuery } from '../../../queries';
 import FetchMore from './FetchMore';
 import Header from './Header';
 import ThreadEnded from './ThreadEnded';

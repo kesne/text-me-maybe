@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Typography } from 'antd';
-import { useDisableTotpMutation } from '../queries';
+import { useDisableTotpMutation } from '../../queries';
 
 type Props = {
     onClose(): void;

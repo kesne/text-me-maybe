@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
-import { useSendMessageMutation } from '../queries';
-import Row from '../Row';
+import { useSendMessageMutation } from '../../../queries';
+import Row from '../../../src/Row';
 
 type Props = {
     threadID: number;

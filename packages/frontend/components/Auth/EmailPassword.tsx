@@ -3,7 +3,7 @@ import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import Spacing from '../Spacing';
 import Row from '../Row';
-import { useSignInMutation } from '../../src/queries';
+import { useSignInMutation } from '../../queries';
 
 const layout = {
     labelCol: { span: 8 },

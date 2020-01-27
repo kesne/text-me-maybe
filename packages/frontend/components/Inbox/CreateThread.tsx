@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Modal, Typography, Form, Input } from 'antd';
 import PhoneNumber from 'awesome-phonenumber';
-import client from '../utils/client';
-import { useCreateThreadMutation, ThreadsDocument } from '../queries';
+import client from '../client';
+import { useCreateThreadMutation, ThreadsDocument } from '../../queries';
 
 type Props = {
     onClose: () => void;

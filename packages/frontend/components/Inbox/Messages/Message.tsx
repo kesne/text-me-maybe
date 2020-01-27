@@ -7,7 +7,7 @@ import {
     Sender,
     useMarkMessageSeenMutation,
     useMeQuery
-} from '../queries';
+} from '../../../queries';
 
 type Props = {
     thread: Partial<Thread>;

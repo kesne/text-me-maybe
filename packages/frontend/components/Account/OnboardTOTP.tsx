@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Modal, InputNumber, Form, Spin, Typography } from 'antd';
-import { useOnboardTotpQuery, useEnableTotpMutation } from '../queries';
+import { useOnboardTotpQuery, useEnableTotpMutation } from '../../queries';
 
 type Props = {
     onClose(): void;
