@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useEffect } from 'react';
+import Router from 'next/router';
 import { Modal, Typography, Form, Input } from 'antd';
 import PhoneNumber from 'awesome-phonenumber';
-import client from '../client';
+import client from '../utils/client';
 import { useCreateThreadMutation, ThreadsDocument } from '../../queries';
 
 type Props = {
@@ -10,7 +10,6 @@ type Props = {
 };
 
 export default function CreateThread({ onClose }: Props) {
-    const history = useHistory();
     const [form] = Form.useForm();
 
     const [createThread, { loading, data }] = useCreateThreadMutation();
@@ -21,10 +20,10 @@ export default function CreateThread({ onClose }: Props) {
             // TODO: Eventually this should probably just write into the cache directly,
             // but for now I'll just re-fetch all of the threads after creating one.
             client.query({ query: ThreadsDocument, fetchPolicy: 'network-only' });
-            history.push(`/inbox/${data.createThread.id}`);
+            Router.push(`/inbox/${data.createThread.id}`);
             onClose();
         }
-    }, [data, history, onClose]);
+    }, [data, onClose]);
 
     async function handleOk() {
         const values = await form.validateFields();

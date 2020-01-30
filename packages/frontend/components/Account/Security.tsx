@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Typography, Spin } from 'antd';
 import { useMeQuery } from '../../queries';
 import OnboardTOTP from './OnboardTOTP';

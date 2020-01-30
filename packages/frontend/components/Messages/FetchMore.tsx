@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 function useIntersection() {
     const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);

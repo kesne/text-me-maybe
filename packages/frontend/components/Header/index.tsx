@@ -1,11 +1,10 @@
-import React from 'react';
 import Link from 'next/link';
 import { Layout, Menu } from 'antd';
 import UserButton from './UserButton';
+import { useHasUser } from '../utils/user';
 
 export default function Header() {
-    // TODO: Find a real way to do the hasUser stuff.
-    const hasUser = false;
+    const hasUser = useHasUser();
 
     return (
         <Layout.Header>

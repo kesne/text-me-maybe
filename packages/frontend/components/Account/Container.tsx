@@ -1,10 +1,9 @@
-import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Layout, Menu } from 'antd';
-import { useRouter } from 'next/router';
 
 type Props = {
+    selected: string;
     children: React.ReactNode;
 };
 
@@ -16,16 +15,12 @@ const SiderStyled = styled(Layout.Sider)`
     background: #fff;
 `;
 
-export default function Container({ children }: Props) {
-    const { asPath } = useRouter();
-
-    const selectedKeys = [asPath.split('/')[2] ?? 'account'];
-
+export default function Container({ selected, children }: Props) {
     return (
         <Layout.Content>
             <LayoutStyled>
                 <SiderStyled width={200}>
-                    <Menu mode="inline" selectedKeys={selectedKeys} style={{ height: '100%' }}>
+                    <Menu mode="inline" selectedKeys={[selected]} style={{ height: '100%' }}>
                         <Menu.Item key="account">
                             <Link href="/account">
                                 <a>Account</a>

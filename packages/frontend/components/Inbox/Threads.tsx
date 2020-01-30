@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useRouteMatch, useHistory } from 'react-router-dom';
+import { useState } from 'react';
+// import Router from 'next/router';
 import { Button, Spin, Card, List, Input } from 'antd';
 import CreateThread from './CreateThread';
 import { useThreadsQuery } from '../../queries';
 import ThreadItem from './ThreadItem';
 import { FormOutlined } from '@ant-design/icons';
-import Row from '../../src/Row';
+import Row from '../Row';
 
 export default function Threads() {
     const [creating, setCreating] = useState(false);
     const { data, error, loading } = useThreadsQuery();
-    const history = useHistory();
-    const match = useRouteMatch('/inbox/:id');
 
-    useEffect(() => {
-        if (data && data.threads.length && !match) {
-            history.replace(`/inbox/${data.threads[0].id}`);
-        }
-    }, [data, match, history]);
+    // useEffect(() => {
+    //     if (data && data.threads.length) {
+    //         Router.replace(`/inbox/${data.threads[0].id}`);
+    //     }
+    // }, [data, history]);
 
     if (loading) {
         return <Spin />;

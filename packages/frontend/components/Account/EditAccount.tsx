@@ -1,6 +1,5 @@
-import React from 'react';
 import { Button, Input, Form, PageHeader, Spin } from 'antd';
-import Spacing from '../../src/Spacing';
+import Spacing from '../Spacing';
 import { useUpdateAccountMutation, useMeQuery } from '../../queries';
 
 export default function EditAccount() {

@@ -9,10 +9,12 @@
         "@graphql-codegen/typescript": "1.11.2",
         "@graphql-codegen/typescript-operations": "1.11.2",
         "@graphql-codegen/typescript-react-apollo": "1.11.2",
+        "@types/isomorphic-fetch": "^0.0.35",
         "antd": "^4.0.0-rc.1",
         "apollo-boost": "^0.4.7",
         "awesome-phonenumber": "^2.24.0",
         "classnames": "^2.2.6",
+        "express": "^4.17.1",
         "graphql": "^14.5.8",
         "isomorphic-fetch": "^2.2.1",
         "js-cookie": "^2.2.1",
@@ -25,8 +27,9 @@
     },
     "scripts": {
         "codegen": "graphql-codegen",
-        "start": "next",
-        "build": "next build"
+        "start": "NODE_ENV=production node server.js",
+        "build": "next build",
+        "dev": "NODE_ENV=development node server.js"
     },
     "devDependencies": {
         "@types/js-cookie": "^2.2.4",
@@ -34,6 +37,7 @@
         "@types/react-dom": "^16.9.4",
         "@types/styled-components": "^4.4.2",
         "babel-plugin-styled-components": "^1.10.6",
+        "http-proxy-middleware": "^0.20.0",
         "typescript": "^3.7.4"
     }
 }

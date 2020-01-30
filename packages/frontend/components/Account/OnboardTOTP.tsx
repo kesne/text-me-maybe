@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Modal, InputNumber, Form, Spin, Typography } from 'antd';
 import { useOnboardTotpQuery, useEnableTotpMutation } from '../../queries';

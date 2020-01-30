@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import Spacing from '../Spacing';

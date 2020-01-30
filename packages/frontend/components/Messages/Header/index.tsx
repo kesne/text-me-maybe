@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import PhoneNumber from 'awesome-phonenumber';
 import { PageHeader, Typography, Button } from 'antd';
-import { Thread } from '../../../../queries';
+import { Thread } from '../../../queries';
 import DeleteOrEndThreadModal from './DeleteOrEndThreadModal';
 import moment from 'moment';
 

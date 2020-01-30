@@ -1,6 +1,5 @@
-import React from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { List } from 'antd';
 import { Thread } from '../../queries';
 
@@ -8,7 +7,7 @@ type Props = {
     thread: Partial<Thread>;
 };
 
-const StyledLink = styled(Link)`
+const StyledLink = styled('a')`
     display: block;
     border-bottom: 1px solid #f0f0f0;
     &:last-child {
@@ -25,11 +24,13 @@ const Badge = styled.div`
 
 export default function ThreadItem({ thread }: Props) {
     return (
-        <StyledLink to={`/inbox/${thread.id}`}>
-            <List.Item>
-                <List.Item.Meta title={thread.name} description={thread.lastMessage?.body} />
-                {!thread.lastMessage?.body && <Badge />}
-            </List.Item>
-        </StyledLink>
+        <Link href="/inbox/[thread]" as={`/inbox/${thread.id}`}>
+            <StyledLink>
+                <List.Item>
+                    <List.Item.Meta title={thread.name} description={thread.lastMessage?.body} />
+                    {!thread.lastMessage?.body && <Badge />}
+                </List.Item>
+            </StyledLink>
+        </Link>
     );
 }

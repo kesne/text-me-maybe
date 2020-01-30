@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
-import Router from 'next/router'
+import Router from 'next/router';
+import { withNoAuth } from '../../components/utils/auth';
 import Container from '../../components/Auth/Container';
 import VerifyTOTP from '../../components/Auth/VerifyTOTP';
 import EmailPassword from '../../components/Auth/EmailPassword';
 
-export default function SignUp() {
+function SignIn() {
     const [totpChallenge, setTOTPChallenge] = useState(false);
 
     const onSignIn = useCallback(() => {
@@ -25,3 +26,5 @@ export default function SignUp() {
         </Container>
     );
 }
+
+export default withNoAuth(SignIn);

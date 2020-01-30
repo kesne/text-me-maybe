@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
+import Router from 'next/router';
 import { Form, Button, Input } from 'antd';
+import { withNoAuth } from '../../components/utils/auth';
 import Spacing from '../../components/Spacing';
 import Container from '../../components/Auth/Container';
 import { useSignUpMutation } from '../../queries';
-import Router from 'next/router';
 
 const layout = {
     labelCol: { span: 8 },
@@ -21,7 +22,7 @@ const LinkContainer = styled.div`
     justify-content: flex-end;
 `;
 
-export default function SignUp() {
+function SignUp() {
     const [signUp, { data, loading }] = useSignUpMutation();
 
     useEffect(() => {
@@ -73,10 +74,14 @@ export default function SignUp() {
                 </Form.Item>
                 <Spacing top={3}>
                     <LinkContainer>
-                        <Link href="/auth/sign-in">Already have an account? Sign in</Link>
+                        <Link href="/auth/sign-in">
+                            <a>Already have an account? Sign in</a>
+                        </Link>
                     </LinkContainer>
                 </Spacing>
             </Form>
         </Container>
     );
 }
+
+export default withNoAuth(SignUp);

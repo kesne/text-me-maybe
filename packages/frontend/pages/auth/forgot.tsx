@@ -4,6 +4,7 @@ import { Typography, Input, Button, Form } from 'antd';
 import { useForgotPasswordMutation } from '../../queries';
 import Spacing from '../../components/Spacing';
 import Container from '../../components/Auth/Container';
+import { withNoAuth } from '../../components/utils/auth';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 
 const layout = {
@@ -26,7 +27,7 @@ const Complete = styled.div`
     justify-content: center;
 `;
 
-export default function Forgot() {
+function Forgot() {
     const [forgotPassword, { data, loading }] = useForgotPasswordMutation();
 
     const onFinish = (values: Record<string, any>) => {
@@ -84,3 +85,5 @@ export default function Forgot() {
         </Container>
     );
 }
+
+export default withNoAuth(Forgot);

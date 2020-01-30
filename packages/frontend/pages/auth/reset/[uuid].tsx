@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 import { Button, Form, Input, Typography } from 'antd';
 import { useResetPasswordMutation } from '../../../queries';
+import { withNoAuth } from '../../../components/utils/auth';
 import Container from '../../../components/Auth/Container';
 
 const layout = {
@@ -13,7 +14,7 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 }
 };
 
-export default function ResetPassword() {
+function ResetPassword() {
     const { query } = useRouter();
     const [resetPassword, { data, loading }] = useResetPasswordMutation();
 
@@ -64,3 +65,5 @@ export default function ResetPassword() {
         </Container>
     );
 }
+
+export default withNoAuth(ResetPassword);

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useEffect } from 'react';
+import Router from 'next/router';
 import { useMutation } from '@apollo/react-hooks';
 import { Modal, Typography } from 'antd';
 import {
@@ -8,7 +8,7 @@ import {
     ThreadsQuery,
     EndThreadDocument,
     DeleteThreadDocument
-} from '../../../../queries';
+} from '../../../queries';
 
 type Props = {
     thread: Partial<Thread>;
@@ -34,7 +34,6 @@ const COPY = {
 
 export default function DeleteOrEndThreadModal({ mode, thread, onClose }: Props) {
     const translations = COPY[mode];
-    const history = useHistory();
 
     const [action, { data, loading }] = useMutation(
         mode === 'end' ? EndThreadDocument : DeleteThreadDocument,
@@ -66,7 +65,7 @@ export default function DeleteOrEndThreadModal({ mode, thread, onClose }: Props)
     useEffect(() => {
         if (data) {
             if (mode === 'delete') {
-                history.replace('/inbox');
+                Router.replace('/inbox');
             }
             onClose();
         }

@@ -1,8 +1,7 @@
-import React from 'react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { Layout } from 'antd';
 import styled from 'styled-components';
-import client from './client';
+import client from './utils/client';
 import Header from './Header';
 
 // TODO: We need a utility for if the user is signed in or not.

@@ -1,3 +1,14 @@
-const Index = () => <div>Thread</div>;
+import { useRouter } from 'next/router';
+import { withAuth } from '../../components/utils/auth';
+import Container from '../../components/Inbox/Container';
+import Messages from '../../components/Messages';
 
-export default Index;
+function InboxThread() {
+    const { query } = useRouter();
+    return (
+        <Container>
+            <Messages id={query.thread as string} />
+        </Container>
+    );
+}
+export default withAuth(InboxThread);

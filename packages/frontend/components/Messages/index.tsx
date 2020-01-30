@@ -1,10 +1,10 @@
-import React from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import Router from 'next/router';
 import styled from 'styled-components';
 import { Spin, Card } from 'antd';
 import Message from './Message';
 import SendMessage from './SendMessage';
-import { useMessagesQuery } from '../../../queries';
+import { useMessagesQuery } from '../../queries';
 import FetchMore from './FetchMore';
 import Header from './Header';
 import ThreadEnded from './ThreadEnded';
@@ -33,8 +33,11 @@ const Container = styled.div`
     overflow-y: auto;
 `;
 
-export default function Messages() {
-    const { id } = useParams() as Record<string, string>;
+type Props = {
+    id: string;
+}
+
+export default function Messages({ id }: Props) {
     const threadID = Number(id);
 
     const { loading, data, error, refetch } = useMessagesQuery({
@@ -42,6 +45,12 @@ export default function Messages() {
             threadID
         }
     });
+
+    useEffect(() => {
+        if (!data?.thread) {
+            Router.replace('/inbox')
+        }
+    }, [data]);
 
     if (loading) {
         return <Spin size="large" />;
@@ -52,7 +61,7 @@ export default function Messages() {
     }
 
     if (!data.thread) {
-        return <Redirect to="/inbox" />;
+        return null;
     }
 
     return (

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import moment from 'moment';
 import { Comment, Tooltip } from 'antd';
 import {
@@ -7,7 +7,7 @@ import {
     Sender,
     useMarkMessageSeenMutation,
     useMeQuery
-} from '../../../queries';
+} from '../../queries';
 
 type Props = {
     thread: Partial<Thread>;

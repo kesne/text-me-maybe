@@ -1,3 +1,13 @@
-const Index = () => <div>Inbox</div>;
+import { Empty } from 'antd';
+import { withAuth } from '../../components/utils/auth';
+import Container from '../../components/Inbox/Container';
 
-export default Index;
+function Inbox() {
+    return (
+        <Container>
+            <Empty />
+        </Container>
+    );
+}
+
+export default withAuth(Inbox);

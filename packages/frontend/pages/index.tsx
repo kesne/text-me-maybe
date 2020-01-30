@@ -15,7 +15,9 @@ export default function Home() {
             </Typography.Title>
             <Spacing top={4} bottom={4}>
                 <Button type="primary" size="large" shape="round">
-                    <Link href="/auth/sign-up">Get Started</Link>
+                    <Link href="/auth/sign-up">
+                        <a>Get Started</a>
+                    </Link>
                 </Button>
             </Spacing>
             <Row gutter={16}>

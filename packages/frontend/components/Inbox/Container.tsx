@@ -1,9 +1,5 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Switch, Route } from 'react-router-dom';
-import { Empty } from 'antd';
 import Threads from './Threads';
-import Messages from './Messages';
 
 const Container = styled.div`
     flex: 1;
@@ -31,7 +27,11 @@ const ContentOverflow = styled.div`
     padding: 16px;
 `;
 
-export default function Inbox() {
+type Props = {
+    children: React.ReactNode;
+}
+
+export default function Inbox({ children }: Props) {
     return (
         <Container>
             <Drawer>
@@ -39,14 +39,7 @@ export default function Inbox() {
             </Drawer>
             <Content>
                 <ContentOverflow>
-                    <Switch>
-                        <Route path="/inbox/:id">
-                            <Messages />
-                        </Route>
-                        <Route>
-                            <Empty />
-                        </Route>
-                    </Switch>
+                    {children}
                 </ContentOverflow>
             </Content>
         </Container>

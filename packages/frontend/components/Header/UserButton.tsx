@@ -1,15 +1,13 @@
-import React from 'react';
 import { Menu } from 'antd';
 import Link from 'next/link';
-import Router from 'next/router';
 import { useMeQuery } from '../../queries';
+import { signOut } from '../utils/user';
 
 export default function UserButton() {
     const { data, loading } = useMeQuery();
 
-    // TODO: We can implement this better probably:
-    function signOut() {
-        Router.push('/');
+    function handleSignOut() {
+        signOut();
     }
 
     if (loading || !data || !data.me) {
@@ -24,7 +22,7 @@ export default function UserButton() {
                         <a>My account</a>
                     </Link>
                 </Menu.Item>
-                <Menu.Item onClick={signOut}>Sign out</Menu.Item>
+                <Menu.Item onClick={handleSignOut}>Sign out</Menu.Item>
             </Menu.SubMenu>
         </Menu>
     );

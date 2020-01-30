@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Form, Input, Button, Typography } from 'antd';
 import { useExchangeTotpMutation } from '../../queries';
 

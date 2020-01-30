@@ -1,4 +1,3 @@
-import React from 'react';
 import { Col, Card, Typography } from 'antd';
 import Row from '../Row';
 

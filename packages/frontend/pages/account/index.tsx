@@ -1,10 +1,13 @@
+import { withAuth } from '../../components/utils/auth';
 import Container from '../../components/Account/Container';
 import EditAccount from '../../components/Account/EditAccount';
 
-export default function AccountRoute() {
+function AccountRoute() {
     return (
-        <Container>
+        <Container selected="account">
             <EditAccount />
         </Container>
     );
 }
+
+export default withAuth(AccountRoute);
