@@ -1,24 +1,22 @@
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Layout, Menu } from 'antd';
+import PageContainer from '../PageContainer';
 
 type Props = {
     selected: string;
     children: React.ReactNode;
 };
 
-const LayoutStyled = styled(Layout)`
-    background: #fff;
-`;
-
 const SiderStyled = styled(Layout.Sider)`
     background: #fff;
+    margin-right: 16px;
 `;
 
 export default function Container({ selected, children }: Props) {
     return (
-        <Layout.Content>
-            <LayoutStyled>
+        <PageContainer>
+            <Layout>
                 <SiderStyled width={200}>
                     <Menu mode="inline" selectedKeys={[selected]} style={{ height: '100%' }}>
                         <Menu.Item key="account">
@@ -39,7 +37,7 @@ export default function Container({ selected, children }: Props) {
                     </Menu>
                 </SiderStyled>
                 <Layout.Content>{children}</Layout.Content>
-            </LayoutStyled>
-        </Layout.Content>
+            </Layout>
+        </PageContainer>
     );
 }

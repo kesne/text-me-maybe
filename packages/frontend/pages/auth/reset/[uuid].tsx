@@ -24,9 +24,6 @@ function ResetPassword() {
 
     useEffect(() => {
         if (data && data.resetPassword.complete) {
-            // TODO: It's really annoying manually setting this hasUser context.
-            // We probably should instead just have a standard way for GraphQL
-            // to update this value directly, and trigger a re-render through children.
             Router.push('/inbox');
         }
     }, [data]);

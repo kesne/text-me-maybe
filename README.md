@@ -18,20 +18,15 @@ A match in one of your dating apps wants to text you to schedule a date. You're 
 - Phone Number Pooling
     - Phone number allocation based on area code (something to think about, maybe state-based?)
     - Minimize the length of phone numbers in our system.
-- Improve the UX
 - Error Handling
 - Thread Pagination w/ infinite scrolls
-- Improved Session Managed
-- Docker
 
 #### Things Eventually Want To Do But Might Be Low Priority
 
 This stuff I'm not particularly interested implementing _personally_, but I would be more than happy to if **you** are interested! :)
 
 - Auto-ending conversations
-- Landing Screen
 - Billing
-- Code Splitting
 - List virtualization
 - React Native App
 

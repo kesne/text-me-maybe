@@ -1,5 +1,4 @@
 import { Button, Input, Form, PageHeader, Spin } from 'antd';
-import Spacing from '../Spacing';
 import { useUpdateAccountMutation, useMeQuery } from '../../queries';
 
 export default function EditAccount() {
@@ -24,26 +23,26 @@ export default function EditAccount() {
     }
 
     return (
-        <PageHeader title="Your Account">
-            <Spacing top={2}>
-                <Form
-                    initialValues={{
-                        name: data.me.name,
-                        email: data.me.email
-                    }}
-                    onFinish={handleFinish}
-                >
-                    <Form.Item label="Name">
-                        <Input placeholder="Name" disabled={updateAccountState.loading} />
-                    </Form.Item>
-                    <Form.Item label="Email">
-                        <Input placeholder="Email" disabled={updateAccountState.loading} />
-                    </Form.Item>
+        <PageHeader title="Your Account" ghost={false}>
+            <Form
+                initialValues={{
+                    name: data.me.name,
+                    email: data.me.email
+                }}
+                onFinish={handleFinish}
+            >
+                <Form.Item label="Name" name="name">
+                    <Input placeholder="Name" disabled={updateAccountState.loading} />
+                </Form.Item>
+                <Form.Item label="Email" name="email">
+                    <Input placeholder="Email" disabled={updateAccountState.loading} />
+                </Form.Item>
+                <Form.Item>
                     <Button disabled={updateAccountState.loading} type="primary" htmlType="submit">
                         Save Changes
                     </Button>
-                </Form>
-            </Spacing>
+                </Form.Item>
+            </Form>
         </PageHeader>
     );
 }

@@ -47,7 +47,7 @@ export default function Messages({ id }: Props) {
     });
 
     useEffect(() => {
-        if (!data?.thread) {
+        if (data && !data.thread) {
             Router.replace('/inbox')
         }
     }, [data]);

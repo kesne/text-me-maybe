@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Typography, Spin } from 'antd';
+import { Button, Typography, Spin, PageHeader } from 'antd';
 import { useMeQuery } from '../../queries';
 import OnboardTOTP from './OnboardTOTP';
 import DisableTOTP from './DisableTOTP';
@@ -25,8 +25,7 @@ export default function Security() {
     }
 
     return (
-        <div>
-            <Typography.Title>Security</Typography.Title>
+        <PageHeader title="Security" ghost={false}>
             <Button>Change Password</Button>
             <hr />
             <Typography.Text>
@@ -40,6 +39,6 @@ export default function Security() {
             </Button>
 
             {totpModal && <TOTPModal hasTOTP={data.me.hasTOTP} onClose={onClose} />}
-        </div>
+        </PageHeader>
     );
 }

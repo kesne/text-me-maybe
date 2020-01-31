@@ -1,13 +1,13 @@
 import Link from 'next/link';
-import { Layout, Typography, Button, Row } from 'antd';
+import { Typography, Button, Row } from 'antd';
 import { ThunderboltOutlined, LockOutlined, ControlOutlined } from '@ant-design/icons';
 import ValueProp from '../components/Home/ValueProp';
 import Spacing from '../components/Spacing';
+import PageContainer from '../components/PageContainer';
 
-// TODO: Make a better content wrapper that has max width or something.
 export default function Home() {
     return (
-        <Layout.Content style={{ padding: '0 50px' }}>
+        <PageContainer>
             <Typography.Title>Never reveal your phone number again</Typography.Title>
             <Typography.Title level={4}>
                 Send text messages to anyone without revealing your phone number, starting at just
@@ -37,6 +37,6 @@ export default function Home() {
                     description="You can start conversations in seconds, without any setup."
                 />
             </Row>
-        </Layout.Content>
+        </PageContainer>
     );
 }
