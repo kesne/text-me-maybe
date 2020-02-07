@@ -36,7 +36,6 @@ type Thread {
     name: String!
     number: String!
     recipient: String!
-    messages: [Message!]!
     lastMessage: Message
     createdAt: String!
     updatedAt: String
@@ -52,11 +51,17 @@ type ResetPassword {
     complete: Boolean!
 }
 
+type MessagesCursor {
+    cursor: String!
+    messages: [Message!]!
+}
+
 type Query {
     threads: [Thread!]! @auth
     thread(threadID: Int!): Thread! @auth
     me: User! @auth
     onboardTotp: TotpOnboarding! @auth
+    moreMessages(threadID: Int!, first: Int!, after: String): MessagesCursor! @auth
 }
 
 type Mutation {
@@ -75,4 +80,8 @@ type Mutation {
     # Password Resets:
     forgotPassword(email: String!): Result!
     resetPassword(uuid: String!, password: String): ResetPassword!
+}
+
+type Subscription {
+    newMessage(threadID: Int!): Message!
 }

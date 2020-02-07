@@ -21,6 +21,12 @@ export type Message = {
   seen: Scalars['Boolean'],
 };
 
+export type MessagesCursor = {
+   __typename?: 'MessagesCursor',
+  cursor: Scalars['String'],
+  messages: Array<Message>,
+};
+
 export type Mutation = {
    __typename?: 'Mutation',
   createThread: Thread,
@@ -119,11 +125,19 @@ export type Query = {
   thread: Thread,
   me: User,
   onboardTotp: TotpOnboarding,
+  moreMessages: MessagesCursor,
 };
 
 
 export type QueryThreadArgs = {
   threadID: Scalars['Int']
+};
+
+
+export type QueryMoreMessagesArgs = {
+  threadID: Scalars['Int'],
+  first: Scalars['Int'],
+  after?: Maybe<Scalars['String']>
 };
 
 export type ResetPassword = {
@@ -143,13 +157,22 @@ export enum Sender {
 
 export type SignInResult = Result | TotpChallenge;
 
+export type Subscription = {
+   __typename?: 'Subscription',
+  newMessage: Message,
+};
+
+
+export type SubscriptionNewMessageArgs = {
+  threadID: Scalars['Int']
+};
+
 export type Thread = {
    __typename?: 'Thread',
   id: Scalars['Int'],
   name: Scalars['String'],
   number: Scalars['String'],
   recipient: Scalars['String'],
-  messages: Array<Message>,
   lastMessage?: Maybe<Message>,
   createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
@@ -256,11 +279,13 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   User: ResolverTypeWrapper<User>,
   TotpOnboarding: ResolverTypeWrapper<TotpOnboarding>,
+  MessagesCursor: ResolverTypeWrapper<MessagesCursor>,
   Mutation: ResolverTypeWrapper<{}>,
   Result: ResolverTypeWrapper<Result>,
   SignInResult: ResolversTypes['Result'] | ResolversTypes['TOTPChallenge'],
   TOTPChallenge: ResolverTypeWrapper<TotpChallenge>,
   ResetPassword: ResolverTypeWrapper<ResetPassword>,
+  Subscription: ResolverTypeWrapper<{}>,
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -274,11 +299,13 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'],
   User: User,
   TotpOnboarding: TotpOnboarding,
+  MessagesCursor: MessagesCursor,
   Mutation: {},
   Result: Result,
   SignInResult: ResolversParentTypes['Result'] | ResolversParentTypes['TOTPChallenge'],
   TOTPChallenge: TotpChallenge,
   ResetPassword: ResetPassword,
+  Subscription: {},
 }>;
 
 export type AuthDirectiveResolver<Result, Parent, ContextType = any, Args = {  }> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
@@ -290,6 +317,11 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   seen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+}>;
+
+export type MessagesCursorResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessagesCursor'] = ResolversParentTypes['MessagesCursor']> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -313,6 +345,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   thread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<QueryThreadArgs, 'threadID'>>,
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   onboardTotp?: Resolver<ResolversTypes['TotpOnboarding'], ParentType, ContextType>,
+  moreMessages?: Resolver<ResolversTypes['MessagesCursor'], ParentType, ContextType, RequireFields<QueryMoreMessagesArgs, 'threadID' | 'first'>>,
 }>;
 
 export type ResetPasswordResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResetPassword'] = ResolversParentTypes['ResetPassword']> = ResolversObject<{
@@ -327,12 +360,15 @@ export type SignInResultResolvers<ContextType = any, ParentType extends Resolver
   __resolveType: TypeResolveFn<'Result' | 'TOTPChallenge', ParentType, ContextType>
 }>;
 
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
+  newMessage?: SubscriptionResolver<ResolversTypes['Message'], "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'threadID'>>,
+}>;
+
 export type ThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   number?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   recipient?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>,
   lastMessage?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>,
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
@@ -357,11 +393,13 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Message?: MessageResolvers<ContextType>,
+  MessagesCursor?: MessagesCursorResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   ResetPassword?: ResetPasswordResolvers<ContextType>,
   Result?: ResultResolvers<ContextType>,
   SignInResult?: SignInResultResolvers,
+  Subscription?: SubscriptionResolvers<ContextType>,
   Thread?: ThreadResolvers<ContextType>,
   TOTPChallenge?: TotpChallengeResolvers<ContextType>,
   TotpOnboarding?: TotpOnboardingResolvers<ContextType>,

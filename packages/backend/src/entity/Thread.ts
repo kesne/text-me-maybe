@@ -20,6 +20,11 @@ export class Thread extends BaseEntity {
         return lookup.phoneNumber;
     }
 
+    static async userCanAccessThread(id: number, user: User) {
+        // TODO: At some point implement this:
+        return Promise.resolve(true);
+    }
+
     @PrimaryGeneratedColumn()
     id!: number;
 

@@ -2,12 +2,11 @@ import { useEffect } from 'react';
 import Router from 'next/router';
 import styled from 'styled-components';
 import { Spin, Card } from 'antd';
-import Message from './Message';
 import SendMessage from './SendMessage';
-import { useMessagesQuery } from '../../queries';
-import FetchMore from './FetchMore';
+import { useThreadQuery } from '../../queries';
 import Header from './Header';
 import ThreadEnded from './ThreadEnded';
+import MessageList from './MessageList';
 
 const StyledCard = styled(Card)`
     overflow: hidden;
@@ -35,12 +34,12 @@ const Container = styled.div`
 
 type Props = {
     id: string;
-}
+};
 
 export default function Messages({ id }: Props) {
     const threadID = Number(id);
 
-    const { loading, data, error, refetch } = useMessagesQuery({
+    const { data, loading, error } = useThreadQuery({
         variables: {
             threadID
         }
@@ -48,20 +47,16 @@ export default function Messages({ id }: Props) {
 
     useEffect(() => {
         if (data && !data.thread) {
-            Router.replace('/inbox')
+            Router.replace('/inbox');
         }
     }, [data]);
 
-    if (loading) {
-        return <Spin size="large" />;
-    }
-
-    if (!data) {
+    if (error) {
         return <div>Un oh! {error}</div>;
     }
 
-    if (!data.thread) {
-        return null;
+    if (loading || !data || !data.thread) {
+        return <Spin size="large" />;
     }
 
     return (
@@ -70,17 +65,10 @@ export default function Messages({ id }: Props) {
             <StyledCard>
                 <Wrapper>
                     <Container>
-                        {data.thread.messages.map(message => (
-                            <Message key={message.id} thread={data.thread} message={message} />
-                        ))}
-                        <FetchMore onMore={() => {}} />
+                        <MessageList thread={data.thread} />
                     </Container>
 
-                    {data.thread.ended ? (
-                        <ThreadEnded />
-                    ) : (
-                        <SendMessage threadID={threadID} refetch={refetch} />
-                    )}
+                    {data.thread.ended ? <ThreadEnded /> : <SendMessage threadID={threadID} />}
                 </Wrapper>
             </StyledCard>
         </>

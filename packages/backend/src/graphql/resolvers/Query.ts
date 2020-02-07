@@ -1,6 +1,9 @@
+import { FindConditions, LessThan } from 'typeorm';
 import { QueryResolvers } from '../../schema.graphql';
 import { Thread } from '../../entity/Thread';
 import { Context } from '../../types';
+import { Message } from '../../entity/Message';
+import Cursor from '../../utils/Cursor';
 
 const QueryResolvers: QueryResolvers<Context> = {
     me(_parent, _args, { user }) {
@@ -30,6 +33,35 @@ const QueryResolvers: QueryResolvers<Context> = {
         return {
             name: user.name,
             secret: user.generateTotpSecret()
+        };
+    },
+
+    async moreMessages(_parent, { threadID, first, after }, { user }) {
+        // TODO: Scope by user to avoid reading other peoples messages PROBABLY
+        const where: FindConditions<Message> = {
+            thread: { id: threadID }
+        };
+
+        if (after) {
+            const cursor = Cursor.parse(after);
+            where.id = LessThan(cursor.last);
+        }
+
+        const messages = await Message.find({
+            where,
+            order: {
+                id: 'DESC',
+                createdAt: 'DESC'
+            },
+            take: first
+        });
+
+        return {
+            // TODO: When we don't have messages, what is the correct behavior for the cursor?
+            // Maybe just returning the parent cursor, or returning null if we don't have one?
+            // (null meaning we don't have any results so we don't have a cursor because we can't paginate).
+            cursor: new Cursor(messages[0]?.id, messages[messages.length - 1]?.id).toString(),
+            messages: messages
         };
     }
 };

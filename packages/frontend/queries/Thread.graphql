@@ -1,0 +1,10 @@
+query Thread($threadID: Int!) {
+    thread(threadID: $threadID) {
+        id
+        name
+        recipient
+        number
+        createdAt
+        ended
+    }
+}

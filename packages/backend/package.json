@@ -18,6 +18,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "bull": "^3.12.1",
+    "cookie": "^0.4.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "graphql": "^14.5.8",
@@ -31,12 +32,14 @@
     "otplib": "^12.0.0",
     "pg": "^7.17.0",
     "reflect-metadata": "^0.1.13",
+    "subscriptions-transport-ws": "^0.9.16",
     "twilio": "^3.39.1",
     "typeorm": "^0.2.22"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/bull": "^3.10.6",
+    "@types/cookie": "^0.3.3",
     "@types/koa-redis": "^4.0.0",
     "@types/koa-session": "^5.10.1",
     "@types/koa__router": "^8.0.2",

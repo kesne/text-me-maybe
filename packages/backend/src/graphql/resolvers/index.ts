@@ -4,6 +4,7 @@ import QueryResolvers from './Query';
 import MutationResolvers from './Mutation';
 import SignInResultResolvers from './SignInResult';
 import { Context } from '../../types';
+import SubscriptionResolvers from './Subscription';
 
 const resolvers: Resolvers<Context> = {
     Query: {
@@ -17,6 +18,9 @@ const resolvers: Resolvers<Context> = {
     },
     SignInResult: {
         ...SignInResultResolvers
+    },
+    Subscription: {
+        ...SubscriptionResolvers
     }
 };
 

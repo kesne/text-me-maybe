@@ -5,10 +5,8 @@ import Messages from '../../components/Messages';
 
 function InboxThread() {
     const { query } = useRouter();
-    return (
-        <Container>
-            <Messages id={query.thread as string} />
-        </Container>
-    );
+
+    return <Container>{query.thread && <Messages id={query.thread as string} />}</Container>;
 }
+
 export default withAuth(InboxThread);

@@ -6,10 +6,12 @@ import {
     UpdateDateColumn,
     ManyToOne,
     BeforeInsert,
-    BaseEntity
+    BaseEntity,
+    AfterInsert
 } from 'typeorm';
 import { Thread } from './Thread';
 import twilio from '../twilio';
+import pubsub, { TYPES } from '../graphql/pubsub';
 
 export enum Sender {
     Self = 'SELF',
@@ -62,5 +64,10 @@ export class Message extends BaseEntity {
 
         // Re-set the body to whatever twilio accepted, not the raw body:
         this.body = twilioReponse.body;
+    }
+
+    @AfterInsert()
+    publishMessage() {
+        pubsub.publish(TYPES.NEW_MESSAGE, { newMessage: this });
     }
 }

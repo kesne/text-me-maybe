@@ -7,7 +7,6 @@ generates:
             - typescript-operations
             - typescript-react-apollo
         config:
-            gqlImport: apollo-boost#gql
             withHooks: true
             withComponent: false
             withHOC: false

@@ -1,0 +1,8 @@
+fragment MessageFragment on Message {
+    id
+    body
+    sender
+    createdAt
+    updatedAt
+    seen
+}

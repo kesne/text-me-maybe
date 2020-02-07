@@ -18,6 +18,8 @@ import { twiml } from 'twilio';
 import { Thread } from './entity/Thread';
 import { PhoneNumber } from './entity/PhoneNumber';
 import { Message, Sender } from './entity/Message';
+import cookie from 'cookie';
+import { SESSION_NAME } from './constants';
 
 const app = new Koa();
 const router = new Router();
@@ -28,7 +30,35 @@ const server = new ApolloServer({
     schemaDirectives: {
         auth: AuthDirective
     },
-    context: ({ ctx }) => {
+    subscriptions: {
+        path: '/api/graphql/subscriptions',
+        onConnect: async (_connectionParams, _websocket, context) => {
+            // TODO: Use KeyGrip to verify the cookie:
+            const cookies = cookie.parse(context.request.headers.cookie!);
+            const sessionID = cookies[SESSION_NAME];
+            const sessionData = await redis.get(sessionID);
+            if (!sessionData) {
+                throw new Error('Could not authenticate from session.');
+            }
+
+            const session = JSON.parse(sessionData);
+            const user = await User.fromSession(session);
+
+            if (!user) {
+                throw new Error('Session did not contain a user.');
+            }
+
+            return {
+                user,
+                session
+            };
+        }
+    },
+    context: ({ ctx, connection }) => {
+        if (connection?.context) {
+            return connection.context;
+        }
+
         return {
             user: ctx.user,
             session: ctx.session,
@@ -37,6 +67,7 @@ const server = new ApolloServer({
     }
 });
 
+// TODO: Why is this defined up here?
 const auth: Koa.Middleware = async (ctx, next) => {
     ctx.user = await User.fromSession(ctx.session);
 
@@ -46,7 +77,7 @@ const auth: Koa.Middleware = async (ctx, next) => {
 app.keys = ['Some key here ignore'];
 
 const SESSION_CONFIG = {
-    key: 'tmm:session',
+    key: SESSION_NAME,
     maxAge: 86400000 * 14,
     autoCommit: true,
     overwrite: true,
@@ -59,16 +90,18 @@ const SESSION_CONFIG = {
     })
 };
 
-router.get('/api/ack', (ctx) => {
+router.get('/api/ack', ctx => {
     handle.ack();
     ctx.body = 'Acknowledged!';
 });
 
-router.post('/api/incoming-sms', async (ctx) => {
+router.post('/api/incoming-sms', async ctx => {
     const phoneNumber = await PhoneNumber.findOne({
-        where: [{
-            phoneNumber: ctx.request.body.To,
-        }]
+        where: [
+            {
+                phoneNumber: ctx.request.body.To
+            }
+        ]
     });
 
     if (phoneNumber) {
@@ -99,25 +132,11 @@ app.use(
         credentials: true
     })
 );
+
 app.use(session(SESSION_CONFIG, app));
 app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-// TODO: Convert:
-// app.post('/sms', (req, res) => {
-//     const twiml = new MessagingResponse();
-
-//     messages.push({
-//         body: req.body.Body,
-//         sender: false
-//     });
-
-//     twiml.message('The Robots are coming! Head for the hills!');
-
-//     res.writeHead(200, { 'Content-Type': 'text/xml' });
-//     res.end(twiml.toString());
-// });
 
 async function main() {
     const connection = await createConnection(ormconfig);
@@ -133,9 +152,11 @@ async function main() {
 
     console.log('Connected to the database.');
 
-    app.listen(1337, () => {
+    const httpServer = app.listen(1337, () => {
         console.log('Koa server listening on port 1337');
     });
+
+    server.installSubscriptionHandlers(httpServer);
 }
 
 main().catch(err => console.error(err));

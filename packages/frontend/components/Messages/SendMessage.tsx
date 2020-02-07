@@ -1,16 +1,14 @@
-import { useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useSendMessageMutation } from '../../queries';
 import Row from '../Row';
 
 type Props = {
     threadID: number;
-    refetch: () => void;
 };
 
-export default function SendMessage({ threadID, refetch }: Props) {
+export default function SendMessage({ threadID }: Props) {
     const [form] = Form.useForm();
-    const [sendMessage, { loading, data, error }] = useSendMessageMutation({
+    const [sendMessage, { loading, error }] = useSendMessageMutation({
         update(cache, { data }) {
             if (!data) {
                 return;
@@ -31,12 +29,6 @@ export default function SendMessage({ threadID, refetch }: Props) {
             });
         }
     });
-
-    useEffect(() => {
-        if (data) {
-            refetch();
-        }
-    }, [data, refetch]);
 
     async function handleFinish(values: Record<string, any>) {
         await sendMessage({
