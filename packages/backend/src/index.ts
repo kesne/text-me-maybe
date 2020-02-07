@@ -108,7 +108,8 @@ router.post('/api/incoming-sms', async ctx => {
         const thread = await Thread.findOne({
             where: {
                 recipient: ctx.request.body.From,
-                phoneNumber: phoneNumber
+                phoneNumber: phoneNumber,
+                ended: false
             }
         });
 

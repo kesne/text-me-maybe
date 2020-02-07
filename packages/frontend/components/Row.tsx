@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.div<{ alignItems?: string }>`
     display: flex;
-    align-items: center;
+    align-items: ${props => props.alignItems ?? 'center'};
 `;
 
 const Before = styled.div`
@@ -18,14 +18,15 @@ const After = styled.div`
 `;
 
 type Props = {
+    alignItems?: string;
     before?: any;
     children: any;
     after?: any;
 };
 
-export default function Row({ before, after, children }: Props) {
+export default function Row({ before, after, alignItems, children }: Props) {
     return (
-        <Container>
+        <Container alignItems={alignItems}>
             {before && <Before>{before}</Before>}
             <Content>{children}</Content>
             {after && <After>{after}</After>}

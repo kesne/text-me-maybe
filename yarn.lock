@@ -1570,6 +1570,15 @@
     "@graphql-toolkit/common" "0.9.0"
     tslib "1.10.0"
 
+"@graphql-codegen/typescript-urql@1.11.2":
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/typescript-urql/-/typescript-urql-1.11.2.tgz#7b74820d2b84bd8a99a76921f9f25f41ba0713e0"
+  integrity sha512-R0oSrQ01vhTY0ZrVk9zT2geunFONWpBnKdBoGpKQXsxqVyUuBPQXiB4Se6P8Gx747Vn6bHJxiYfMOdd0Y5QvoA==
+  dependencies:
+    "@graphql-codegen/plugin-helpers" "1.11.2"
+    "@graphql-codegen/visitor-plugin-common" "1.11.2"
+    tslib "1.10.0"
+
 "@graphql-codegen/typescript@1.11.2":
   version "1.11.2"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/typescript/-/typescript-1.11.2.tgz#983fd24f71a991838347b7fcdc42249d1366d642"

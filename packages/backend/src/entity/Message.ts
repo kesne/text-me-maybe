@@ -49,6 +49,10 @@ export class Message extends BaseEntity {
 
     @BeforeInsert()
     async sendMessage() {
+        if (this.thread.ended) {
+            throw new Error('Unable to send messages to ended threads.');
+        }
+
         // We only want to send messages on Twilio if they're outgoing messages.
         if (this.sender != Sender.Self) {
             return;

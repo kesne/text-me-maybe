@@ -9,6 +9,7 @@
         "@graphql-codegen/typescript": "1.11.2",
         "@graphql-codegen/typescript-operations": "1.11.2",
         "@graphql-codegen/typescript-react-apollo": "1.11.2",
+        "@graphql-codegen/typescript-urql": "1.11.2",
         "@types/isomorphic-fetch": "^0.0.35",
         "@types/react-infinite-scroller": "^1.2.1",
         "@types/websocket": "^1.0.0",

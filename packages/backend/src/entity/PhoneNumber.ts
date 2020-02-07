@@ -49,7 +49,6 @@ export class PhoneNumber extends BaseEntity {
             .availablePhoneNumbers('US')
             .local.list({ limit: 1, smsEnabled: true });
         const twilioNumber = await twilio.incomingPhoneNumbers.create({
-            // TODO: Need better naming
             friendlyName: availableNumber.friendlyName + ' (DEV)',
             phoneNumber: availableNumber.phoneNumber,
             smsUrl: 'https://text-me-maybe.ngrok.io/api/incoming-sms'

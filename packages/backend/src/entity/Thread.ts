@@ -21,8 +21,12 @@ export class Thread extends BaseEntity {
     }
 
     static async userCanAccessThread(id: number, user: User) {
-        // TODO: At some point implement this:
-        return Promise.resolve(true);
+        const thread = await this.findOne(id, { relations: ['user'] });
+        if (!thread) {
+            return false;
+        }
+
+        return thread.user.id === user.id;
     }
 
     @PrimaryGeneratedColumn()

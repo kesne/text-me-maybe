@@ -30,6 +30,8 @@ export default function SendMessage({ threadID }: Props) {
         }
     });
 
+    console.log(error, error && error.message);
+
     async function handleFinish(values: Record<string, any>) {
         await sendMessage({
             variables: {
@@ -44,6 +46,7 @@ export default function SendMessage({ threadID }: Props) {
     return (
         <Form form={form} onFinish={handleFinish}>
             <Row
+                alignItems="end"
                 after={
                     <Button htmlType="submit" type="primary" size="large">
                         Send
@@ -54,7 +57,6 @@ export default function SendMessage({ threadID }: Props) {
                     name="message"
                     validateStatus={error && 'error'}
                     help={error && error.message}
-                    noStyle
                 >
                     <Input placeholder="Message..." disabled={loading} size="large" />
                 </Form.Item>

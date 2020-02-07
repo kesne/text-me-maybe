@@ -1,7 +1,6 @@
 # TODO
 
 -   Migrations.
--   Websockets.
 
 ## Eventually?
 
