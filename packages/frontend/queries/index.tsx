@@ -22,10 +22,18 @@ export type Message = {
   seen: Scalars['Boolean'],
 };
 
-export type MessagesCursor = {
-   __typename?: 'MessagesCursor',
-  cursor: Scalars['String'],
-  messages: Array<Message>,
+export type MessageEdge = {
+   __typename?: 'MessageEdge',
+  cursor?: Maybe<Scalars['String']>,
+  node: Message,
+};
+
+export type MessagesConnection = {
+   __typename?: 'MessagesConnection',
+  /** The thread ID that these messages belong to: */
+  id: Scalars['Int'],
+  pageInfo: PageInfo,
+  edges: Array<MessageEdge>,
 };
 
 export type Mutation = {
@@ -120,13 +128,19 @@ export type MutationResetPasswordArgs = {
   password?: Maybe<Scalars['String']>
 };
 
+export type PageInfo = {
+   __typename?: 'PageInfo',
+  hasNextPage: Scalars['Boolean'],
+  endCursor: Scalars['String'],
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
   thread: Thread,
   me: User,
   onboardTotp: TotpOnboarding,
-  moreMessages: MessagesCursor,
+  moreMessages: MessagesConnection,
 };
 
 
@@ -337,11 +351,16 @@ export type MoreMessagesQueryVariables = {
 export type MoreMessagesQuery = (
   { __typename?: 'Query' }
   & { moreMessages: (
-    { __typename?: 'MessagesCursor' }
-    & Pick<MessagesCursor, 'cursor'>
-    & { messages: Array<(
-      { __typename?: 'Message' }
-      & MessageFragmentFragment
+    { __typename?: 'MessagesConnection' }
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'hasNextPage' | 'endCursor'>
+    ), edges: Array<(
+      { __typename?: 'MessageEdge' }
+      & { node: (
+        { __typename?: 'Message' }
+        & MessageFragmentFragment
+      ) }
     )> }
   ) }
 );
@@ -594,9 +613,14 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
 export const MoreMessagesDocument = gql`
     query MoreMessages($threadID: Int!, $first: Int!, $after: String) {
   moreMessages(threadID: $threadID, first: $first, after: $after) {
-    cursor
-    messages {
-      ...MessageFragment
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        ...MessageFragment
+      }
     }
   }
 }

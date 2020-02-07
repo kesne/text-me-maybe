@@ -13,9 +13,9 @@ function TOTPModal({ hasTOTP, onClose }: { hasTOTP: boolean; onClose(): void }) 
 
 export default function Security() {
     const [totpModal, setTOTPModal] = useState(false);
-    const { data, loading, refetch } = useMeQuery();
+    const [{ data, fetching }, refetch] = useMeQuery();
 
-    if (loading || !data) {
+    if (fetching || !data) {
         return <Spin />;
     }
 

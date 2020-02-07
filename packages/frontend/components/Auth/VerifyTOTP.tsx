@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function VerifyTOTP({ onSignIn }: Props) {
-    const [exchangeTotp, { data, loading }] = useExchangeTotpMutation();
+    const [{ data, fetching }, exchangeTotp] = useExchangeTotpMutation();
 
     useEffect(() => {
         if (data) {
@@ -26,9 +26,7 @@ export default function VerifyTOTP({ onSignIn }: Props) {
 
     function handleFinish(values: Record<string, any>) {
         exchangeTotp({
-            variables: {
-                token: values.token
-            }
+            token: values.token
         });
     }
 
@@ -48,7 +46,7 @@ export default function VerifyTOTP({ onSignIn }: Props) {
             </Form.Item>
 
             <Form.Item {...tailLayout}>
-                <Button type="primary" htmlType="submit" disabled={loading}>
+                <Button type="primary" htmlType="submit" disabled={fetching}>
                     Verify Two Factor Auth
                 </Button>
             </Form.Item>

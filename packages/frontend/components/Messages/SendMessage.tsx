@@ -8,36 +8,33 @@ type Props = {
 
 export default function SendMessage({ threadID }: Props) {
     const [form] = Form.useForm();
-    const [sendMessage, { loading, error }] = useSendMessageMutation({
-        update(cache, { data }) {
-            if (!data) {
-                return;
-            }
+    const [{ fetching, error }, sendMessage] = useSendMessageMutation();
 
-            cache.writeData({
-                data: {
-                    thread: {
-                        __typename: 'Thread',
-                        id: threadID,
-                        lastMessage: {
-                            __typename: 'Message',
-                            seen: true,
-                            ...data.sendMessage
-                        }
-                    }
-                }
-            });
-        }
-    });
+    // TODO: We need this:
+    // update(cache, { data }) {
+    //     if (!data) {
+    //         return;
+    //     }
 
-    console.log(error, error && error.message);
+    //     cache.writeData({
+    //         data: {
+    //             thread: {
+    //                 __typename: 'Thread',
+    //                 id: threadID,
+    //                 lastMessage: {
+    //                     __typename: 'Message',
+    //                     seen: true,
+    //                     ...data.sendMessage
+    //                 }
+    //             }
+    //         }
+    //     });
+    // }
 
     async function handleFinish(values: Record<string, any>) {
         await sendMessage({
-            variables: {
-                threadID,
-                message: values.message
-            }
+            threadID,
+            message: values.message
         });
 
         form.resetFields();
@@ -58,7 +55,7 @@ export default function SendMessage({ threadID }: Props) {
                     validateStatus={error && 'error'}
                     help={error && error.message}
                 >
-                    <Input placeholder="Message..." disabled={loading} size="large" />
+                    <Input placeholder="Message..." disabled={fetching} size="large" />
                 </Form.Item>
             </Row>
         </Form>

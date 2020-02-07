@@ -20,30 +20,28 @@ const QRCode = styled.img`
 
 export default function OnboardTOTP({ onClose }: Props) {
     const [form] = Form.useForm();
-    const { data, loading } = useOnboardTotpQuery({
-        fetchPolicy: 'network-only'
+    const [{ data, fetching }] = useOnboardTotpQuery({
+        requestPolicy: 'network-only'
     });
 
-    const [enableTotp, totpEnableState] = useEnableTotpMutation();
+    const [totpEnableResult, enableTotp] = useEnableTotpMutation();
 
     async function handleOk() {
         const values = await form.validateFields();
 
         await enableTotp({
-            variables: {
-                token: String(values.token),
-                secret: data ? data.onboardTotp.secret : ''
-            }
+            token: String(values.token),
+            secret: data ? data.onboardTotp.secret : ''
         });
     }
 
     useEffect(() => {
-        if (totpEnableState.data) {
+        if (totpEnableResult.data) {
             onClose();
         }
-    }, [totpEnableState.data, onClose]);
+    }, [totpEnableResult.data, onClose]);
 
-    if (loading) {
+    if (fetching) {
         return <Spin />;
     }
 
@@ -59,7 +57,7 @@ export default function OnboardTOTP({ onClose }: Props) {
             title="Two Factor Auth Setup"
             onCancel={onClose}
             onOk={handleOk}
-            confirmLoading={totpEnableState.loading}
+            confirmLoading={totpEnableResult.fetching}
         >
             <Form form={form} layout="vertical" name="totp">
                 <Typography.Paragraph>

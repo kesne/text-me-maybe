@@ -4,13 +4,13 @@ import { useMeQuery } from '../../queries';
 import { signOut } from '../utils/user';
 
 export default function UserButton() {
-    const { data, loading } = useMeQuery();
+    const [{ data, fetching }] = useMeQuery();
 
     function handleSignOut() {
         signOut();
     }
 
-    if (loading || !data || !data.me) {
+    if (fetching || !data || !data.me) {
         return null;
     }
 

@@ -12,7 +12,7 @@ type Props = {
 export default function CreateThread({ onClose }: Props) {
     const [form] = Form.useForm();
 
-    const [createThread, { loading, data }] = useCreateThreadMutation();
+    const [{ data, fetching }, createThread] = useCreateThreadMutation();
 
     useEffect(() => {
         if (data) {
@@ -29,11 +29,9 @@ export default function CreateThread({ onClose }: Props) {
         const values = await form.validateFields();
 
         await createThread({
-            variables: {
-                name: values.name,
-                phoneNumber: values.phoneNumber,
-                message: values.message
-            }
+            name: values.name,
+            phoneNumber: values.phoneNumber,
+            message: values.message
         });
     }
 
@@ -56,7 +54,7 @@ export default function CreateThread({ onClose }: Props) {
             onCancel={onClose}
             onOk={handleOk}
             okText="Create Thread"
-            confirmLoading={loading}
+            confirmLoading={fetching}
         >
             <Typography.Paragraph>
                 Your messages will arrive from a unique phone number, and will not be associated

@@ -28,13 +28,11 @@ const Complete = styled.div`
 `;
 
 function Forgot() {
-    const [forgotPassword, { data, loading }] = useForgotPasswordMutation();
+    const [{ data, fetching }, forgotPassword] = useForgotPasswordMutation();
 
     const onFinish = (values: Record<string, any>) => {
         forgotPassword({
-            variables: {
-                email: values.email
-            }
+            email: values.email
         });
     };
 
@@ -67,7 +65,7 @@ function Forgot() {
                             </Form.Item>
 
                             <Form.Item {...tailLayout}>
-                                <Button type="primary" htmlType="submit" disabled={loading}>
+                                <Button type="primary" htmlType="submit" disabled={fetching}>
                                     Email Recovery Link
                                 </Button>
                             </Form.Item>

@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from 'urql';
 import { Modal, Typography } from 'antd';
 import {
     Thread,
-    ThreadsDocument,
-    ThreadsQuery,
     EndThreadDocument,
     DeleteThreadDocument
 } from '../../../queries';
@@ -35,32 +33,33 @@ const COPY = {
 export default function DeleteOrEndThreadModal({ mode, thread, onClose }: Props) {
     const translations = COPY[mode];
 
-    const [action, { data, loading }] = useMutation(
+    const [{ data, fetching }, action] = useMutation(
         mode === 'end' ? EndThreadDocument : DeleteThreadDocument,
-        {
-            variables: { id: thread.id as number },
-            update(cache) {
-                // No special cache update logic for ending threads:
-                if (mode === 'end') {
-                    return;
-                }
-
-                const data = cache.readQuery<ThreadsQuery>({
-                    query: ThreadsDocument
-                });
-
-                if (!data) return;
-
-                cache.writeQuery({
-                    query: ThreadsDocument,
-                    data: {
-                        ...data,
-                        threads: data.threads.filter(t => t.id !== thread.id)
-                    }
-                });
-            }
-        }
     );
+
+    // TODO: This doesn't even exist anymore!!!!:
+    // {
+    //     update(cache) {
+    //         // No special cache update logic for ending threads:
+    //         if (mode === 'end') {
+    //             return;
+    //         }
+
+    //         const data = cache.readQuery<ThreadsQuery>({
+    //             query: ThreadsDocument
+    //         });
+
+    //         if (!data) return;
+
+    //         cache.writeQuery({
+    //             query: ThreadsDocument,
+    //             data: {
+    //                 ...data,
+    //                 threads: data.threads.filter(t => t.id !== thread.id)
+    //             }
+    //         });
+    //     }
+    // }
 
     useEffect(() => {
         if (data) {
@@ -76,8 +75,8 @@ export default function DeleteOrEndThreadModal({ mode, thread, onClose }: Props)
             visible
             title={translations.title(thread.name)}
             onCancel={onClose}
-            onOk={() => action()}
-            confirmLoading={loading}
+            onOk={() => action({ id: thread.id })}
+            confirmLoading={fetching}
         >
             <Typography.Paragraph>{translations.body}</Typography.Paragraph>
         </Modal>

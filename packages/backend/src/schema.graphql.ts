@@ -21,10 +21,18 @@ export type Message = {
   seen: Scalars['Boolean'],
 };
 
-export type MessagesCursor = {
-   __typename?: 'MessagesCursor',
-  cursor: Scalars['String'],
-  messages: Array<Message>,
+export type MessageEdge = {
+   __typename?: 'MessageEdge',
+  cursor?: Maybe<Scalars['String']>,
+  node: Message,
+};
+
+export type MessagesConnection = {
+   __typename?: 'MessagesConnection',
+  /** The thread ID that these messages belong to: */
+  id: Scalars['Int'],
+  pageInfo: PageInfo,
+  edges: Array<MessageEdge>,
 };
 
 export type Mutation = {
@@ -119,13 +127,19 @@ export type MutationResetPasswordArgs = {
   password?: Maybe<Scalars['String']>
 };
 
+export type PageInfo = {
+   __typename?: 'PageInfo',
+  hasNextPage: Scalars['Boolean'],
+  endCursor: Scalars['String'],
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
   thread: Thread,
   me: User,
   onboardTotp: TotpOnboarding,
-  moreMessages: MessagesCursor,
+  moreMessages: MessagesConnection,
 };
 
 
@@ -279,7 +293,9 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   User: ResolverTypeWrapper<User>,
   TotpOnboarding: ResolverTypeWrapper<TotpOnboarding>,
-  MessagesCursor: ResolverTypeWrapper<MessagesCursor>,
+  MessagesConnection: ResolverTypeWrapper<MessagesConnection>,
+  PageInfo: ResolverTypeWrapper<PageInfo>,
+  MessageEdge: ResolverTypeWrapper<MessageEdge>,
   Mutation: ResolverTypeWrapper<{}>,
   Result: ResolverTypeWrapper<Result>,
   SignInResult: ResolversTypes['Result'] | ResolversTypes['TOTPChallenge'],
@@ -299,7 +315,9 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'],
   User: User,
   TotpOnboarding: TotpOnboarding,
-  MessagesCursor: MessagesCursor,
+  MessagesConnection: MessagesConnection,
+  PageInfo: PageInfo,
+  MessageEdge: MessageEdge,
   Mutation: {},
   Result: Result,
   SignInResult: ResolversParentTypes['Result'] | ResolversParentTypes['TOTPChallenge'],
@@ -319,9 +337,15 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
   seen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 }>;
 
-export type MessagesCursorResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessagesCursor'] = ResolversParentTypes['MessagesCursor']> = ResolversObject<{
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>,
+export type MessageEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageEdge'] = ResolversParentTypes['MessageEdge']> = ResolversObject<{
+  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  node?: Resolver<ResolversTypes['Message'], ParentType, ContextType>,
+}>;
+
+export type MessagesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessagesConnection'] = ResolversParentTypes['MessagesConnection']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
+  edges?: Resolver<Array<ResolversTypes['MessageEdge']>, ParentType, ContextType>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -340,12 +364,17 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   resetPassword?: Resolver<ResolversTypes['ResetPassword'], ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'uuid'>>,
 }>;
 
+export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  endCursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   threads?: Resolver<Array<ResolversTypes['Thread']>, ParentType, ContextType>,
   thread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<QueryThreadArgs, 'threadID'>>,
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   onboardTotp?: Resolver<ResolversTypes['TotpOnboarding'], ParentType, ContextType>,
-  moreMessages?: Resolver<ResolversTypes['MessagesCursor'], ParentType, ContextType, RequireFields<QueryMoreMessagesArgs, 'threadID' | 'first'>>,
+  moreMessages?: Resolver<ResolversTypes['MessagesConnection'], ParentType, ContextType, RequireFields<QueryMoreMessagesArgs, 'threadID' | 'first'>>,
 }>;
 
 export type ResetPasswordResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResetPassword'] = ResolversParentTypes['ResetPassword']> = ResolversObject<{
@@ -393,8 +422,10 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Message?: MessageResolvers<ContextType>,
-  MessagesCursor?: MessagesCursorResolvers<ContextType>,
+  MessageEdge?: MessageEdgeResolvers<ContextType>,
+  MessagesConnection?: MessagesConnectionResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
+  PageInfo?: PageInfoResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   ResetPassword?: ResetPasswordResolvers<ContextType>,
   Result?: ResultResolvers<ContextType>,

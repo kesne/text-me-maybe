@@ -9,7 +9,7 @@ import Row from '../Row';
 
 export default function Threads() {
     const [creating, setCreating] = useState(false);
-    const { data, error, loading } = useThreadsQuery();
+    const [{ data, error, fetching }] = useThreadsQuery();
 
     // useEffect(() => {
     //     if (data && data.threads.length) {
@@ -17,7 +17,7 @@ export default function Threads() {
     //     }
     // }, [data, history]);
 
-    if (loading) {
+    if (fetching) {
         return <Spin />;
     }
 
