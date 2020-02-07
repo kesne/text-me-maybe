@@ -8,7 +8,7 @@ type Props = {
 
 export default function DisableTOTP({ onClose }: Props) {
     const [form] = Form.useForm();
-    const [{ data, fetching }, disableTOTP] = useDisableTotpMutation();
+    const [disableTOTP, { data, loading }] = useDisableTotpMutation();
 
     useEffect(() => {
         if (data) {
@@ -20,7 +20,9 @@ export default function DisableTOTP({ onClose }: Props) {
         const values = await form.validateFields();
 
         await disableTOTP({
-            password: values.password
+            variables: {
+                password: values.password
+            }
         });
     }
 
@@ -30,20 +32,12 @@ export default function DisableTOTP({ onClose }: Props) {
             visible
             onCancel={onClose}
             onOk={handleOk}
-            confirmLoading={fetching}
+            confirmLoading={loading}
         >
-            <Typography.Paragraph>
-                Please enter your password to disable TOTP on your account.
-            </Typography.Paragraph>
+            <Typography.Paragraph>Please enter your password to disable TOTP on your account.</Typography.Paragraph>
             <Form form={form} layout="vertical" name="disable-totp">
                 <Form.Item label="Password" name="password">
-                    <Input
-                        type="password"
-                        size="large"
-                        placeholder="6 digit code..."
-                        required
-                        autoFocus
-                    />
+                    <Input type="password" size="large" placeholder="6 digit code..." required autoFocus />
                 </Form.Item>
             </Form>
         </Modal>

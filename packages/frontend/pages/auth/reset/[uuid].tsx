@@ -16,7 +16,7 @@ const tailLayout = {
 
 function ResetPassword() {
     const { query } = useRouter();
-    const [{ data, fetching }, resetPassword] = useResetPasswordMutation();
+    const [resetPassword, { data, loading }] = useResetPasswordMutation();
 
     useEffect(() => {
         resetPassword();
@@ -30,8 +30,10 @@ function ResetPassword() {
 
     const onFinish = (values: Record<string, string>) => {
         resetPassword({
-            uuid: query.uuid as string,
-            password: values.password
+            variables: {
+                uuid: query.uuid as string,
+                password: values.password
+            }
         });
     };
 
@@ -52,7 +54,7 @@ function ResetPassword() {
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit" disabled={fetching}>
+                    <Button type="primary" htmlType="submit" disabled={loading}>
                         Reset Password
                     </Button>
                 </Form.Item>

@@ -20,7 +20,7 @@ type Props = {
 };
 
 export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
-    const [{ data, fetching }, signIn] = useSignInMutation();
+    const [signIn, { data, loading }] = useSignInMutation();
 
     useEffect(() => {
         if (data) {
@@ -34,8 +34,10 @@ export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
 
     const onFinish = (values: Record<string, string>) => {
         signIn({
-            email: values.email,
-            password: values.password
+            variables: {
+                email: values.email,
+                password: values.password
+            }
         });
     };
 
@@ -59,7 +61,7 @@ export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit" disabled={fetching}>
+                    <Button type="primary" htmlType="submit" disabled={loading}>
                         Sign In
                     </Button>
                 </Form.Item>

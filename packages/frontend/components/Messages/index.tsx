@@ -39,7 +39,7 @@ type Props = {
 export default function Messages({ id }: Props) {
     const threadID = Number(id);
 
-    const [{ data, fetching, error }] = useThreadQuery({
+    const { data, loading, error } = useThreadQuery({
         variables: {
             threadID
         }
@@ -55,7 +55,7 @@ export default function Messages({ id }: Props) {
         return <div>Un oh! {error}</div>;
     }
 
-    if (fetching || !data || !data.thread) {
+    if (loading || !data || !data.thread) {
         return <Spin size="large" />;
     }
 

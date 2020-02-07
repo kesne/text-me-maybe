@@ -23,7 +23,7 @@ const LinkContainer = styled.div`
 `;
 
 function SignUp() {
-    const [{ data, fetching }, signUp] = useSignUpMutation();
+    const [signUp, { data, loading }] = useSignUpMutation();
 
     useEffect(() => {
         if (data) {
@@ -33,9 +33,11 @@ function SignUp() {
 
     const onFinish = (values: Record<string, string>) => {
         signUp({
-            name: values.name,
-            email: values.email,
-            password: values.password
+            variables: {
+                name: values.name,
+                email: values.email,
+                password: values.password
+            }
         });
     };
 
@@ -66,7 +68,7 @@ function SignUp() {
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit" disabled={fetching}>
+                    <Button type="primary" htmlType="submit" disabled={loading}>
                         Sign Up
                     </Button>
                 </Form.Item>

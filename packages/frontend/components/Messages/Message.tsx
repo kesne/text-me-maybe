@@ -15,20 +15,22 @@ type Props = {
 };
 
 export default function Message({ thread, message }: Props) {
-    const [meResult] = useMeQuery({
-        requestPolicy: 'cache-only'
+    const me = useMeQuery({
+        fetchPolicy: 'cache-only'
     });
-    const [, markMessageSeen] = useMarkMessageSeenMutation();
+    const [markMessageSeen] = useMarkMessageSeenMutation();
 
     useEffect(() => {
         if (message.sender !== Sender.Self && !message.seen) {
             markMessageSeen({
-                id: message.id as number
+                variables: {
+                    id: message.id as number
+                }
             });
         }
     }, [message, markMessageSeen]);
 
-    const author = message.sender === Sender.Other ? thread.name : meResult.data?.me.name;
+    const author = message.sender === Sender.Other ? thread.name : me.data?.me.name;
 
     return (
         <div>

@@ -1,4 +1,4 @@
-import { Provider } from 'urql';
+import { ApolloProvider } from '@apollo/react-hooks';
 import { Layout } from 'antd';
 import styled from 'styled-components';
 import client from './utils/client';
@@ -15,12 +15,12 @@ const Root = styled.div`
 export default function App({ children }: { children: any }) {
     return (
         <Layout>
-            <Provider value={client}>
+            <ApolloProvider client={client}>
                 <Root>
                     <Header />
                     {children}
                 </Root>
-            </Provider>
+            </ApolloProvider>
         </Layout>
     );
 }

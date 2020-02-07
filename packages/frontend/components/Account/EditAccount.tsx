@@ -2,17 +2,19 @@ import { Button, Input, Form, PageHeader, Spin } from 'antd';
 import { useUpdateAccountMutation, useMeQuery } from '../../queries';
 
 export default function EditAccount() {
-    const [{ data, fetching }] = useMeQuery();
-    const [updateAccountResult, updateAccount] = useUpdateAccountMutation();
+    const { data, loading } = useMeQuery();
+    const [updateAccount, updateAccountState] = useUpdateAccountMutation();
 
     function handleFinish(values: Record<string, any>) {
         updateAccount({
-            name: values.name,
-            email: values.email
+            variables: {
+                name: values.name,
+                email: values.email
+            }
         });
     }
 
-    if (fetching) {
+    if (loading) {
         return <Spin />;
     }
 
@@ -30,13 +32,13 @@ export default function EditAccount() {
                 onFinish={handleFinish}
             >
                 <Form.Item label="Name" name="name">
-                    <Input placeholder="Name" disabled={updateAccountResult.fetching} />
+                    <Input placeholder="Name" disabled={updateAccountState.loading} />
                 </Form.Item>
                 <Form.Item label="Email" name="email">
-                    <Input placeholder="Email" disabled={updateAccountResult.fetching} />
+                    <Input placeholder="Email" disabled={updateAccountState.loading} />
                 </Form.Item>
                 <Form.Item>
-                    <Button disabled={updateAccountResult.fetching} type="primary" htmlType="submit">
+                    <Button disabled={updateAccountState.loading} type="primary" htmlType="submit">
                         Save Changes
                     </Button>
                 </Form.Item>

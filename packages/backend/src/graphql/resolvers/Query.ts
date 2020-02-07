@@ -57,18 +57,11 @@ const QueryResolvers: QueryResolvers<Context> = {
         });
 
         return {
-            id: threadID,
-            pageInfo: {
-                // TODO: When we don't have messages, what is the correct behavior for the cursor?
-                // Maybe just returning the parent cursor, or returning null if we don't have one?
-                // (null meaning we don't have any results so we don't have a cursor because we can't paginate).
-                endCursor: new Cursor(
-                    messages[0]?.id,
-                    messages[messages.length - 1]?.id
-                ).toString(),
-                hasNextPage: messages.length
-            },
-            edges: messages.map(message => ({ node: message }))
+            // TODO: When we don't have messages, what is the correct behavior for the cursor?
+            // Maybe just returning the parent cursor, or returning null if we don't have one?
+            // (null meaning we don't have any results so we don't have a cursor because we can't paginate).
+            cursor: new Cursor(messages[0]?.id, messages[messages.length - 1]?.id).toString(),
+            messages: messages
         };
     }
 };

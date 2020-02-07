@@ -51,19 +51,9 @@ type ResetPassword {
     complete: Boolean!
 }
 
-type MessageEdge {
-    cursor: String
-    node: Message!
-}
-
-type PageInfo {
-    hasNextPage: Boolean!
-    endCursor: String!
-}
-
-type MessagesConnection {
-    pageInfo: PageInfo!
-    edges: [MessageEdge!]!
+type MessagesCursor {
+    cursor: String!
+    messages: [Message!]!
 }
 
 type Query {
@@ -71,7 +61,7 @@ type Query {
     thread(threadID: Int!): Thread! @auth
     me: User! @auth
     onboardTotp: TotpOnboarding! @auth
-    moreMessages(threadID: Int!, first: Int!, after: String): MessagesConnection! @auth
+    moreMessages(threadID: Int!, first: Int!, after: String): MessagesCursor! @auth
 }
 
 type Mutation {
