@@ -5,7 +5,7 @@ generates:
         plugins:
             - typescript
             - typescript-operations
-            - typescript-urql
+            - typescript-react-apollo
         config:
             withHooks: true
             withComponent: false
