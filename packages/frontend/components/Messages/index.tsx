@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
 import styled from 'styled-components';
-import { Spin, Card } from 'antd';
+import { Card, Alert } from 'antd';
 import SendMessage from './SendMessage';
 import { useThreadQuery } from '../../queries';
 import Header from './Header';
 import ThreadEnded from './ThreadEnded';
 import MessageList from './MessageList';
+import Spinner from '../Spinner';
 
 const StyledCard = styled(Card)`
     overflow: hidden;
@@ -41,7 +42,7 @@ export default function Messages({ id }: Props) {
 
     const { data, loading, error } = useThreadQuery({
         variables: {
-            threadID
+            id: threadID
         }
     });
 
@@ -52,11 +53,21 @@ export default function Messages({ id }: Props) {
     }, [data]);
 
     if (error) {
-        return <div>Un oh! {error}</div>;
+        return (
+            <Alert
+                message="Sorry, we couldn't load those messages."
+                description={error.message}
+                type="error"
+            />
+        );
     }
 
-    if (loading || !data || !data.thread) {
-        return <Spin size="large" />;
+    if (loading || !data || !data?.thread) {
+        return (
+            <Card>
+                <Spinner size="large" />
+            </Card>
+        );
     }
 
     return (
@@ -68,7 +79,7 @@ export default function Messages({ id }: Props) {
                         <MessageList thread={data.thread} />
                     </Container>
 
-                    {data.thread.ended ? <ThreadEnded /> : <SendMessage threadID={threadID} />}
+                    {data?.thread.ended ? <ThreadEnded /> : <SendMessage threadID={threadID} />}
                 </Wrapper>
             </StyledCard>
         </>

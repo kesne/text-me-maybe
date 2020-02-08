@@ -1,5 +1,5 @@
-query Thread($threadID: Int!) {
-    thread(threadID: $threadID) {
+query Thread($id: Int!) {
+    thread(id: $id) {
         id
         name
         recipient

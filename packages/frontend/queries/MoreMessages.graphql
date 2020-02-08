@@ -1,8 +1,0 @@
-query MoreMessages($threadID: Int!, $first: Int!, $after: String) {
-    moreMessages(threadID: $threadID, first: $first, after: $after) {
-        cursor
-        messages {
-            ...MessageFragment
-        }
-    }
-}

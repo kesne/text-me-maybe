@@ -1,10 +1,6 @@
 mutation SignIn($email: String!, $password: String!) {
     signIn(email: $email, password: $password) {
-        ... on Result {
-            ok
-        }
-        ... on TOTPChallenge {
-            totpChallenge
-        }
+        ok
+        requiresTOTP
     }
 }

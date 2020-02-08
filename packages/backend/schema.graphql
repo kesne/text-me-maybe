@@ -5,22 +5,26 @@ enum Sender {
     OTHER
 }
 
+type TOTPOnboarding {
+    secret: String!
+}
+
 type User {
     id: Int!
     name: String!
     email: String!
     hasTOTP: Boolean!
-}
-
-type TOTPChallenge {
-    totpChallenge: Boolean!
+    onboardTOTP: TOTPOnboarding
 }
 
 type Result {
     ok: Boolean!
 }
 
-union SignInResult = Result | TOTPChallenge
+type SignInResult {
+    ok: Boolean!
+    requiresTOTP: Boolean!
+}
 
 type Message {
     id: Int!
@@ -29,6 +33,23 @@ type Message {
     createdAt: String!
     updatedAt: String
     seen: Boolean!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
+}
+
+type MessageEdge {
+    cursor: String!
+    node: Message!
+}
+
+type MessagesConnection {
+    pageInfo: PageInfo!
+    edges: [MessageEdge!]!
 }
 
 type Thread {
@@ -40,28 +61,17 @@ type Thread {
     createdAt: String!
     updatedAt: String
     ended: Boolean!
-}
-
-type TotpOnboarding {
-    name: String!
-    secret: String!
+    messages(first: Int!, after: String): MessagesConnection!
 }
 
 type ResetPassword {
     complete: Boolean!
 }
 
-type MessagesCursor {
-    cursor: String!
-    messages: [Message!]!
-}
-
 type Query {
     threads: [Thread!]! @auth
-    thread(threadID: Int!): Thread! @auth
+    thread(id: Int!): Thread! @auth
     me: User! @auth
-    onboardTotp: TotpOnboarding! @auth
-    moreMessages(threadID: Int!, first: Int!, after: String): MessagesCursor! @auth
 }
 
 type Mutation {
@@ -83,5 +93,5 @@ type Mutation {
 }
 
 type Subscription {
-    newMessage(threadID: Int!): Message!
+    newMessage(threadID: Int!): MessageEdge!
 }

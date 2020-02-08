@@ -22,10 +22,16 @@ export type Message = {
   seen: Scalars['Boolean'],
 };
 
-export type MessagesCursor = {
-   __typename?: 'MessagesCursor',
+export type MessageEdge = {
+   __typename?: 'MessageEdge',
   cursor: Scalars['String'],
-  messages: Array<Message>,
+  node: Message,
+};
+
+export type MessagesConnection = {
+   __typename?: 'MessagesConnection',
+  pageInfo: PageInfo,
+  edges: Array<MessageEdge>,
 };
 
 export type Mutation = {
@@ -120,25 +126,24 @@ export type MutationResetPasswordArgs = {
   password?: Maybe<Scalars['String']>
 };
 
+export type PageInfo = {
+   __typename?: 'PageInfo',
+  hasNextPage: Scalars['Boolean'],
+  hasPreviousPage: Scalars['Boolean'],
+  startCursor: Scalars['String'],
+  endCursor: Scalars['String'],
+};
+
 export type Query = {
    __typename?: 'Query',
   threads: Array<Thread>,
   thread: Thread,
   me: User,
-  onboardTotp: TotpOnboarding,
-  moreMessages: MessagesCursor,
 };
 
 
 export type QueryThreadArgs = {
-  threadID: Scalars['Int']
-};
-
-
-export type QueryMoreMessagesArgs = {
-  threadID: Scalars['Int'],
-  first: Scalars['Int'],
-  after?: Maybe<Scalars['String']>
+  id: Scalars['Int']
 };
 
 export type ResetPassword = {
@@ -156,11 +161,15 @@ export enum Sender {
   Other = 'OTHER'
 }
 
-export type SignInResult = Result | TotpChallenge;
+export type SignInResult = {
+   __typename?: 'SignInResult',
+  ok: Scalars['Boolean'],
+  requiresTOTP: Scalars['Boolean'],
+};
 
 export type Subscription = {
    __typename?: 'Subscription',
-  newMessage: Message,
+  newMessage: MessageEdge,
 };
 
 
@@ -178,16 +187,17 @@ export type Thread = {
   createdAt: Scalars['String'],
   updatedAt?: Maybe<Scalars['String']>,
   ended: Scalars['Boolean'],
+  messages: MessagesConnection,
 };
 
-export type TotpChallenge = {
-   __typename?: 'TOTPChallenge',
-  totpChallenge: Scalars['Boolean'],
+
+export type ThreadMessagesArgs = {
+  first: Scalars['Int'],
+  after?: Maybe<Scalars['String']>
 };
 
 export type TotpOnboarding = {
-   __typename?: 'TotpOnboarding',
-  name: Scalars['String'],
+   __typename?: 'TOTPOnboarding',
   secret: Scalars['String'],
 };
 
@@ -197,6 +207,7 @@ export type User = {
   name: Scalars['String'],
   email: Scalars['String'],
   hasTOTP: Scalars['Boolean'],
+  onboardTOTP?: Maybe<TotpOnboarding>,
 };
 
 export type CreateThreadMutationVariables = {
@@ -327,25 +338,6 @@ export type MessageFragmentFragment = (
   & Pick<Message, 'id' | 'body' | 'sender' | 'createdAt' | 'updatedAt' | 'seen'>
 );
 
-export type MoreMessagesQueryVariables = {
-  threadID: Scalars['Int'],
-  first: Scalars['Int'],
-  after?: Maybe<Scalars['String']>
-};
-
-
-export type MoreMessagesQuery = (
-  { __typename?: 'Query' }
-  & { moreMessages: (
-    { __typename?: 'MessagesCursor' }
-    & Pick<MessagesCursor, 'cursor'>
-    & { messages: Array<(
-      { __typename?: 'Message' }
-      & MessageFragmentFragment
-    )> }
-  ) }
-);
-
 export type NewMessageSubscriptionVariables = {
   threadID: Scalars['Int']
 };
@@ -354,8 +346,11 @@ export type NewMessageSubscriptionVariables = {
 export type NewMessageSubscription = (
   { __typename?: 'Subscription' }
   & { newMessage: (
-    { __typename?: 'Message' }
-    & MessageFragmentFragment
+    { __typename?: 'MessageEdge' }
+    & { node: (
+      { __typename?: 'Message' }
+      & MessageFragmentFragment
+    ) }
   ) }
 );
 
@@ -364,9 +359,13 @@ export type OnboardTotpQueryVariables = {};
 
 export type OnboardTotpQuery = (
   { __typename?: 'Query' }
-  & { onboardTotp: (
-    { __typename?: 'TotpOnboarding' }
-    & Pick<TotpOnboarding, 'name' | 'secret'>
+  & { me: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'name'>
+    & { onboardTOTP: Maybe<(
+      { __typename?: 'TOTPOnboarding' }
+      & Pick<TotpOnboarding, 'secret'>
+    )> }
   ) }
 );
 
@@ -407,11 +406,8 @@ export type SignInMutationVariables = {
 export type SignInMutation = (
   { __typename?: 'Mutation' }
   & { signIn: (
-    { __typename?: 'Result' }
-    & Pick<Result, 'ok'>
-  ) | (
-    { __typename?: 'TOTPChallenge' }
-    & Pick<TotpChallenge, 'totpChallenge'>
+    { __typename?: 'SignInResult' }
+    & Pick<SignInResult, 'ok' | 'requiresTOTP'>
   ) }
 );
 
@@ -431,7 +427,7 @@ export type SignUpMutation = (
 );
 
 export type ThreadQueryVariables = {
-  threadID: Scalars['Int']
+  id: Scalars['Int']
 };
 
 
@@ -440,6 +436,34 @@ export type ThreadQuery = (
   & { thread: (
     { __typename?: 'Thread' }
     & Pick<Thread, 'id' | 'name' | 'recipient' | 'number' | 'createdAt' | 'ended'>
+  ) }
+);
+
+export type ThreadMessagesQueryVariables = {
+  id: Scalars['Int'],
+  first: Scalars['Int'],
+  after?: Maybe<Scalars['String']>
+};
+
+
+export type ThreadMessagesQuery = (
+  { __typename?: 'Query' }
+  & { thread: (
+    { __typename?: 'Thread' }
+    & Pick<Thread, 'id'>
+    & { messages: (
+      { __typename?: 'MessagesConnection' }
+      & { pageInfo: (
+        { __typename?: 'PageInfo' }
+        & Pick<PageInfo, 'endCursor' | 'hasNextPage'>
+      ), edges: Array<(
+        { __typename?: 'MessageEdge' }
+        & { node: (
+          { __typename?: 'Message' }
+          & MessageFragmentFragment
+        ) }
+      )> }
+    ) }
   ) }
 );
 
@@ -783,48 +807,12 @@ export function useMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptio
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariables>;
-export const MoreMessagesDocument = gql`
-    query MoreMessages($threadID: Int!, $first: Int!, $after: String) {
-  moreMessages(threadID: $threadID, first: $first, after: $after) {
-    cursor
-    messages {
-      ...MessageFragment
-    }
-  }
-}
-    ${MessageFragmentFragmentDoc}`;
-
-/**
- * __useMoreMessagesQuery__
- *
- * To run a query within a React component, call `useMoreMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useMoreMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMoreMessagesQuery({
- *   variables: {
- *      threadID: // value for 'threadID'
- *      first: // value for 'first'
- *      after: // value for 'after'
- *   },
- * });
- */
-export function useMoreMessagesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MoreMessagesQuery, MoreMessagesQueryVariables>) {
-        return ApolloReactHooks.useQuery<MoreMessagesQuery, MoreMessagesQueryVariables>(MoreMessagesDocument, baseOptions);
-      }
-export function useMoreMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MoreMessagesQuery, MoreMessagesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<MoreMessagesQuery, MoreMessagesQueryVariables>(MoreMessagesDocument, baseOptions);
-        }
-export type MoreMessagesQueryHookResult = ReturnType<typeof useMoreMessagesQuery>;
-export type MoreMessagesLazyQueryHookResult = ReturnType<typeof useMoreMessagesLazyQuery>;
-export type MoreMessagesQueryResult = ApolloReactCommon.QueryResult<MoreMessagesQuery, MoreMessagesQueryVariables>;
 export const NewMessageDocument = gql`
     subscription NewMessage($threadID: Int!) {
   newMessage(threadID: $threadID) {
-    ...MessageFragment
+    node {
+      ...MessageFragment
+    }
   }
 }
     ${MessageFragmentFragmentDoc}`;
@@ -851,10 +839,13 @@ export function useNewMessageSubscription(baseOptions?: ApolloReactHooks.Subscri
 export type NewMessageSubscriptionHookResult = ReturnType<typeof useNewMessageSubscription>;
 export type NewMessageSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewMessageSubscription>;
 export const OnboardTotpDocument = gql`
-    query OnboardTotp {
-  onboardTotp {
+    query OnboardTOTP {
+  me {
+    id
     name
-    secret
+    onboardTOTP {
+      secret
+    }
   }
 }
     `;
@@ -953,12 +944,8 @@ export type SendMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<S
 export const SignInDocument = gql`
     mutation SignIn($email: String!, $password: String!) {
   signIn(email: $email, password: $password) {
-    ... on Result {
-      ok
-    }
-    ... on TOTPChallenge {
-      totpChallenge
-    }
+    ok
+    requiresTOTP
   }
 }
     `;
@@ -1023,8 +1010,8 @@ export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = ApolloReactCommon.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = ApolloReactCommon.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
 export const ThreadDocument = gql`
-    query Thread($threadID: Int!) {
-  thread(threadID: $threadID) {
+    query Thread($id: Int!) {
+  thread(id: $id) {
     id
     name
     recipient
@@ -1047,7 +1034,7 @@ export const ThreadDocument = gql`
  * @example
  * const { data, loading, error } = useThreadQuery({
  *   variables: {
- *      threadID: // value for 'threadID'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -1060,6 +1047,52 @@ export function useThreadLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookO
 export type ThreadQueryHookResult = ReturnType<typeof useThreadQuery>;
 export type ThreadLazyQueryHookResult = ReturnType<typeof useThreadLazyQuery>;
 export type ThreadQueryResult = ApolloReactCommon.QueryResult<ThreadQuery, ThreadQueryVariables>;
+export const ThreadMessagesDocument = gql`
+    query ThreadMessages($id: Int!, $first: Int!, $after: String) {
+  thread(id: $id) {
+    id
+    messages(first: $first, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          ...MessageFragment
+        }
+      }
+    }
+  }
+}
+    ${MessageFragmentFragmentDoc}`;
+
+/**
+ * __useThreadMessagesQuery__
+ *
+ * To run a query within a React component, call `useThreadMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useThreadMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useThreadMessagesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useThreadMessagesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ThreadMessagesQuery, ThreadMessagesQueryVariables>) {
+        return ApolloReactHooks.useQuery<ThreadMessagesQuery, ThreadMessagesQueryVariables>(ThreadMessagesDocument, baseOptions);
+      }
+export function useThreadMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ThreadMessagesQuery, ThreadMessagesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ThreadMessagesQuery, ThreadMessagesQueryVariables>(ThreadMessagesDocument, baseOptions);
+        }
+export type ThreadMessagesQueryHookResult = ReturnType<typeof useThreadMessagesQuery>;
+export type ThreadMessagesLazyQueryHookResult = ReturnType<typeof useThreadMessagesLazyQuery>;
+export type ThreadMessagesQueryResult = ApolloReactCommon.QueryResult<ThreadMessagesQuery, ThreadMessagesQueryVariables>;
 export const ThreadsDocument = gql`
     query Threads {
   threads {

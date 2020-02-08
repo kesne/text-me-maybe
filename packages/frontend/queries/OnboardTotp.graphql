@@ -1,6 +1,9 @@
-query OnboardTotp {
-    onboardTotp {
+query OnboardTOTP {
+    me {
+        id
         name
-        secret
+        onboardTOTP {
+            secret
+        }
     }
 }

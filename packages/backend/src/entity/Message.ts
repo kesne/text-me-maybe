@@ -12,6 +12,7 @@ import {
 import { Thread } from './Thread';
 import twilio from '../twilio';
 import pubsub, { TYPES } from '../graphql/pubsub';
+import { serialize } from '../utils/cursor';
 
 export enum Sender {
     Self = 'SELF',
@@ -72,6 +73,8 @@ export class Message extends BaseEntity {
 
     @AfterInsert()
     publishMessage() {
-        pubsub.publish(TYPES.NEW_MESSAGE, { newMessage: this });
+        pubsub.publish(TYPES.NEW_MESSAGE, {
+            newMessage: { cursor: serialize(this.id), node: this }
+        });
     }
 }

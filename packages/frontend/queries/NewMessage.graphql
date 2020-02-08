@@ -1,5 +1,7 @@
 subscription NewMessage($threadID: Int!) {
     newMessage(threadID: $threadID) {
-        ...MessageFragment
+        node {
+            ...MessageFragment
+        }
     }
 }

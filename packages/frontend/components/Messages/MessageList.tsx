@@ -1,14 +1,15 @@
-import { Spin, List } from 'antd';
+import { useCallback, useEffect } from 'react';
+import { Spin, List, Skeleton } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import {
-    useMoreMessagesQuery,
+    useThreadMessagesQuery,
     Thread,
     NewMessageDocument,
     SubscriptionNewMessageArgs,
     NewMessageSubscription
 } from '../../queries';
 import Message from './Message';
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import useReversed from '../utils/useReversed';
 
 type Props = {
     thread: Pick<Thread, 'id' | 'name'>;
@@ -17,12 +18,9 @@ type Props = {
 const MESSAGES_TO_LOAD = 10;
 
 export default function MessageList({ thread }: Props) {
-    // TODO: Eventually this can be part of the response:
-    const [hasMore, setHasMore] = useState(true);
-
-    const { data, loading, error, fetchMore, subscribeToMore } = useMoreMessagesQuery({
+    const { data, loading, error, fetchMore, subscribeToMore } = useThreadMessagesQuery({
         variables: {
-            threadID: thread.id,
+            id: thread.id,
             first: MESSAGES_TO_LOAD
         }
     });
@@ -37,52 +35,51 @@ export default function MessageList({ thread }: Props) {
 
                 return {
                     ...prev,
-                    moreMessages: {
-                        ...prev.moreMessages,
-                        messages: [newMessage, ...prev.moreMessages.messages]
+                    thread: {
+                        ...prev.thread,
+                        messages: {
+                            ...prev.thread.messages,
+                            edges: [newMessage, ...prev.thread.messages.edges]
+                        }
                     }
                 };
             }
         });
     }, [subscribeToMore, thread.id]);
 
-    // TODO: Ideally we really need a better way to represent this data so that we don't need to constantly reverse it:
-    const messages = useMemo(() => [...(data?.moreMessages.messages ?? [])].reverse(), [
-        data?.moreMessages.messages
-    ]);
-
     const handleLoadMore = useCallback(() => {
         fetchMore({
             variables: {
-                threadID: thread.id,
+                id: thread.id,
                 first: MESSAGES_TO_LOAD,
-                after: data?.moreMessages.cursor
+                after: data?.thread.messages.pageInfo.endCursor
             },
             updateQuery: (previousResult, { fetchMoreResult }) => {
-                const previousMoreMessages = previousResult.moreMessages;
-                const newMessages = fetchMoreResult?.moreMessages.messages ?? [];
-                const newCursor = fetchMoreResult?.moreMessages.cursor as string;
+                const newEdges = fetchMoreResult!.thread.messages.edges;
+                const pageInfo = fetchMoreResult!.thread.messages.pageInfo;
 
-                // No new messages, so set hasMore to false:
-                if (newMessages.length === 0) {
-                    setHasMore(false);
-                }
-
-                return {
-                    moreMessages: {
-                        // By returning `cursor` here, we update the `fetchMore` function
-                        // to the new cursor.
-                        cursor: newCursor,
-                        messages: [...previousMoreMessages.messages, ...newMessages],
-                        __typename: previousMoreMessages.__typename
-                    }
-                };
+                return newEdges.length
+                    ? {
+                          thread: {
+                              __typename: previousResult.thread.__typename,
+                              id: previousResult.thread.id,
+                              messages: {
+                                    __typename: previousResult.thread.messages.__typename,
+                                  pageInfo,
+                                  edges: [...previousResult.thread.messages.edges, ...newEdges]
+                              }
+                          }
+                      }
+                    : previousResult;
             }
         });
-    }, [data?.moreMessages.cursor, thread.id]);
+    }, [data?.thread.messages.pageInfo.endCursor, thread.id]);
+
+    // TODO: Ideally we really need a better way to represent this data so that we don't need to constantly reverse it:
+    const messages = useReversed(data?.thread.messages.edges ?? []);
 
     if (loading) {
-        return <Spin size="large" />;
+        return <Skeleton active />
     }
 
     if (!data || error) {
@@ -94,17 +91,17 @@ export default function MessageList({ thread }: Props) {
             initialLoad={false}
             pageStart={0}
             loadMore={handleLoadMore}
-            hasMore={hasMore}
+            hasMore={data.thread.messages.pageInfo.hasNextPage}
             useWindow={false}
             isReverse={true}
         >
             <List
                 dataSource={messages}
-                renderItem={message => (
+                renderItem={({ node: message }) => (
                     <Message key={message.id} thread={thread} message={message} />
                 )}
             >
-                {loading && hasMore && (
+                {loading && (
                     <div>
                         <Spin />
                     </div>

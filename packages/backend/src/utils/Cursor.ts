@@ -1,21 +1,7 @@
-export default class Cursor {
-    static parse(cursor: string) {
-        const [first, last] = Buffer.from(cursor, 'base64')
-            .toString('utf8')
-            .split(':');
+export function serialize(id: number) {
+    return Buffer.from(String(id), 'utf8').toString('base64');
+}
 
-        return new Cursor(+first, +last);
-    }
-
-    declare first: number;
-    declare last: number;
-
-    constructor(first: number, last: number) {
-        this.first = first;
-        this.last = last;
-    }
-
-    toString() {
-        return Buffer.from(`${this.first}:${this.last}`).toString('base64');
-    }
+export function parse(cursor: string) {
+    return Number(Buffer.from(cursor, 'base64').toString('utf8'));
 }

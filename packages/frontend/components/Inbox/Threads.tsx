@@ -1,6 +1,6 @@
 import { useState } from 'react';
 // import Router from 'next/router';
-import { Button, Spin, Card, List, Input } from 'antd';
+import { Button, Card, List, Input, Skeleton, Alert } from 'antd';
 import CreateThread from './CreateThread';
 import { useThreadsQuery } from '../../queries';
 import ThreadItem from './ThreadItem';
@@ -17,24 +17,26 @@ export default function Threads() {
     //     }
     // }, [data, history]);
 
-    if (loading) {
-        return <Spin />;
-    }
-
-    if (error || !data) {
-        return <div>Uh oh... {error}</div>;
-    }
-
     return (
         <Card>
             <Row after={<Button onClick={() => setCreating(true)} icon={<FormOutlined />} />}>
                 <Input.Search placeholder="Search..." />
             </Row>
-            <List
-                itemLayout="horizontal"
-                dataSource={data.threads}
-                renderItem={item => <ThreadItem key={item.id} thread={item} />}
-            />
+            {loading ? (
+                <Skeleton />
+            ) : !data || error ? (
+                <Alert
+                    message="Sorry we couldn't load your messages."
+                    description="Please try again later."
+                    type="error"
+                />
+            ) : (
+                <List
+                    itemLayout="horizontal"
+                    dataSource={data.threads}
+                    renderItem={item => <ThreadItem key={item.id} thread={item} />}
+                />
+            )}
             {creating && <CreateThread onClose={() => setCreating(false)} />}
         </Card>
     );

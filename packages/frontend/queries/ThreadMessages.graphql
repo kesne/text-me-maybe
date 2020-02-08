@@ -1,0 +1,16 @@
+query ThreadMessages($id: Int!, $first: Int!, $after: String) {
+    thread(id: $id) {
+        id
+        messages(first: $first, after: $after) {
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+            edges {
+                node {
+                    ...MessageFragment
+                }
+            }
+        }
+    }
+}

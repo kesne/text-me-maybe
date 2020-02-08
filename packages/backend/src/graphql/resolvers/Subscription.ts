@@ -13,7 +13,8 @@ const SubscriptionResolvers = {
                     pubsub.asyncIterator([TYPES.NEW_MESSAGE]),
                     Thread.userCanAccessThread(args.threadID, context.user)
                 ),
-            (payload: { newMessage: Message }, variables) => (console.log(payload), variables.threadID === payload.newMessage.thread?.id)
+            (payload: { newMessage: { node: Message; cursor: string } }, variables) =>
+                variables.threadID === payload.newMessage.node.thread?.id
         )
     }
 };

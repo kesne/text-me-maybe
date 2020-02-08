@@ -43,13 +43,17 @@ const MutationResolvers: MutationResolvers<Context> = {
             user.signIn(session, cookies, AuthType.TOTP);
 
             return {
-                totpChallenge: true
+                ok: true,
+                requiresTOTP: true
             };
         }
 
         user.signIn(session, cookies);
 
-        return RESULT_OK;
+        return {
+            ok: true,
+            requiresTOTP: false
+        };
     },
 
     async enableTotp(_parent, { secret, token }, { user }) {

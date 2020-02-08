@@ -6,22 +6,22 @@ import VerifyTOTP from '../../components/Auth/VerifyTOTP';
 import EmailPassword from '../../components/Auth/EmailPassword';
 
 function SignIn() {
-    const [totpChallenge, setTOTPChallenge] = useState(false);
+    const [requiresTOTP, setRequiresTOTP] = useState(false);
 
     const onSignIn = useCallback(() => {
         Router.push('/inbox');
     }, []);
 
-    const onTOTPChallenge = useCallback(() => {
-        setTOTPChallenge(true);
-    }, [setTOTPChallenge]);
+    const handleRequiresTOTP = useCallback(() => {
+        setRequiresTOTP(true);
+    }, [setRequiresTOTP]);
 
     return (
         <Container title="Sign in">
-            {totpChallenge ? (
+            {requiresTOTP ? (
                 <VerifyTOTP onSignIn={onSignIn} />
             ) : (
-                <EmailPassword onSignIn={onSignIn} onTOTPChallenge={onTOTPChallenge} />
+                <EmailPassword onSignIn={onSignIn} onRequiresTOTP={handleRequiresTOTP} />
             )}
         </Container>
     );

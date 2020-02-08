@@ -30,8 +30,6 @@ export default function SendMessage({ threadID }: Props) {
         }
     });
 
-    console.log(error, error && error.message);
-
     async function handleFinish(values: Record<string, any>) {
         await sendMessage({
             variables: {

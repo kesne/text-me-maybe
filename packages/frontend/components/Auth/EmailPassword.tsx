@@ -16,21 +16,21 @@ const tailLayout = {
 
 type Props = {
     onSignIn(): void;
-    onTOTPChallenge(): void;
+    onRequiresTOTP(): void;
 };
 
-export default function EmailPassword({ onSignIn, onTOTPChallenge }: Props) {
+export default function EmailPassword({ onSignIn, onRequiresTOTP }: Props) {
     const [signIn, { data, loading }] = useSignInMutation();
 
     useEffect(() => {
         if (data) {
-            if ('totpChallenge' in data.signIn) {
-                onTOTPChallenge();
+            if (data.signIn.requiresTOTP) {
+                onRequiresTOTP();
             } else {
                 onSignIn();
             }
         }
-    }, [data, onSignIn, onTOTPChallenge]);
+    }, [data, onSignIn, onRequiresTOTP]);
 
     const onFinish = (values: Record<string, string>) => {
         signIn({
