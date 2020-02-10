@@ -135,9 +135,15 @@ export type PageInfo = {
 
 export type Query = {
    __typename?: 'Query',
-  threads: Array<Thread>,
+  threads: ThreadConnection,
   thread: Thread,
   me: User,
+};
+
+
+export type QueryThreadsArgs = {
+  first: Scalars['Int'],
+  after?: Maybe<Scalars['String']>
 };
 
 
@@ -193,6 +199,18 @@ export type Thread = {
 export type ThreadMessagesArgs = {
   first: Scalars['Int'],
   after?: Maybe<Scalars['String']>
+};
+
+export type ThreadConnection = {
+   __typename?: 'ThreadConnection',
+  pageInfo: PageInfo,
+  edges: Array<ThreadEdge>,
+};
+
+export type ThreadEdge = {
+   __typename?: 'ThreadEdge',
+  cursor: Scalars['String'],
+  node: Thread,
 };
 
 export type TotpOnboarding = {
@@ -282,14 +300,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
-  Thread: ResolverTypeWrapper<Thread>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   String: ResolverTypeWrapper<Scalars['String']>,
+  ThreadConnection: ResolverTypeWrapper<ThreadConnection>,
+  PageInfo: ResolverTypeWrapper<PageInfo>,
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  ThreadEdge: ResolverTypeWrapper<ThreadEdge>,
+  Thread: ResolverTypeWrapper<Thread>,
   Message: ResolverTypeWrapper<Message>,
   Sender: Sender,
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   MessagesConnection: ResolverTypeWrapper<MessagesConnection>,
-  PageInfo: ResolverTypeWrapper<PageInfo>,
   MessageEdge: ResolverTypeWrapper<MessageEdge>,
   User: ResolverTypeWrapper<User>,
   TOTPOnboarding: ResolverTypeWrapper<TotpOnboarding>,
@@ -303,14 +323,16 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Query: {},
-  Thread: Thread,
   Int: Scalars['Int'],
   String: Scalars['String'],
+  ThreadConnection: ThreadConnection,
+  PageInfo: PageInfo,
+  Boolean: Scalars['Boolean'],
+  ThreadEdge: ThreadEdge,
+  Thread: Thread,
   Message: Message,
   Sender: Sender,
-  Boolean: Scalars['Boolean'],
   MessagesConnection: MessagesConnection,
-  PageInfo: PageInfo,
   MessageEdge: MessageEdge,
   User: User,
   TOTPOnboarding: TotpOnboarding,
@@ -366,7 +388,7 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  threads?: Resolver<Array<ResolversTypes['Thread']>, ParentType, ContextType>,
+  threads?: Resolver<ResolversTypes['ThreadConnection'], ParentType, ContextType, RequireFields<QueryThreadsArgs, 'first'>>,
   thread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<QueryThreadArgs, 'id'>>,
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
 }>;
@@ -400,6 +422,16 @@ export type ThreadResolvers<ContextType = any, ParentType extends ResolversParen
   messages?: Resolver<ResolversTypes['MessagesConnection'], ParentType, ContextType, RequireFields<ThreadMessagesArgs, 'first'>>,
 }>;
 
+export type ThreadConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ThreadConnection'] = ResolversParentTypes['ThreadConnection']> = ResolversObject<{
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
+  edges?: Resolver<Array<ResolversTypes['ThreadEdge']>, ParentType, ContextType>,
+}>;
+
+export type ThreadEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ThreadEdge'] = ResolversParentTypes['ThreadEdge']> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  node?: Resolver<ResolversTypes['Thread'], ParentType, ContextType>,
+}>;
+
 export type TotpOnboardingResolvers<ContextType = any, ParentType extends ResolversParentTypes['TOTPOnboarding'] = ResolversParentTypes['TOTPOnboarding']> = ResolversObject<{
   secret?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 }>;
@@ -424,6 +456,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   SignInResult?: SignInResultResolvers<ContextType>,
   Subscription?: SubscriptionResolvers<ContextType>,
   Thread?: ThreadResolvers<ContextType>,
+  ThreadConnection?: ThreadConnectionResolvers<ContextType>,
+  ThreadEdge?: ThreadEdgeResolvers<ContextType>,
   TOTPOnboarding?: TotpOnboardingResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
 }>;

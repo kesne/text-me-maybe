@@ -6,10 +6,11 @@ import client from '../utils/client';
 import { useCreateThreadMutation, ThreadsDocument } from '../../queries';
 
 type Props = {
+    visible: boolean;
     onClose: () => void;
 };
 
-export default function CreateThread({ onClose }: Props) {
+export default function CreateThread({ visible, onClose }: Props) {
     const [form] = Form.useForm();
 
     const [createThread, { loading, data }] = useCreateThreadMutation();
@@ -24,6 +25,12 @@ export default function CreateThread({ onClose }: Props) {
             onClose();
         }
     }, [data, onClose]);
+
+    useEffect(() => {
+        if (visible) {
+            form.resetFields();
+        }
+    }, [visible]);
 
     async function handleOk() {
         const values = await form.validateFields();
@@ -51,7 +58,7 @@ export default function CreateThread({ onClose }: Props) {
 
     return (
         <Modal
-            visible
+            visible={visible}
             title="Create a new message thread"
             onCancel={onClose}
             onOk={handleOk}

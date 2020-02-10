@@ -64,12 +64,22 @@ type Thread {
     messages(first: Int!, after: String): MessagesConnection!
 }
 
+type ThreadEdge {
+    cursor: String!
+    node: Thread!
+}
+
+type ThreadConnection {
+    pageInfo: PageInfo!
+    edges: [ThreadEdge!]!
+}
+
 type ResetPassword {
     complete: Boolean!
 }
 
 type Query {
-    threads: [Thread!]! @auth
+    threads(first: Int!, after: String): ThreadConnection! @auth
     thread(id: Int!): Thread! @auth
     me: User! @auth
 }

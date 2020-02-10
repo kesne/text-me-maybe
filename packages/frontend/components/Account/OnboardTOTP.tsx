@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Modal, InputNumber, Form, Typography, Skeleton, Alert } from 'antd';
-import { useOnboardTotpQuery, useEnableTotpMutation } from '../../queries';
+import { useOnboardTotpLazyQuery, useEnableTotpMutation } from '../../queries';
 
 type Props = {
+    visible: boolean;
     onClose(): void;
 };
 
@@ -18,13 +19,21 @@ const QRCode = styled.img`
     margin: 16px auto;
 `;
 
-export default function OnboardTOTP({ onClose }: Props) {
+export default function OnboardTOTP({ visible, onClose }: Props) {
     const [form] = Form.useForm();
-    const { data, error, loading } = useOnboardTotpQuery({
-        fetchPolicy: 'network-only'
+    const [fetchOnboardTOTP, { data, error, loading }] = useOnboardTotpLazyQuery({
+        fetchPolicy: 'network-only',
+        notifyOnNetworkStatusChange: true
     });
 
     const [enableTotp, totpEnableState] = useEnableTotpMutation();
+
+    useEffect(() => {
+        if (visible) {
+            form.resetFields();
+            fetchOnboardTOTP();
+        }
+    }, [visible]);
 
     async function handleOk() {
         const values = await form.validateFields();
@@ -49,7 +58,7 @@ export default function OnboardTOTP({ onClose }: Props) {
 
     return (
         <Modal
-            visible
+            visible={visible}
             title="Two Factor Auth Setup"
             onCancel={onClose}
             onOk={handleOk}

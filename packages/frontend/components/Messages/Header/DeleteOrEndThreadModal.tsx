@@ -11,6 +11,7 @@ import {
 } from '../../../queries';
 
 type Props = {
+    visible: boolean;
     thread: Partial<Thread>;
     onClose(): void;
     mode: 'end' | 'delete';
@@ -32,7 +33,7 @@ const COPY = {
     }
 };
 
-export default function DeleteOrEndThreadModal({ mode, thread, onClose }: Props) {
+export default function DeleteOrEndThreadModal({ visible, mode, thread, onClose }: Props) {
     const translations = COPY[mode];
 
     const [action, { data, loading }] = useMutation(
@@ -55,7 +56,7 @@ export default function DeleteOrEndThreadModal({ mode, thread, onClose }: Props)
                     query: ThreadsDocument,
                     data: {
                         ...data,
-                        threads: data.threads.filter(t => t.id !== thread.id)
+                        threads: data.threads.edges.filter(t => t.node.id !== thread.id)
                     }
                 });
             }
@@ -73,7 +74,7 @@ export default function DeleteOrEndThreadModal({ mode, thread, onClose }: Props)
 
     return (
         <Modal
-            visible
+            visible={visible}
             title={translations.title(thread.name)}
             onCancel={onClose}
             onOk={() => action()}

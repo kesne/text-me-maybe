@@ -4,15 +4,23 @@ import { useMeQuery } from '../../queries';
 import OnboardTOTP from './OnboardTOTP';
 import DisableTOTP from './DisableTOTP';
 
-function TOTPModal({ hasTOTP, onClose }: { hasTOTP: boolean; onClose(): void }) {
+function TOTPModal({
+    visible,
+    hasTOTP,
+    onClose
+}: {
+    visible: boolean;
+    hasTOTP: boolean;
+    onClose(): void;
+}) {
     if (hasTOTP) {
-        return <DisableTOTP onClose={onClose} />;
+        return <DisableTOTP visible={visible} onClose={onClose} />;
     }
-    return <OnboardTOTP onClose={onClose} />;
+    return <OnboardTOTP visible={visible} onClose={onClose} />;
 }
 
 export default function Security() {
-    const [totpModal, setTOTPModal] = useState(false);
+    const [totpModalVisible, setTOTPModalVisible] = useState(false);
     const { data, loading, refetch } = useMeQuery();
 
     if (loading || !data) {
@@ -20,7 +28,7 @@ export default function Security() {
     }
 
     function onClose() {
-        setTOTPModal(false);
+        setTOTPModalVisible(false);
         refetch();
     }
 
@@ -33,12 +41,11 @@ export default function Security() {
             </Typography.Text>
             <Button
                 type={data.me.hasTOTP ? 'danger' : 'default'}
-                onClick={() => setTOTPModal(true)}
+                onClick={() => setTOTPModalVisible(true)}
             >
-                {data.me.hasTOTP ? 'Disable' : 'Enable'} TOTP
+                {data.me.hasTOTP ? 'Disable' : 'Enable'} Two-Factor Authentication
             </Button>
-
-            {totpModal && <TOTPModal hasTOTP={data.me.hasTOTP} onClose={onClose} />}
+            <TOTPModal visible={totpModalVisible} hasTOTP={data.me.hasTOTP} onClose={onClose} />
         </PageHeader>
     );
 }

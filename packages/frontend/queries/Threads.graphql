@@ -1,15 +1,23 @@
-query Threads {
-    threads {
-        id
-        name
-        recipient
-        number
-        updatedAt
-        ended
-        lastMessage {
-            id
-            body
-            seen
+query Threads($first: Int!, $after: String) {
+    threads(first: $first, after: $after) {
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+        edges {
+            node {
+                id
+                name
+                recipient
+                number
+                updatedAt
+                ended
+                lastMessage {
+                    id
+                    body
+                    seen
+                }
+            }
         }
     }
 }

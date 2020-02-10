@@ -20,10 +20,12 @@ const StyledPageHeader = styled(PageHeader)`
 `;
 
 export default function Header({ thread }: Props) {
-    const [openedModal, setOpenedModal] = useState<null | 'end' | 'delete'>(null);
+    const [modalType, setModalType] = useState<'end' | 'delete'>('end');
+    const [modalVisible, setModalVisible] = useState(false);
 
     const handleOpenModal = (mode: 'end' | 'delete') => () => {
-        setOpenedModal(mode);
+        setModalType(mode);
+        setModalVisible(true);
     };
 
     const subtitle = `Conversation with ${formatPhone(
@@ -50,13 +52,12 @@ export default function Header({ thread }: Props) {
                 </Typography.Text>
             </StyledPageHeader>
 
-            {openedModal && (
-                <DeleteOrEndThreadModal
-                    mode={openedModal}
-                    thread={thread}
-                    onClose={() => setOpenedModal(null)}
-                />
-            )}
+            <DeleteOrEndThreadModal
+                visible={modalVisible}
+                mode={modalType}
+                thread={thread}
+                onClose={() => setModalVisible(false)}
+            />
         </>
     );
 }

@@ -136,9 +136,15 @@ export type PageInfo = {
 
 export type Query = {
    __typename?: 'Query',
-  threads: Array<Thread>,
+  threads: ThreadConnection,
   thread: Thread,
   me: User,
+};
+
+
+export type QueryThreadsArgs = {
+  first: Scalars['Int'],
+  after?: Maybe<Scalars['String']>
 };
 
 
@@ -194,6 +200,18 @@ export type Thread = {
 export type ThreadMessagesArgs = {
   first: Scalars['Int'],
   after?: Maybe<Scalars['String']>
+};
+
+export type ThreadConnection = {
+   __typename?: 'ThreadConnection',
+  pageInfo: PageInfo,
+  edges: Array<ThreadEdge>,
+};
+
+export type ThreadEdge = {
+   __typename?: 'ThreadEdge',
+  cursor: Scalars['String'],
+  node: Thread,
 };
 
 export type TotpOnboarding = {
@@ -467,19 +485,31 @@ export type ThreadMessagesQuery = (
   ) }
 );
 
-export type ThreadsQueryVariables = {};
+export type ThreadsQueryVariables = {
+  first: Scalars['Int'],
+  after?: Maybe<Scalars['String']>
+};
 
 
 export type ThreadsQuery = (
   { __typename?: 'Query' }
-  & { threads: Array<(
-    { __typename?: 'Thread' }
-    & Pick<Thread, 'id' | 'name' | 'recipient' | 'number' | 'updatedAt' | 'ended'>
-    & { lastMessage: Maybe<(
-      { __typename?: 'Message' }
-      & Pick<Message, 'id' | 'body' | 'seen'>
+  & { threads: (
+    { __typename?: 'ThreadConnection' }
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'hasNextPage' | 'endCursor'>
+    ), edges: Array<(
+      { __typename?: 'ThreadEdge' }
+      & { node: (
+        { __typename?: 'Thread' }
+        & Pick<Thread, 'id' | 'name' | 'recipient' | 'number' | 'updatedAt' | 'ended'>
+        & { lastMessage: Maybe<(
+          { __typename?: 'Message' }
+          & Pick<Message, 'id' | 'body' | 'seen'>
+        )> }
+      ) }
     )> }
-  )> }
+  ) }
 );
 
 export type UpdateAccountMutationVariables = {
@@ -1094,18 +1124,26 @@ export type ThreadMessagesQueryHookResult = ReturnType<typeof useThreadMessagesQ
 export type ThreadMessagesLazyQueryHookResult = ReturnType<typeof useThreadMessagesLazyQuery>;
 export type ThreadMessagesQueryResult = ApolloReactCommon.QueryResult<ThreadMessagesQuery, ThreadMessagesQueryVariables>;
 export const ThreadsDocument = gql`
-    query Threads {
-  threads {
-    id
-    name
-    recipient
-    number
-    updatedAt
-    ended
-    lastMessage {
-      id
-      body
-      seen
+    query Threads($first: Int!, $after: String) {
+  threads(first: $first, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        id
+        name
+        recipient
+        number
+        updatedAt
+        ended
+        lastMessage {
+          id
+          body
+          seen
+        }
+      }
     }
   }
 }
@@ -1123,6 +1161,8 @@ export const ThreadsDocument = gql`
  * @example
  * const { data, loading, error } = useThreadsQuery({
  *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
  *   },
  * });
  */
