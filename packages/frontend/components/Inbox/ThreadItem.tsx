@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import { List } from 'antd';
+import { List, Badge } from 'antd';
 import { Thread } from '../../queries';
 
 type Props = {
@@ -15,20 +15,13 @@ const StyledLink = styled('a')`
     }
 `;
 
-const Badge = styled.div`
-    height: 8px;
-    width: 8px;
-    border-radius: 8px;
-    background-color: blue;
-`;
-
 export default function ThreadItem({ thread }: Props) {
     return (
         <Link href="/inbox/[thread]" as={`/inbox/${thread.id}`}>
             <StyledLink>
                 <List.Item>
                     <List.Item.Meta title={thread.name} description={thread.lastMessage?.body} />
-                    {!thread.lastMessage?.body && <Badge />}
+                    <Badge dot={thread.lastMessage ? !thread.lastMessage.seen : false} />
                 </List.Item>
             </StyledLink>
         </Link>

@@ -47,6 +47,7 @@ const QueryResolvers: QueryResolvers<Context> = {
         }
 
         return {
+            // TODO: This will break if the threads are empty!!!!!
             pageInfo: {
                 startCursor: serialize(rawThreads[0].maxMessageId),
                 endCursor: serialize(rawThreads[threads.length - 1].maxMessageId),

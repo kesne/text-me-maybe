@@ -1,7 +1,7 @@
-query ThreadMessages($id: Int!, $first: Int!, $after: String) {
+query ThreadMessages($id: Int!, $after: String) {
     thread(id: $id) {
         id
-        messages(first: $first, after: $after) {
+        messages(first: 10, after: $after) {
             pageInfo {
                 endCursor
                 hasNextPage

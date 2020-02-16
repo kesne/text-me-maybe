@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { Spin, List, Skeleton } from 'antd';
+import produce from 'immer';
 import InfiniteScroll from 'react-infinite-scroller';
 import {
     useThreadMessagesQuery,
@@ -15,13 +16,10 @@ type Props = {
     thread: Pick<Thread, 'id' | 'name'>;
 };
 
-const MESSAGES_TO_LOAD = 10;
-
 export default function MessageList({ thread }: Props) {
     const { data, loading, error, fetchMore, subscribeToMore } = useThreadMessagesQuery({
         variables: {
-            id: thread.id,
-            first: MESSAGES_TO_LOAD
+            id: thread.id
         }
     });
 
@@ -29,20 +27,20 @@ export default function MessageList({ thread }: Props) {
         return subscribeToMore<NewMessageSubscription, SubscriptionNewMessageArgs>({
             document: NewMessageDocument,
             variables: { threadID: thread.id },
-            updateQuery: (prev, { subscriptionData }) => {
-                if (!subscriptionData.data) return prev;
+            updateQuery: (prevState, { subscriptionData }) => {
+                if (!subscriptionData.data) return prevState;
                 const { newMessage } = subscriptionData.data;
 
-                return {
-                    ...prev,
-                    thread: {
-                        ...prev.thread,
-                        messages: {
-                            ...prev.thread.messages,
-                            edges: [newMessage, ...prev.thread.messages.edges]
-                        }
+                return produce(prevState, draftState => {
+                    // Only insert if we do not already have the message in the thread:
+                    if (
+                        !draftState.thread.messages.edges.find(
+                            ({ node }) => node.id === newMessage.node.id
+                        )
+                    ) {
+                        draftState.thread.messages.edges.unshift(newMessage);
                     }
-                };
+                });
             }
         });
     }, [subscribeToMore, thread.id]);
@@ -51,7 +49,6 @@ export default function MessageList({ thread }: Props) {
         fetchMore({
             variables: {
                 id: thread.id,
-                first: MESSAGES_TO_LOAD,
                 after: data?.thread.messages.pageInfo.endCursor
             },
             updateQuery: (previousResult, { fetchMoreResult }) => {
@@ -59,17 +56,10 @@ export default function MessageList({ thread }: Props) {
                 const pageInfo = fetchMoreResult!.thread.messages.pageInfo;
 
                 return newEdges.length
-                    ? {
-                          thread: {
-                              __typename: previousResult.thread.__typename,
-                              id: previousResult.thread.id,
-                              messages: {
-                                    __typename: previousResult.thread.messages.__typename,
-                                  pageInfo,
-                                  edges: [...previousResult.thread.messages.edges, ...newEdges]
-                              }
-                          }
-                      }
+                    ? produce(previousResult, draftState => {
+                          draftState.thread.messages.pageInfo = pageInfo;
+                          draftState.thread.messages.edges.push(...newEdges);
+                      })
                     : previousResult;
             }
         });
@@ -79,7 +69,7 @@ export default function MessageList({ thread }: Props) {
     const messages = useReversed(data?.thread.messages.edges ?? []);
 
     if (loading) {
-        return <Skeleton active />
+        return <Skeleton active />;
     }
 
     if (!data || error) {

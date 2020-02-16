@@ -118,6 +118,7 @@ router.post('/api/incoming-sms', async ctx => {
             message.sender = Sender.Other;
             message.body = ctx.request.body.Body;
             message.thread = thread;
+            message.seen = false;
 
             await message.save();
         }

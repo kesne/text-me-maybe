@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 // import Router from 'next/router';
 import styled from 'styled-components';
+import produce from 'immer';
 import { Button, Card, List, Input, Skeleton, Alert, Spin } from 'antd';
 import CreateThread from './CreateThread';
 import { useThreadsQuery } from '../../queries';
@@ -23,7 +24,10 @@ export default function Threads() {
         notifyOnNetworkStatusChange: true,
         variables: {
             first: THREADS_TO_LOAD
-        }
+        },
+        // TODO: Deliver thread updates via subscriptions as well.
+        // Re-fetch the threads every 30 seconds:
+        pollInterval: 30 * 1000
     });
 
     // useEffect(() => {
@@ -43,13 +47,10 @@ export default function Threads() {
                 const pageInfo = fetchMoreResult!.threads.pageInfo;
 
                 return newEdges.length
-                    ? {
-                          threads: {
-                              __typename: previousResult.threads.__typename!,
-                              pageInfo,
-                              edges: [...previousResult.threads.edges, ...newEdges]
-                          }
-                      }
+                    ? produce(previousResult, draftState => {
+                          draftState.threads.pageInfo = pageInfo;
+                          draftState.threads.edges.push(...newEdges);
+                      })
                     : previousResult;
             }
         });

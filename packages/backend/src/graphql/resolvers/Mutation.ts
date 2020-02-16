@@ -145,6 +145,7 @@ const MutationResolvers: MutationResolvers<Context> = {
 
         return await message.save();
     },
+
     async endThread(_parent, { id }, { user }) {
         const thread = await Thread.findOne({
             where: {

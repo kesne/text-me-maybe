@@ -1,6 +1,5 @@
 mutation SendMessage($threadID: Int!, $message: String!) {
     sendMessage(threadID: $threadID, body: $message) {
-        id
-        body
+        ...MessageFragment
     }
 }

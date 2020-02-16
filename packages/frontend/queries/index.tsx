@@ -411,7 +411,7 @@ export type SendMessageMutation = (
   { __typename?: 'Mutation' }
   & { sendMessage: (
     { __typename?: 'Message' }
-    & Pick<Message, 'id' | 'body'>
+    & MessageFragmentFragment
   ) }
 );
 
@@ -459,7 +459,6 @@ export type ThreadQuery = (
 
 export type ThreadMessagesQueryVariables = {
   id: Scalars['Int'],
-  first: Scalars['Int'],
   after?: Maybe<Scalars['String']>
 };
 
@@ -940,11 +939,10 @@ export type ResetPasswordMutationOptions = ApolloReactCommon.BaseMutationOptions
 export const SendMessageDocument = gql`
     mutation SendMessage($threadID: Int!, $message: String!) {
   sendMessage(threadID: $threadID, body: $message) {
-    id
-    body
+    ...MessageFragment
   }
 }
-    `;
+    ${MessageFragmentFragmentDoc}`;
 export type SendMessageMutationFn = ApolloReactCommon.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
 
 /**
@@ -1078,10 +1076,10 @@ export type ThreadQueryHookResult = ReturnType<typeof useThreadQuery>;
 export type ThreadLazyQueryHookResult = ReturnType<typeof useThreadLazyQuery>;
 export type ThreadQueryResult = ApolloReactCommon.QueryResult<ThreadQuery, ThreadQueryVariables>;
 export const ThreadMessagesDocument = gql`
-    query ThreadMessages($id: Int!, $first: Int!, $after: String) {
+    query ThreadMessages($id: Int!, $after: String) {
   thread(id: $id) {
     id
-    messages(first: $first, after: $after) {
+    messages(first: 10, after: $after) {
       pageInfo {
         endCursor
         hasNextPage
@@ -1109,7 +1107,6 @@ export const ThreadMessagesDocument = gql`
  * const { data, loading, error } = useThreadMessagesQuery({
  *   variables: {
  *      id: // value for 'id'
- *      first: // value for 'first'
  *      after: // value for 'after'
  *   },
  * });
