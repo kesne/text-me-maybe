@@ -72,9 +72,15 @@ export class Message extends BaseEntity {
     }
 
     @AfterInsert()
-    publishMessage() {
+    publishUpdate() {
         pubsub.publish(TYPES.NEW_MESSAGE, {
             newMessage: { cursor: serialize(this.id), node: this }
         });
+
+        if (this.thread) {
+            pubsub.publish(TYPES.THREAD_UPDATE, {
+                threadUpdate: this.thread
+            });
+        }
     }
 }

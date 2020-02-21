@@ -27,8 +27,7 @@ const wsLink = new WebSocketLink({
             : `ws://${'localhost:1337' || location.host}/api/graphql/subscriptions`,
     options: {
         reconnect: true,
-        // TODO: At some point we actually do want this to be lazy:
-        // lazy: true
+        lazy: true
     },
     webSocketImpl: typeof window === 'undefined' ? ws.client : WebSocket
 });

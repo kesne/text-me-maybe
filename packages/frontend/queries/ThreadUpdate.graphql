@@ -1,0 +1,5 @@
+subscription ThreadUpdate {
+    threadUpdate {
+        ...ThreadFragment
+    }
+}

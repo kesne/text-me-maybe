@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Spin, List, Skeleton } from 'antd';
 import produce from 'immer';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -7,21 +7,35 @@ import {
     Thread,
     NewMessageDocument,
     SubscriptionNewMessageArgs,
-    NewMessageSubscription
+    NewMessageSubscription,
+    Message as MessageData
 } from '../../queries';
 import Message from './Message';
-import useReversed from '../utils/useReversed';
+import OptimisticMessage from './OptimisticMessage';
+import { useStore } from '../utils/messagesToSendStore';
 
 type Props = {
     thread: Pick<Thread, 'id' | 'name'>;
 };
 
+function isOptimistic(message: Partial<MessageData>) {
+    return !!(message.id && message.id < 0);
+}
+
 export default function MessageList({ thread }: Props) {
-    const { data, loading, error, fetchMore, subscribeToMore } = useThreadMessagesQuery({
+    const { data, loading, error, refetch, fetchMore, subscribeToMore } = useThreadMessagesQuery({
         variables: {
             id: thread.id
         }
     });
+
+    useEffect(() => {
+        if (!loading) {
+            refetch();
+        }
+    }, [thread]);
+
+    const messagesToSend = useStore(state => state.messagesByThreadID[thread.id]) ?? [];
 
     useEffect(() => {
         return subscribeToMore<NewMessageSubscription, SubscriptionNewMessageArgs>({
@@ -65,8 +79,15 @@ export default function MessageList({ thread }: Props) {
         });
     }, [data?.thread.messages.pageInfo.endCursor, thread.id]);
 
-    // TODO: Ideally we really need a better way to represent this data so that we don't need to constantly reverse it:
-    const messages = useReversed(data?.thread.messages.edges ?? []);
+    const messages = useMemo(() => {
+        const edges = data?.thread.messages.edges ?? [];
+        const messagesToSendEdges = messagesToSend.map((message: MessageData) => ({
+            node: message
+        }));
+
+        // TODO: Ideally we really need a better way to represent this data so that we don't need to constantly reverse it:
+        return [...messagesToSendEdges, ...edges].reverse();
+    }, [data?.thread.messages.edges, messagesToSend]);
 
     if (loading) {
         return <Skeleton active />;
@@ -87,9 +108,14 @@ export default function MessageList({ thread }: Props) {
         >
             <List
                 dataSource={messages}
-                renderItem={({ node: message }) => (
-                    <Message key={message.id} thread={thread} message={message} />
-                )}
+                rowKey={({ node }) => node.id}
+                renderItem={({ node: message }) =>
+                    isOptimistic(message) ? (
+                        <OptimisticMessage message={message} />
+                    ) : (
+                        <Message thread={thread} message={message} />
+                    )
+                }
             >
                 {loading && (
                     <div>

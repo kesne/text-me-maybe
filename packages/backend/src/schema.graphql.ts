@@ -175,6 +175,7 @@ export type SignInResult = {
 export type Subscription = {
    __typename?: 'Subscription',
   newMessage: MessageEdge,
+  threadUpdate: Thread,
 };
 
 
@@ -408,6 +409,7 @@ export type SignInResultResolvers<ContextType = any, ParentType extends Resolver
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
   newMessage?: SubscriptionResolver<ResolversTypes['MessageEdge'], "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'threadID'>>,
+  threadUpdate?: SubscriptionResolver<ResolversTypes['Thread'], "threadUpdate", ParentType, ContextType>,
 }>;
 
 export type ThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = ResolversObject<{

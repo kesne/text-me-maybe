@@ -1,0 +1,13 @@
+fragment ThreadFragment on Thread {
+    id
+    name
+    recipient
+    number
+    updatedAt
+    ended
+    lastMessage {
+        id
+        body
+        seen
+    }
+}

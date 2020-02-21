@@ -101,7 +101,7 @@ const MutationResolvers: MutationResolvers<Context> = {
         const thread = new Thread();
         thread.phoneNumber = Promise.resolve(phoneNumber);
         thread.recipient = recipient;
-        thread.user = user;
+        thread.user = Promise.resolve(user);
         thread.name = name;
 
         const message = new Message();
@@ -115,8 +115,13 @@ const MutationResolvers: MutationResolvers<Context> = {
         return thread;
     },
 
-    async sendMessage(_parent, { threadID, body }) {
-        const thread = await Thread.findOne(threadID);
+    async sendMessage(_parent, { threadID, body }, { user }) {
+        const thread = await Thread.findOne({
+            where: {
+                id: threadID,
+                user
+            }
+        });
 
         if (!thread) {
             throw new Error('No thread found for ID.');

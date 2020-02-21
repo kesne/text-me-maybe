@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import produce from 'immer';
 import { Button, Card, List, Input, Skeleton, Alert, Spin } from 'antd';
 import CreateThread from './CreateThread';
-import { useThreadsQuery } from '../../queries';
+import { useThreadsQuery, useThreadUpdateSubscription } from '../../queries';
 import ThreadItem from './ThreadItem';
 import { FormOutlined } from '@ant-design/icons';
 import Row from '../Row';
@@ -25,10 +25,9 @@ export default function Threads() {
         variables: {
             first: THREADS_TO_LOAD
         },
-        // TODO: Deliver thread updates via subscriptions as well.
-        // Re-fetch the threads every 30 seconds:
-        pollInterval: 30 * 1000
     });
+
+    useThreadUpdateSubscription();
 
     // useEffect(() => {
     //     if (data && data.threads.length) {

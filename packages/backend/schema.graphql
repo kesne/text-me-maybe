@@ -104,4 +104,5 @@ type Mutation {
 
 type Subscription {
     newMessage(threadID: Int!): MessageEdge!
+    threadUpdate: Thread!
 }

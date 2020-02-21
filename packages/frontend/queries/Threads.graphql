@@ -6,17 +6,7 @@ query Threads($first: Int!, $after: String) {
         }
         edges {
             node {
-                id
-                name
-                recipient
-                number
-                updatedAt
-                ended
-                lastMessage {
-                    id
-                    body
-                    seen
-                }
+                ...ThreadFragment
             }
         }
     }

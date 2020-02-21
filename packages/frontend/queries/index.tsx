@@ -176,6 +176,7 @@ export type SignInResult = {
 export type Subscription = {
    __typename?: 'Subscription',
   newMessage: MessageEdge,
+  threadUpdate: Thread,
 };
 
 
@@ -457,6 +458,15 @@ export type ThreadQuery = (
   ) }
 );
 
+export type ThreadFragmentFragment = (
+  { __typename?: 'Thread' }
+  & Pick<Thread, 'id' | 'name' | 'recipient' | 'number' | 'updatedAt' | 'ended'>
+  & { lastMessage: Maybe<(
+    { __typename?: 'Message' }
+    & Pick<Message, 'id' | 'body' | 'seen'>
+  )> }
+);
+
 export type ThreadMessagesQueryVariables = {
   id: Scalars['Int'],
   after?: Maybe<Scalars['String']>
@@ -484,6 +494,17 @@ export type ThreadMessagesQuery = (
   ) }
 );
 
+export type ThreadUpdateSubscriptionVariables = {};
+
+
+export type ThreadUpdateSubscription = (
+  { __typename?: 'Subscription' }
+  & { threadUpdate: (
+    { __typename?: 'Thread' }
+    & ThreadFragmentFragment
+  ) }
+);
+
 export type ThreadsQueryVariables = {
   first: Scalars['Int'],
   after?: Maybe<Scalars['String']>
@@ -501,11 +522,7 @@ export type ThreadsQuery = (
       { __typename?: 'ThreadEdge' }
       & { node: (
         { __typename?: 'Thread' }
-        & Pick<Thread, 'id' | 'name' | 'recipient' | 'number' | 'updatedAt' | 'ended'>
-        & { lastMessage: Maybe<(
-          { __typename?: 'Message' }
-          & Pick<Message, 'id' | 'body' | 'seen'>
-        )> }
+        & ThreadFragmentFragment
       ) }
     )> }
   ) }
@@ -541,6 +558,21 @@ export const MessageFragmentFragmentDoc = gql`
   createdAt
   updatedAt
   seen
+}
+    `;
+export const ThreadFragmentFragmentDoc = gql`
+    fragment ThreadFragment on Thread {
+  id
+  name
+  recipient
+  number
+  updatedAt
+  ended
+  lastMessage {
+    id
+    body
+    seen
+  }
 }
     `;
 export const CreateThreadDocument = gql`
@@ -1120,6 +1152,34 @@ export function useThreadMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQu
 export type ThreadMessagesQueryHookResult = ReturnType<typeof useThreadMessagesQuery>;
 export type ThreadMessagesLazyQueryHookResult = ReturnType<typeof useThreadMessagesLazyQuery>;
 export type ThreadMessagesQueryResult = ApolloReactCommon.QueryResult<ThreadMessagesQuery, ThreadMessagesQueryVariables>;
+export const ThreadUpdateDocument = gql`
+    subscription ThreadUpdate {
+  threadUpdate {
+    ...ThreadFragment
+  }
+}
+    ${ThreadFragmentFragmentDoc}`;
+
+/**
+ * __useThreadUpdateSubscription__
+ *
+ * To run a query within a React component, call `useThreadUpdateSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useThreadUpdateSubscription` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useThreadUpdateSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useThreadUpdateSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<ThreadUpdateSubscription, ThreadUpdateSubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<ThreadUpdateSubscription, ThreadUpdateSubscriptionVariables>(ThreadUpdateDocument, baseOptions);
+      }
+export type ThreadUpdateSubscriptionHookResult = ReturnType<typeof useThreadUpdateSubscription>;
+export type ThreadUpdateSubscriptionResult = ApolloReactCommon.SubscriptionResult<ThreadUpdateSubscription>;
 export const ThreadsDocument = gql`
     query Threads($first: Int!, $after: String) {
   threads(first: $first, after: $after) {
@@ -1129,22 +1189,12 @@ export const ThreadsDocument = gql`
     }
     edges {
       node {
-        id
-        name
-        recipient
-        number
-        updatedAt
-        ended
-        lastMessage {
-          id
-          body
-          seen
-        }
+        ...ThreadFragment
       }
     }
   }
 }
-    `;
+    ${ThreadFragmentFragmentDoc}`;
 
 /**
  * __useThreadsQuery__

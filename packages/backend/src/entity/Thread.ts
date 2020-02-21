@@ -6,12 +6,14 @@ import {
     UpdateDateColumn,
     OneToMany,
     ManyToOne,
-    BaseEntity
+    BaseEntity,
+    AfterInsert
 } from 'typeorm';
 import { Message } from './Message';
 import { User } from './User';
 import { PhoneNumber } from './PhoneNumber';
 import twilio from '../twilio';
+import pubsub, { TYPES } from '../graphql/pubsub';
 
 @Entity()
 export class Thread extends BaseEntity {
@@ -26,7 +28,9 @@ export class Thread extends BaseEntity {
             return false;
         }
 
-        return thread.user.id === user.id;
+        const threadUser = await thread.user;
+
+        return threadUser.id === user.id;
     }
 
     @PrimaryGeneratedColumn()
@@ -45,7 +49,7 @@ export class Thread extends BaseEntity {
         () => User,
         user => user.threads
     )
-    user!: User;
+    user!: Promise<User>;
 
     @OneToMany(
         () => Message,
@@ -69,4 +73,12 @@ export class Thread extends BaseEntity {
 
     @UpdateDateColumn()
     updatedAt!: string;
+
+
+    @AfterInsert()
+    publishUpdate() {
+        pubsub.publish(TYPES.THREAD_UPDATE, {
+            threadUpdate: this
+        });
+    }
 }

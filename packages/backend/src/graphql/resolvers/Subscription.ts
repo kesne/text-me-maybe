@@ -6,6 +6,15 @@ import pubsub, { TYPES } from '../pubsub';
 import { Message } from '../../entity/Message';
 
 const SubscriptionResolvers = {
+    threadUpdate: {
+        subscribe: withFilter(
+            () => pubsub.asyncIterator([TYPES.THREAD_UPDATE]),
+            async (payload: { threadUpdate: Thread }, _args, context: Context) => {
+                const threadUser = await payload.threadUpdate.user;
+                return threadUser.id === context.user.id;
+            }
+        )
+    },
     newMessage: {
         subscribe: withFilter(
             (_parent, args: { threadID: number }, context: Context) =>
