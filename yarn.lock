@@ -2157,8 +2157,8 @@
 
 "@types/react-infinite-scroller@^1.2.1":
   version "1.2.1"
-  resolved "https://artifacts.netflix.net/api/npm/npm-netflix/@types/react-infinite-scroller/-/react-infinite-scroller-1.2.1.tgz#1cd747ef8f50d3c883e375c0491a906e5436fcb2"
-  integrity sha1-HNdH749Q08iD43XASRqQblQ2/LI=
+  resolved "https://registry.yarnpkg.com/@types/react-infinite-scroller/-/react-infinite-scroller-1.2.1.tgz#1cd747ef8f50d3c883e375c0491a906e5436fcb2"
+  integrity sha512-64bpbqdSgtmy1zSZ2AQoFzguwZO7TyKjqJRTEnfNMCAQbnrX90kz+rYufZyY9CmzhwpXMwRO8xR9fMQnbYUkgQ==
   dependencies:
     "@types/react" "*"
 
@@ -9479,8 +9479,8 @@ react-error-overlay@5.1.6:
 
 react-infinite-scroller@^1.2.4:
   version "1.2.4"
-  resolved "https://artifacts.netflix.net/api/npm/npm-netflix/react-infinite-scroller/-/react-infinite-scroller-1.2.4.tgz#f67eaec4940a4ce6417bebdd6e3433bfc38826e9"
-  integrity sha1-9n6uxJQKTOZBe+vdbjQzv8OIJuk=
+  resolved "https://registry.yarnpkg.com/react-infinite-scroller/-/react-infinite-scroller-1.2.4.tgz#f67eaec4940a4ce6417bebdd6e3433bfc38826e9"
+  integrity sha512-/oOa0QhZjXPqaD6sictN2edFMsd3kkMiE19Vcz5JDgHpzEJVqYcmq+V3mkwO88087kvKGe1URNksHEOt839Ubw==
   dependencies:
     prop-types "^15.5.8"
 
