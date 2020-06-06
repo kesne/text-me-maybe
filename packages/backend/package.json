@@ -14,7 +14,7 @@
     "@graphql-codegen/typescript-resolvers": "1.11.2",
     "@koa/cors": "^3.0.0",
     "@koa/router": "^8.0.5",
-    "apollo-server-koa": "^2.9.15",
+    "apollo-server-koa": "^2.14.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "bull": "^3.12.1",
